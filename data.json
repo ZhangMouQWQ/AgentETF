@@ -1,0 +1,63 @@
+{
+  "update_time": "2026-07-13 18:04:24",
+  "session": "下午收盘",
+  "next_window": "下一交易日上午(9:30开盘后)",
+  "asof": "2026-07-13",
+  "main_plan": {
+    "window": 40,
+    "top_k": 3,
+    "buy": [
+      "科创50ETF",
+      "科技ETF",
+      "创新药ETF"
+    ]
+  },
+  "safe_plan": {
+    "window": 120,
+    "top_k": 2,
+    "buy": [
+      "科技ETF",
+      "科创50ETF"
+    ]
+  },
+  "action": {
+    "changed": true,
+    "sell": [],
+    "buy": [
+      "科创50ETF",
+      "科技ETF",
+      "创新药ETF"
+    ],
+    "hold": [],
+    "prev": [],
+    "new": [
+      "科创50ETF",
+      "科技ETF",
+      "创新药ETF"
+    ]
+  },
+  "top_pick": {
+    "name": "科创50ETF",
+    "source": "两方案交集(最强信号)",
+    "mom_pct": 16.47,
+    "vol_pct": 58.31,
+    "score": 0.283,
+    "today_pct": -2.78,
+    "sector": "科技成长"
+  },
+  "risks": [
+    {
+      "level": "mid",
+      "text": "市场宽度偏窄: 30%板块动量为正, 热点集中, 注意轮动加快"
+    },
+    {
+      "level": "mid",
+      "text": "买入推荐[科创50ETF]年化波动58%, 属高波动品种, 建议分批建仓"
+    },
+    {
+      "level": "mid",
+      "text": "买入推荐[科创50ETF]当日下跌-2.8%, 动量短期衰减, 可等企稳再介入"
+    }
+  ],
+  "market_pos_ratio": 0.3
+}
