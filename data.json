@@ -1,5 +1,5 @@
 {
-  "update_time": "2026-07-13 20:43:12",
+  "update_time": "2026-07-13 21:26:47",
   "session": "下午收盘",
   "next_window": "下一交易日上午(9:30开盘后)",
   "asof": "2026-07-13",
@@ -21,15 +21,19 @@
     ]
   },
   "action": {
-    "changed": true,
+    "changed": false,
     "sell": [],
-    "buy": [
+    "buy": [],
+    "hold": [
       "科创50ETF",
       "科技ETF",
       "创新药ETF"
     ],
-    "hold": [],
-    "prev": [],
+    "prev": [
+      "科创50ETF",
+      "科技ETF",
+      "创新药ETF"
+    ],
     "new": [
       "科创50ETF",
       "科技ETF",
