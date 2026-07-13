@@ -222,7 +222,7 @@ def risks_html(risks):
 
 
 def build_html(rank_main, picks_main, rank_safe, picks_safe, asof, update_time,
-               session, next_window, action, top_pick, risks):
+               session, next_window, action, top_pick, risks, data_note=''):
     main_txt = ' + '.join(picks_main) if picks_main else '空仓(全部动量为负)'
     safe_txt = ' + '.join(picks_safe) if picks_safe else '空仓(全部动量为负)'
 
@@ -289,6 +289,7 @@ td.sc{{font-weight:700;color:#2c5364}}
 <div class="head"><h1>📊 ETF 动量轮动 · 盯盘信号</h1>
 <p>不预测,只跟随强者 · 风险调整动量(涨幅÷波动率)排名</p>
 <div class="sess">当前: {session} · 数据截至 {asof}</div></div>
+{f'<div style="background:#fff6e0;color:#7a5200;border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:13px;text-align:center">{data_note}</div>' if data_note else ''}
 
 {tp}
 {action_html(action, next_window)}
@@ -347,6 +348,19 @@ def main():
     picks_safe = pick(rank_safe, TOP_SAFE)
     asof = price.index[-1] if price is not None else '未知'
 
+    # === 细节: 数据新鲜度检测(节假日/数据延迟时给出提示, 避免用旧数据误导) ===
+    stale_days = 0
+    data_note = ''
+    try:
+        last_dt = datetime.strptime(str(asof), '%Y-%m-%d').replace(tzinfo=bj)
+        stale_days = (bj_now.date() - last_dt.date()).days
+        if stale_days >= 3:
+            data_note = f'⚠️ 数据为{stale_days}天前(可能遇节假日), 信号基于最近交易日, 请在节后首个交易日复核'
+        elif stale_days >= 1:
+            data_note = f'数据截至上个交易日({asof})'
+    except Exception:
+        pass
+
     # 市场宽度(动量为正占比)
     pos_ratio = float((rank_main['mom_pct'] > 0).mean()) if rank_main is not None else 0.0
 
@@ -373,7 +387,7 @@ def main():
 
     # 生成网页
     html = build_html(rank_main, picks_main, rank_safe, picks_safe, asof, update_time,
-                      session, next_window, action, top_pick, risks)
+                      session, next_window, action, top_pick, risks, data_note)
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(html)
 
@@ -386,6 +400,7 @@ def main():
         'top_pick': top_pick,
         'risks': risks,
         'market_pos_ratio': round(pos_ratio, 3),
+        'data_note': data_note,
     }
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
