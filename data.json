@@ -21,19 +21,15 @@
     ]
   },
   "action": {
-    "changed": false,
+    "changed": true,
     "sell": [],
-    "buy": [],
-    "hold": [
+    "buy": [
       "科创50ETF",
       "科技ETF",
       "创新药ETF"
     ],
-    "prev": [
-      "科创50ETF",
-      "科技ETF",
-      "创新药ETF"
-    ],
+    "hold": [],
+    "prev": [],
     "new": [
       "科创50ETF",
       "科技ETF",
