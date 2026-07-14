@@ -1,7 +1,7 @@
 {
-  "update_time": "2026-07-14 10:40:02",
+  "update_time": "2026-07-14 11:01:28",
   "asof": "2026-07-13",
-  "signal_type": "close",
+  "signal_type": "morning",
   "data_quality": {
     "today": "2026-07-14",
     "has_today_data": false,
@@ -28,6 +28,168 @@
     "光伏ETF": false,
     "汽车ETF": false,
     "黄金ETF": false
+  },
+  "price_verify": {
+    "沪深300ETF": {
+      "code": "510300",
+      "latest": 4.744,
+      "prev": 4.829,
+      "change_pct": -1.76,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "中证500ETF": {
+      "code": "510500",
+      "latest": 8.292,
+      "prev": 8.698,
+      "change_pct": -4.67,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "创业板ETF": {
+      "code": "159915",
+      "latest": 3.751,
+      "prev": 3.862,
+      "change_pct": -2.87,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "科创50ETF": {
+      "code": "588000",
+      "latest": 2.1,
+      "prev": 2.209,
+      "change_pct": -4.93,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "有色金属ETF": {
+      "code": "512400",
+      "latest": 1.679,
+      "prev": 1.756,
+      "change_pct": -4.38,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "稀土ETF": {
+      "code": "516780",
+      "latest": 0.831,
+      "prev": 0.893,
+      "change_pct": -6.94,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "煤炭ETF": {
+      "code": "515220",
+      "latest": 1.12,
+      "prev": 1.119,
+      "change_pct": 0.09,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "券商ETF": {
+      "code": "512000",
+      "latest": 0.525,
+      "prev": 0.532,
+      "change_pct": -1.32,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "银行ETF": {
+      "code": "512800",
+      "latest": 0.779,
+      "prev": 0.767,
+      "change_pct": 1.56,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "芯片ETF": {
+      "code": "159995",
+      "latest": 1.458,
+      "prev": 1.535,
+      "change_pct": -5.02,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "科技ETF": {
+      "code": "515000",
+      "latest": 1.467,
+      "prev": 1.546,
+      "change_pct": -5.11,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "军工ETF": {
+      "code": "512660",
+      "latest": 1.192,
+      "prev": 1.281,
+      "change_pct": -6.95,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "医药ETF": {
+      "code": "512010",
+      "latest": 0.36,
+      "prev": 0.363,
+      "change_pct": -0.83,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "酒ETF": {
+      "code": "512690",
+      "latest": 0.393,
+      "prev": 0.397,
+      "change_pct": -1.01,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "消费ETF": {
+      "code": "159928",
+      "latest": 0.631,
+      "prev": 0.632,
+      "change_pct": -0.16,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "创新药ETF": {
+      "code": "515120",
+      "latest": 0.635,
+      "prev": 0.641,
+      "change_pct": -0.94,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "新能源车ETF": {
+      "code": "515030",
+      "latest": 1.6,
+      "prev": 1.671,
+      "change_pct": -4.25,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "光伏ETF": {
+      "code": "515790",
+      "latest": 0.849,
+      "prev": 0.897,
+      "change_pct": -5.35,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "汽车ETF": {
+      "code": "516110",
+      "latest": 1.09,
+      "prev": 1.129,
+      "change_pct": -3.45,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    },
+    "黄金ETF": {
+      "code": "518880",
+      "latest": 8.419,
+      "prev": 8.541,
+      "change_pct": -1.43,
+      "has_today": false,
+      "data_date": "2026-07-13"
+    }
   },
   "main_plan": {
     "window": 40,
