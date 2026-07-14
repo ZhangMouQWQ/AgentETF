@@ -1,8 +1,34 @@
 {
-  "update_time": "2026-07-13 21:26:47",
-  "session": "下午收盘",
-  "next_window": "下一交易日上午(9:30开盘后)",
+  "update_time": "2026-07-14 10:10:51",
   "asof": "2026-07-13",
+  "signal_type": "close",
+  "data_quality": {
+    "today": "2026-07-14",
+    "has_today_data": false,
+    "sync_asof": "2026-07-13"
+  },
+  "etf_has_today": {
+    "沪深300ETF": false,
+    "中证500ETF": false,
+    "创业板ETF": false,
+    "科创50ETF": false,
+    "有色金属ETF": false,
+    "稀土ETF": false,
+    "煤炭ETF": false,
+    "券商ETF": false,
+    "银行ETF": false,
+    "芯片ETF": false,
+    "科技ETF": false,
+    "军工ETF": false,
+    "医药ETF": false,
+    "酒ETF": false,
+    "消费ETF": false,
+    "创新药ETF": false,
+    "新能源车ETF": false,
+    "光伏ETF": false,
+    "汽车ETF": false,
+    "黄金ETF": false
+  },
   "main_plan": {
     "window": 40,
     "top_k": 3,
@@ -10,6 +36,148 @@
       "科创50ETF",
       "科技ETF",
       "创新药ETF"
+    ],
+    "ranking": [
+      {
+        "name": "科创50ETF",
+        "code": "588000",
+        "mom_pct": 16.47,
+        "vol_pct": 58.31,
+        "score": 0.283
+      },
+      {
+        "name": "科技ETF",
+        "code": "515000",
+        "mom_pct": 13.9,
+        "vol_pct": 53.57,
+        "score": 0.259
+      },
+      {
+        "name": "创新药ETF",
+        "code": "515120",
+        "mom_pct": 8.18,
+        "vol_pct": 38.14,
+        "score": 0.214
+      },
+      {
+        "name": "券商ETF",
+        "code": "512000",
+        "mom_pct": 5.0,
+        "vol_pct": 34.85,
+        "score": 0.143
+      },
+      {
+        "name": "医药ETF",
+        "code": "512010",
+        "mom_pct": 3.15,
+        "vol_pct": 28.99,
+        "score": 0.109
+      },
+      {
+        "name": "银行ETF",
+        "code": "512800",
+        "mom_pct": 1.04,
+        "vol_pct": 18.74,
+        "score": 0.055
+      },
+      {
+        "name": "沪深300ETF",
+        "code": "510300",
+        "mom_pct": -2.23,
+        "vol_pct": 22.74,
+        "score": -0.098
+      },
+      {
+        "name": "创业板ETF",
+        "code": "159915",
+        "mom_pct": -4.38,
+        "vol_pct": 42.04,
+        "score": -0.104
+      },
+      {
+        "name": "中证500ETF",
+        "code": "510500",
+        "mom_pct": -3.93,
+        "vol_pct": 30.23,
+        "score": -0.13
+      },
+      {
+        "name": "煤炭ETF",
+        "code": "515220",
+        "mom_pct": -10.54,
+        "vol_pct": 40.55,
+        "score": -0.26
+      },
+      {
+        "name": "芯片ETF",
+        "code": "159995",
+        "mom_pct": -37.8,
+        "vol_pct": 144.5,
+        "score": -0.262
+      },
+      {
+        "name": "有色金属ETF",
+        "code": "512400",
+        "mom_pct": -16.43,
+        "vol_pct": 46.19,
+        "score": -0.356
+      },
+      {
+        "name": "军工ETF",
+        "code": "512660",
+        "mom_pct": -13.31,
+        "vol_pct": 35.7,
+        "score": -0.373
+      },
+      {
+        "name": "稀土ETF",
+        "code": "516780",
+        "mom_pct": -57.28,
+        "vol_pct": 131.53,
+        "score": -0.435
+      },
+      {
+        "name": "消费ETF",
+        "code": "159928",
+        "mom_pct": -9.86,
+        "vol_pct": 21.4,
+        "score": -0.461
+      },
+      {
+        "name": "黄金ETF",
+        "code": "518880",
+        "mom_pct": -11.5,
+        "vol_pct": 24.48,
+        "score": -0.47
+      },
+      {
+        "name": "酒ETF",
+        "code": "512690",
+        "mom_pct": -12.86,
+        "vol_pct": 25.13,
+        "score": -0.512
+      },
+      {
+        "name": "汽车ETF",
+        "code": "516110",
+        "mom_pct": -15.5,
+        "vol_pct": 25.5,
+        "score": -0.608
+      },
+      {
+        "name": "新能源车ETF",
+        "code": "515030",
+        "mom_pct": -21.3,
+        "vol_pct": 34.6,
+        "score": -0.616
+      },
+      {
+        "name": "光伏ETF",
+        "code": "515790",
+        "mom_pct": -22.89,
+        "vol_pct": 34.87,
+        "score": -0.656
+      }
     ]
   },
   "safe_plan": {
@@ -18,51 +186,148 @@
     "buy": [
       "科技ETF",
       "科创50ETF"
-    ]
-  },
-  "action": {
-    "changed": false,
-    "sell": [],
-    "buy": [],
-    "hold": [
-      "科创50ETF",
-      "科技ETF",
-      "创新药ETF"
     ],
-    "prev": [
-      "科创50ETF",
-      "科技ETF",
-      "创新药ETF"
-    ],
-    "new": [
-      "科创50ETF",
-      "科技ETF",
-      "创新药ETF"
+    "ranking": [
+      {
+        "name": "科技ETF",
+        "code": "515000",
+        "mom_pct": 38.53,
+        "vol_pct": 39.93,
+        "score": 0.965
+      },
+      {
+        "name": "科创50ETF",
+        "code": "588000",
+        "mom_pct": 31.74,
+        "vol_pct": 43.76,
+        "score": 0.725
+      },
+      {
+        "name": "创业板ETF",
+        "code": "159915",
+        "mom_pct": 11.27,
+        "vol_pct": 32.96,
+        "score": 0.342
+      },
+      {
+        "name": "煤炭ETF",
+        "code": "515220",
+        "mom_pct": 2.38,
+        "vol_pct": 37.45,
+        "score": 0.063
+      },
+      {
+        "name": "中证500ETF",
+        "code": "510500",
+        "mom_pct": -1.47,
+        "vol_pct": 28.02,
+        "score": -0.053
+      },
+      {
+        "name": "沪深300ETF",
+        "code": "510300",
+        "mom_pct": -3.44,
+        "vol_pct": 18.74,
+        "score": -0.184
+      },
+      {
+        "name": "创新药ETF",
+        "code": "515120",
+        "mom_pct": -5.65,
+        "vol_pct": 30.49,
+        "score": -0.185
+      },
+      {
+        "name": "银行ETF",
+        "code": "512800",
+        "mom_pct": -4.06,
+        "vol_pct": 15.26,
+        "score": -0.266
+      },
+      {
+        "name": "芯片ETF",
+        "code": "159995",
+        "mom_pct": -24.73,
+        "vol_pct": 89.02,
+        "score": -0.278
+      },
+      {
+        "name": "黄金ETF",
+        "code": "518880",
+        "mom_pct": -13.89,
+        "vol_pct": 37.1,
+        "score": -0.374
+      },
+      {
+        "name": "有色金属ETF",
+        "code": "512400",
+        "mom_pct": -20.73,
+        "vol_pct": 48.4,
+        "score": -0.428
+      },
+      {
+        "name": "医药ETF",
+        "code": "512010",
+        "mom_pct": -10.89,
+        "vol_pct": 23.73,
+        "score": -0.459
+      },
+      {
+        "name": "券商ETF",
+        "code": "512000",
+        "mom_pct": -12.35,
+        "vol_pct": 25.86,
+        "score": -0.478
+      },
+      {
+        "name": "光伏ETF",
+        "code": "515790",
+        "mom_pct": -18.13,
+        "vol_pct": 35.44,
+        "score": -0.512
+      },
+      {
+        "name": "新能源车ETF",
+        "code": "515030",
+        "mom_pct": -17.31,
+        "vol_pct": 30.94,
+        "score": -0.56
+      },
+      {
+        "name": "稀土ETF",
+        "code": "516780",
+        "mom_pct": -59.86,
+        "vol_pct": 83.41,
+        "score": -0.718
+      },
+      {
+        "name": "军工ETF",
+        "code": "512660",
+        "mom_pct": -29.13,
+        "vol_pct": 37.69,
+        "score": -0.773
+      },
+      {
+        "name": "消费ETF",
+        "code": "159928",
+        "mom_pct": -21.71,
+        "vol_pct": 19.92,
+        "score": -1.09
+      },
+      {
+        "name": "酒ETF",
+        "code": "512690",
+        "mom_pct": -28.93,
+        "vol_pct": 25.84,
+        "score": -1.12
+      },
+      {
+        "name": "汽车ETF",
+        "code": "516110",
+        "mom_pct": -24.88,
+        "vol_pct": 20.75,
+        "score": -1.199
+      }
     ]
-  },
-  "top_pick": {
-    "name": "科创50ETF",
-    "source": "两方案交集(最强信号)",
-    "mom_pct": 16.47,
-    "vol_pct": 58.31,
-    "score": 0.283,
-    "today_pct": -2.78,
-    "sector": "科技成长"
-  },
-  "risks": [
-    {
-      "level": "mid",
-      "text": "市场宽度偏窄: 30%板块动量为正, 热点集中, 注意轮动加快"
-    },
-    {
-      "level": "mid",
-      "text": "买入推荐[科创50ETF]年化波动58%, 属高波动品种, 建议分批建仓"
-    },
-    {
-      "level": "mid",
-      "text": "买入推荐[科创50ETF]当日下跌-2.8%, 动量短期衰减, 可等企稳再介入"
-    }
-  ],
-  "market_pos_ratio": 0.3,
-  "data_note": ""
+  }
 }
