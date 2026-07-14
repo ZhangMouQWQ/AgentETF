@@ -1,6 +1,6 @@
 {
-  "update_time": "2026-07-14 13:52:04",
-  "asof": "2026-07-13 00:00:00",
+  "update_time": "2026-07-14 15:28:05",
+  "asof": "2026-07-14",
   "signal_type": "close",
   "market": {
     "position_text": "0成（空仓）",
@@ -23,203 +23,203 @@
   "metrics": {
     "沪深300ETF": {
       "code": "510300",
-      "latest": 4.744,
-      "prev": 4.829,
-      "daily_change": -1.76,
-      "mom_long": -2.75,
-      "mom_short": -2.73,
+      "latest": 4.837,
+      "prev": 4.744,
+      "daily_change": 1.96,
+      "mom_long": -2.23,
+      "mom_short": 0.23,
       "vol": 22.7,
-      "score": -0.121
+      "score": -0.098
     },
     "中证500ETF": {
       "code": "510500",
-      "latest": 8.292,
-      "prev": 8.698,
-      "daily_change": -4.67,
-      "mom_long": -3.72,
-      "mom_short": -5.88,
+      "latest": 8.413,
+      "prev": 8.292,
+      "daily_change": 1.46,
+      "mom_long": -3.93,
+      "mom_short": -2.82,
       "vol": 30.2,
-      "score": -0.123
+      "score": -0.13
     },
     "创业板ETF": {
       "code": "159915",
-      "latest": 3.751,
-      "prev": 3.862,
-      "daily_change": -2.87,
-      "mom_long": -5.52,
-      "mom_short": -5.52,
+      "latest": 3.867,
+      "prev": 3.751,
+      "daily_change": 3.09,
+      "mom_long": -4.38,
+      "mom_short": -1.65,
       "vol": 42.0,
-      "score": -0.131
+      "score": -0.104
     },
     "科创50ETF": {
       "code": "588000",
-      "latest": 2.1,
-      "prev": 2.209,
-      "daily_change": -4.93,
-      "mom_long": 17.52,
-      "mom_short": -0.76,
+      "latest": 2.125,
+      "prev": 2.1,
+      "daily_change": 1.19,
+      "mom_long": 16.47,
+      "mom_short": -0.05,
       "vol": 58.3,
-      "score": 0.3
+      "score": 0.283
     },
     "有色金属ETF": {
       "code": "512400",
-      "latest": 1.679,
-      "prev": 1.756,
-      "daily_change": -4.38,
-      "mom_long": -17.66,
-      "mom_short": -9.97,
+      "latest": 1.774,
+      "prev": 1.679,
+      "daily_change": 5.66,
+      "mom_long": -16.43,
+      "mom_short": -1.61,
       "vol": 46.2,
-      "score": -0.382
+      "score": -0.356
     },
     "稀土ETF": {
       "code": "516780",
-      "latest": 0.831,
-      "prev": 0.893,
-      "daily_change": -6.94,
-      "mom_long": -57.86,
-      "mom_short": -13.35,
+      "latest": 0.853,
+      "prev": 0.831,
+      "daily_change": 2.65,
+      "mom_long": -57.28,
+      "mom_short": -10.21,
       "vol": 131.5,
-      "score": -0.44
+      "score": -0.435
     },
     "煤炭ETF": {
       "code": "515220",
-      "latest": 1.12,
-      "prev": 1.119,
-      "daily_change": 0.09,
-      "mom_long": -9.02,
-      "mom_short": -3.61,
+      "latest": 1.166,
+      "prev": 1.12,
+      "daily_change": 4.11,
+      "mom_long": -10.54,
+      "mom_short": 3.37,
       "vol": 40.6,
-      "score": -0.222
+      "score": -0.26
     },
     "券商ETF": {
       "code": "512000",
-      "latest": 0.525,
-      "prev": 0.532,
-      "daily_change": -1.32,
-      "mom_long": 4.79,
-      "mom_short": -5.06,
+      "latest": 0.528,
+      "prev": 0.525,
+      "daily_change": 0.57,
+      "mom_long": 5.0,
+      "mom_short": -1.68,
       "vol": 34.8,
-      "score": 0.137
+      "score": 0.143
     },
     "银行ETF": {
       "code": "512800",
-      "latest": 0.779,
-      "prev": 0.767,
-      "daily_change": 1.56,
-      "mom_long": 0.0,
-      "mom_short": 2.5,
+      "latest": 0.781,
+      "prev": 0.779,
+      "daily_change": 0.26,
+      "mom_long": 1.04,
+      "mom_short": 2.9,
       "vol": 18.7,
-      "score": 0.0
+      "score": 0.055
     },
     "芯片ETF": {
       "code": "159995",
-      "latest": 1.458,
-      "prev": 1.535,
-      "daily_change": -5.02,
-      "mom_long": -37.02,
-      "mom_short": -51.55,
+      "latest": 1.481,
+      "prev": 1.458,
+      "daily_change": 1.58,
+      "mom_long": -37.8,
+      "mom_short": -1.33,
       "vol": 144.5,
-      "score": -0.256
+      "score": -0.262
     },
     "科技ETF": {
       "code": "515000",
-      "latest": 1.467,
-      "prev": 1.546,
-      "daily_change": -5.11,
-      "mom_long": 14.97,
-      "mom_short": -4.8,
+      "latest": 1.522,
+      "prev": 1.467,
+      "daily_change": 3.75,
+      "mom_long": 13.9,
+      "mom_short": -0.07,
       "vol": 53.6,
-      "score": 0.279
+      "score": 0.259
     },
     "军工ETF": {
       "code": "512660",
-      "latest": 1.192,
-      "prev": 1.281,
-      "daily_change": -6.95,
-      "mom_long": -13.94,
-      "mom_short": -7.17,
+      "latest": 1.158,
+      "prev": 1.192,
+      "daily_change": -2.85,
+      "mom_long": -13.31,
+      "mom_short": -6.91,
       "vol": 35.7,
-      "score": -0.39
+      "score": -0.373
     },
     "医药ETF": {
       "code": "512010",
-      "latest": 0.36,
-      "prev": 0.363,
-      "daily_change": -0.83,
-      "mom_long": 1.12,
-      "mom_short": -1.91,
+      "latest": 0.367,
+      "prev": 0.36,
+      "daily_change": 1.94,
+      "mom_long": 3.15,
+      "mom_short": 3.67,
       "vol": 29.0,
-      "score": 0.039
+      "score": 0.109
     },
     "酒ETF": {
       "code": "512690",
-      "latest": 0.393,
-      "prev": 0.397,
-      "daily_change": -1.01,
-      "mom_long": -13.63,
-      "mom_short": -2.0,
+      "latest": 0.396,
+      "prev": 0.393,
+      "daily_change": 0.76,
+      "mom_long": -12.86,
+      "mom_short": 1.54,
       "vol": 25.1,
-      "score": -0.542
+      "score": -0.512
     },
     "消费ETF": {
       "code": "159928",
-      "latest": 0.631,
-      "prev": 0.632,
-      "daily_change": -0.16,
-      "mom_long": -10.88,
-      "mom_short": -1.41,
+      "latest": 0.632,
+      "prev": 0.631,
+      "daily_change": 0.16,
+      "mom_long": -9.86,
+      "mom_short": 0.32,
       "vol": 21.4,
-      "score": -0.508
+      "score": -0.461
     },
     "创新药ETF": {
       "code": "515120",
-      "latest": 0.635,
-      "prev": 0.641,
-      "daily_change": -0.94,
-      "mom_long": 6.19,
-      "mom_short": -2.61,
+      "latest": 0.657,
+      "prev": 0.635,
+      "daily_change": 3.46,
+      "mom_long": 8.18,
+      "mom_short": 5.63,
       "vol": 38.1,
-      "score": 0.162
+      "score": 0.214
     },
     "新能源车ETF": {
       "code": "515030",
-      "latest": 1.6,
-      "prev": 1.671,
-      "daily_change": -4.25,
-      "mom_long": -21.34,
-      "mom_short": -12.66,
+      "latest": 1.63,
+      "prev": 1.6,
+      "daily_change": 1.87,
+      "mom_long": -21.3,
+      "mom_short": -10.24,
       "vol": 34.6,
-      "score": -0.617
+      "score": -0.616
     },
     "光伏ETF": {
       "code": "515790",
-      "latest": 0.849,
-      "prev": 0.897,
-      "daily_change": -5.35,
-      "mom_long": -23.38,
-      "mom_short": -9.29,
+      "latest": 0.854,
+      "prev": 0.849,
+      "daily_change": 0.59,
+      "mom_long": -22.89,
+      "mom_short": -7.87,
       "vol": 34.9,
-      "score": -0.67
+      "score": -0.656
     },
     "汽车ETF": {
       "code": "516110",
-      "latest": 1.09,
-      "prev": 1.129,
-      "daily_change": -3.45,
-      "mom_long": -16.15,
-      "mom_short": -6.36,
+      "latest": 1.1,
+      "prev": 1.09,
+      "daily_change": 0.92,
+      "mom_long": -15.5,
+      "mom_short": -3.59,
       "vol": 25.5,
-      "score": -0.633
+      "score": -0.608
     },
     "黄金ETF": {
       "code": "518880",
-      "latest": 8.419,
-      "prev": 8.541,
-      "daily_change": -1.43,
-      "mom_long": -11.88,
-      "mom_short": -2.46,
+      "latest": 8.373,
+      "prev": 8.419,
+      "daily_change": -0.55,
+      "mom_long": -11.5,
+      "mom_short": -2.61,
       "vol": 24.5,
-      "score": -0.485
+      "score": -0.47
     }
   }
 }
