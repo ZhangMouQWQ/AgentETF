@@ -312,8 +312,7 @@ def build_html(actions, current, target, position_text, position_reason, market_
                 f'<span class="{dcls}">{daily:+.2f}%</span></div>')
         out.append(f'<div class="hold-item" style="border-top:1px solid #eee;margin-top:8px;padding-top:8px">'
                    f'<b>现金</b> <span>{(1-total)*10:.0f}成</span></div>')
-        return '
-'.join(out)
+        return "\n".join(out)
 
     def action_rows():
         if not actions:
@@ -329,8 +328,7 @@ def build_html(actions, current, target, position_text, position_reason, market_
                 f'{a["name"]}({a["code"]})</td>'
                 f'<td class="{cls}">{a["msg"]}</td>'
                 f'<td>{a["reason"]}</td></tr>')
-        return '
-'.join(out)
+        return "\n".join(out)
 
     def monitor_rows():
         ranked = sorted(metrics.items(), key=lambda x: x[1]['score'], reverse=True)
@@ -345,8 +343,7 @@ def build_html(actions, current, target, position_text, position_reason, market_
                 f'<td class="{short_cls}">{m["mom_short"]:+.2f}%</td>'
                 f'<td class="{daily_cls}">{m["daily_change"]:+.2f}%</td>'
                 f'<td>{m["vol"]:.1f}%</td><td class="sc">{m["score"]:.3f}</td></tr>')
-        return '
-'.join(out)
+        return "\n".join(out)
 
     if signal_type == 'morning':
         label = "上午风控"
@@ -366,43 +363,43 @@ def build_html(actions, current, target, position_text, position_reason, market_
 <style>
 *{{margin:0;padding:0;box-sizing:border-box}}
 body{{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
-background:linear-gradient(135deg,rgb(15,32,39),rgb(32,58,67),rgb(44,83,100));min-height:100vh;padding:20px;color:rgb(34,34,34)}}
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);min-height:100vh;padding:20px;color:#222}}
 .wrap{{max-width:960px;margin:0 auto}}
 .head{{text-align:center;color:#fff;margin-bottom:22px}}
 .head h1{{font-size:24px;letter-spacing:1px}}
 .head p{{opacity:.8;font-size:13px;margin-top:6px}}
 .card{{background:#fff;border-radius:16px;padding:22px;margin-bottom:18px;
 box-shadow:0 10px 30px rgba(0,0,0,.25)}}
-.card h2{{font-size:17px;color:rgb(44,83,100);border-left:4px solid rgb(44,83,100);padding-left:10px;margin-bottom:14px}}
+.card h2{{font-size:17px;color:#2c5364;border-left:4px solid #2c5364;padding-left:10px;margin-bottom:14px}}
 table{{width:100%;border-collapse:collapse;font-size:13px}}
-th,td{{padding:10px 8px;text-align:left;border-bottom:1px solid rgb(240,240,240);vertical-align:top}}
-th{{background:rgb(247,249,251);color:rgb(102,102,102);font-weight:600}}
+th,td{{padding:10px 8px;text-align:left;border-bottom:1px solid #f0f0f0;vertical-align:top}}
+th{{background:#f7f9fb;color:#666;font-weight:600}}
 td.nm{{min-width:140px;font-weight:600}}
-.pos{{color:rgb(215,38,61);font-weight:600}} .neg{{color:rgb(26,147,111);font-weight:600}}
-.warn-text{{color:rgb(230,126,34);font-weight:600}} .hold{{color:rgb(102,102,102)}}
-td.sc{{font-weight:700;color:rgb(44,83,100)}}
-.badge-sell,.badge-reduce{{display:inline-block;background:rgb(215,38,61);color:#fff;font-size:11px;
+.pos{{color:#d7263d;font-weight:600}} .neg{{color:#1a936f;font-weight:600}}
+.warn-text{{color:#e67e22;font-weight:600}} .hold{{color:#666}}
+td.sc{{font-weight:700;color:#2c5364}}
+.badge-sell,.badge-reduce{{display:inline-block;background:#d7263d;color:#fff;font-size:11px;
 padding:2px 8px;border-radius:4px;margin-right:6px}}
-.badge-buy,.badge-add{{display:inline-block;background:rgb(39,174,96);color:#fff;font-size:11px;
+.badge-buy,.badge-add{{display:inline-block;background:#27ae60;color:#fff;font-size:11px;
 padding:2px 8px;border-radius:4px;margin-right:6px}}
-.badge-hold,.badge-wait{{display:inline-block;background:rgb(149,165,166);color:#fff;font-size:11px;
+.badge-hold,.badge-wait{{display:inline-block;background:#95a5a6;color:#fff;font-size:11px;
 padding:2px 8px;border-radius:4px;margin-right:6px}}
-.signal{{background:linear-gradient(135deg,rgb(215,38,61),rgb(244,96,54));color:#fff;border-radius:14px;
+.signal{{background:linear-gradient(135deg,#d7263d,#f46036);color:#fff;border-radius:14px;
 padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215,38,61,.35)}}
 .signal .lab{{font-size:13px;opacity:.9}}
 .signal .val{{font-size:28px;font-weight:700;margin-top:8px}}
 .signal .sub{{font-size:14px;margin-top:6px;opacity:.9}}
 .grid{{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}}
 .mini{{background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.2)}}
-.mini .t{{font-size:13px;color:rgb(136,136,136)}} .mini .v{{font-size:20px;font-weight:700;color:rgb(44,83,100);margin-top:6px}}
-.hold-item{{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgb(245,245,245);font-size:14px}}
-.market-ok{{color:rgb(39,174,96)}} .market-warn{{color:rgb(230,126,34)}} .market-danger{{color:rgb(215,38,61)}}
-.info-box{{background:rgb(232,246,255);border-left:4px solid rgb(52,152,219);padding:14px 18px;border-radius:8px;margin-bottom:18px;color:rgb(26,82,118);font-size:14px;line-height:1.6}}
-.note{{background:#fff;border-radius:14px;padding:18px;font-size:13px;color:rgb(85,85,85);line-height:1.9}}
-.note b{{color:rgb(44,83,100)}}
+.mini .t{{font-size:13px;color:#888}} .mini .v{{font-size:20px;font-weight:700;color:#2c5364;margin-top:6px}}
+.hold-item{{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:14px}}
+.market-ok{{color:#27ae60}} .market-warn{{color:#e67e22}} .market-danger{{color:#d7263d}}
+.info-box{{background:#e8f6ff;border-left:4px solid #3498db;padding:14px 18px;border-radius:8px;margin-bottom:18px;color:#1a5276;font-size:14px;line-height:1.6}}
+.note{{background:#fff;border-radius:14px;padding:18px;font-size:13px;color:#555;line-height:1.9}}
+.note b{{color:#2c5364}}
 .foot{{text-align:center;color:#fff;opacity:.7;font-size:12px;margin-top:14px}}
 .tag{{display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;margin-left:8px;vertical-align:middle}}
-.tag-morning{{background:rgb(243,156,18);color:#fff}} .tag-close{{background:rgb(39,174,96);color:#fff}}
+.tag-morning{{background:#f39c12;color:#fff}} .tag-close{{background:#27ae60;color:#fff}}
 @media(max-width:700px){{.grid{{grid-template-columns:1fr}} table{{font-size:12px}} .nm{{min-width:100px}}}}
 </style></head><body><div class="wrap">
 <div class="head"><h1>📊 ETF 动量轮动 - {label}<span class="tag {tag_color}">{label}</span></h1>
