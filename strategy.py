@@ -1,25 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-行业ETF动量轮动策略 - 盘中双刷新版
+行业ETF动量轮动策略 - 带数据验证版
 ========================================
-支持每日两次刷新：
-- 11:30 上午休市：基于盘中日K（含上午收盘价），建议下午开盘操作
-- 15:00 下午收盘：基于完整日K，建议收盘固定价或次日操作
-
-修复：
-1. 数据单次拉取，两方案共用
-2. 缺失当日数据的ETF用前日收盘价填充（保证11:30信号有意义）
-3. 增加ETF代码显示
-4. 区分"上午休市预览"和"收盘确认"
-5. T+1交易提醒
 """
 import requests
 import pandas as pd
 import numpy as np
 import time
 import json
-import os
 from datetime import datetime, timezone, timedelta
 
 # ==================== 配置 ====================
@@ -42,7 +31,6 @@ MOM_SAFE, TOP_SAFE = 120, 2
 
 
 def get_etf_sina(sina_code, datalen=DATA_LEN, retry=3):
-    """获取单只 ETF 的日K线数据"""
     url = ("http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/"
            f"CN_MarketData.getKLineData?symbol={sina_code}&scale=240&ma=no&datalen={datalen}")
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -67,10 +55,6 @@ def get_etf_sina(sina_code, datalen=DATA_LEN, retry=3):
 
 
 def fetch_all_data(pool, datalen=DATA_LEN):
-    """
-    一次性拉取所有 ETF 数据，并做日期对齐。
-    对缺失当日数据的 ETF 用前日收盘价填充（处理上午无成交的情况）。
-    """
     all_close = {}
     etf_info = {}
     etf_last_date = {}
@@ -96,26 +80,32 @@ def fetch_all_data(pool, datalen=DATA_LEN):
         print("[致命错误] 所有 ETF 数据获取失败")
         return None, {}, {}, {}
     
-    # 合并所有 ETF 的收盘价
     price = pd.DataFrame(all_close).sort_index()
     print(f"\n合并后原始维度: {price.shape}, 日期范围 {price.index[0]} ~ {price.index[-1]}")
     
-    # 关键修复：对缺失值用前一日填充（处理上午无成交的 ETF）
-    # 这样 11:30 运行时，无成交的 ETF 保持昨日价格，有成交的反映上午波动
+    # 关键修复：对缺失值用前一日填充
     price_filled = price.ffill()
-    
-    # 丢弃从头到尾都是 NaN 的列（完全无历史数据的 ETF）
     price_filled = price_filled.dropna(how='any', axis=1)
-    if price_filled.shape[1] < price.shape[1]:
-        dropped = set(price.columns) - set(price_filled.columns)
-        print(f"[警告] 丢弃数据全空ETF: {dropped}")
-    
-    # 确保没有行是全 NaN
     price_filled = price_filled.dropna(how='all')
     
     sync_asof = price_filled.index[-1]
     has_today_data = (sync_asof == today_str)
     print(f"处理后维度: {price_filled.shape}, 共同最新日期: {sync_asof}")
+    
+    # === 新增：生成价格验证快照 ===
+    price_verify = {}
+    for name in price_filled.columns:
+        latest = price_filled[name].iloc[-1]
+        prev = price_filled[name].iloc[-2] if len(price_filled) >= 2 else np.nan
+        change_pct = (latest / prev - 1) * 100 if not np.isnan(prev) else np.nan
+        price_verify[name] = {
+            'code': etf_info.get(name, ''),
+            'latest': round(latest, 3),
+            'prev': round(prev, 3),
+            'change_pct': round(change_pct, 2),
+            'has_today': etf_has_today.get(name, False),
+            'data_date': etf_last_date.get(name, sync_asof),
+        }
     
     data_quality = {
         'today': today_str,
@@ -124,20 +114,17 @@ def fetch_all_data(pool, datalen=DATA_LEN):
         'sync_asof': sync_asof,
     }
     
-    return price_filled, etf_info, etf_last_date, data_quality
+    return price_filled, etf_info, etf_last_date, data_quality, price_verify
 
 
 def calc_ranking(price, mom_window, etf_info):
-    """基于已对齐的价格数据计算排名"""
     if price is None or len(price) < mom_window + 1:
-        print(f"[错误] 数据不足: 需要 {mom_window+1} 行，实际 {len(price) if price is not None else 0} 行")
+        print(f"[错误] 数据不足")
         return None
-    
     rets = price.pct_change()
     mom = price.iloc[-1] / price.iloc[-mom_window] - 1
     vol = rets.iloc[-mom_window:].std() * np.sqrt(252)
     risk_adj = (mom / vol).replace([np.inf, -np.inf], np.nan).dropna().sort_values(ascending=False)
-    
     result = pd.DataFrame({
         'code': [etf_info.get(n, '') for n in risk_adj.index],
         'mom_pct': (mom[risk_adj.index] * 100).round(2),
@@ -174,8 +161,24 @@ def rows_html(ranking, picks, top_k, limit=10):
     return '\n'.join(out)
 
 
-def build_html(rank_main, picks_main, rank_safe, picks_safe, asof, update_time, 
-               etf_info, data_quality, signal_type):
+def verify_rows_html(price_verify, limit=15):
+    """生成数据验证表格HTML"""
+    items = sorted(price_verify.items(), key=lambda x: x[1]['change_pct'], reverse=True)
+    out = []
+    for name, v in items[:limit]:
+        cls = 'pos' if v['change_pct'] > 0 else ('neg' if v['change_pct'] < 0 else '')
+        today_tag = '<span class="tag-today">今日</span>' if v['has_today'] else '<span class="tag-prev">前日</span>'
+        out.append(
+            f'<tr><td class="nm">{name}({v["code"]}){today_tag}</td>'
+            f'<td>{v["latest"]}</td>'
+            f'<td>{v["prev"]}</td>'
+            f'<td class="{cls}">{v["change_pct"]:+.2f}%</td>'
+            f'<td>{v["data_date"]}</td></tr>')
+    return '\n'.join(out)
+
+
+def build_html(rank_main, picks_main, rank_safe, picks_safe, asof, update_time,
+               etf_info, data_quality, signal_type, price_verify):
     def fmt(names):
         return '、'.join([f"{n}({etf_info.get(n, '?')})" for n in names]) if names else '无强势板块, 建议观望'
     def fmt_plus(names):
@@ -188,7 +191,6 @@ def build_html(rank_main, picks_main, rank_safe, picks_safe, asof, update_time,
     safe_txt = fmt_plus(picks_safe)
     signal = fmt(allp)
 
-    # 根据运行时间确定操作建议
     if signal_type == 'morning':
         trade_window = "下午开盘 (13:00)"
         trade_tip = "⚠️ A股T+1：今日买入的标的，明日才能卖出"
@@ -202,7 +204,6 @@ def build_html(rank_main, picks_main, rank_safe, picks_safe, asof, update_time,
         data_note = f"数据截至 {asof}（完整日K数据）"
         tag_class = "tag-close"
 
-    # 今日数据覆盖情况
     etf_has_today = data_quality.get('etf_has_today', {})
     has_today_count = sum(1 for v in etf_has_today.values() if v)
     total_count = len(etf_has_today)
@@ -245,6 +246,8 @@ padding:20px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 .tag{{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;margin-left:8px;vertical-align:middle}}
 .tag-morning{{background:#f39c12;color:#fff}}
 .tag-close{{background:#27ae60;color:#fff}}
+.tag-today{{display:inline-block;background:#27ae60;color:#fff;font-size:10px;padding:1px 6px;border-radius:4px;margin-left:6px}}
+.tag-prev{{display:inline-block;background:#95a5a6;color:#fff;font-size:10px;padding:1px 6px;border-radius:4px;margin-left:6px}}
 .warn{{background:#fff3cd;border-left:4px solid #f39c12;padding:12px 16px;border-radius:8px;margin-bottom:18px;color:#856404;font-size:13px}}
 .warn b{{color:#d35400}}
 @media(max-width:600px){{.grid{{grid-template-columns:1fr}} table{{font-size:12px}} th,td{{padding:7px 5px}}}}
@@ -276,6 +279,11 @@ padding:20px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <table><thead><tr><th class="rk">#</th><th class="cd">代码</th><th class="nm">ETF</th><th>动量</th><th>年化波动</th><th>风险调整动量</th></tr></thead>
 <tbody>{rows_html(rank_safe, picks_safe, TOP_SAFE)}</tbody></table></div>
 
+<div class="card"><h2>📋 数据验证 · 原始价格快照</h2>
+<p style="font-size:12px;color:#888;margin-bottom:10px">可对照东方财富/同花顺核对当日收盘价。绿色标签=今日有数据，灰色标签=使用前日填充。</p>
+<table><thead><tr><th class="nm">ETF</th><th>最新价</th><th>前收盘价</th><th>当日涨跌</th><th>数据日期</th></tr></thead>
+<tbody>{verify_rows_html(price_verify)}</tbody></table></div>
+
 <div class="note"><b>操作方式</b><br>
 1. <b>{signal_label}</b>信号，建议操作窗口: {trade_window}<br>
 2. 动量为负的板块不买,该仓位持现金(绝对动量择时)<br>
@@ -296,7 +304,6 @@ def main():
     now = datetime.now(bj)
     update_time = now.strftime('%Y-%m-%d %H:%M:%S')
     
-    # 判断信号类型：11:00-12:59 为上午休市预览，其他为收盘确认
     if 11 <= now.hour <= 12:
         signal_type = 'morning'
     else:
@@ -307,8 +314,8 @@ def main():
     print(f"信号类型: {signal_type}")
     print(f"{'='*60}")
 
-    # 一次性拉取所有数据
-    price, etf_info, etf_last_date, data_quality = fetch_all_data(ETF_POOL, DATA_LEN)
+    # 一次性拉取所有数据，返回价格验证快照
+    price, etf_info, etf_last_date, data_quality, price_verify = fetch_all_data(ETF_POOL, DATA_LEN)
     
     if price is None:
         print("数据获取失败，终止")
@@ -323,30 +330,33 @@ def main():
     print(f"\n{'='*60}")
     print(f"统一数据基准日期: {asof}")
     print(f"{'='*60}")
+    
+    # 打印价格验证摘要（Actions日志中可见）
+    print("\n价格验证摘要:")
+    for name, v in sorted(price_verify.items(), key=lambda x: x[1]['change_pct'], reverse=True)[:10]:
+        tag = "今日" if v['has_today'] else "前日"
+        print(f"  {name}({v['code']}): 最新{v['latest']}, 前收{v['prev']}, 涨跌{v['change_pct']:+.2f}% [{tag}]")
 
-    # 分别计算两个方案
     rank_main = calc_ranking(price, MOM_MAIN, etf_info)
     rank_safe = calc_ranking(price, MOM_SAFE, etf_info)
-    
     picks_main = pick(rank_main, TOP_MAIN)
     picks_safe = pick(rank_safe, TOP_SAFE)
 
     print(f"\n主推方案({MOM_MAIN}日) 应买入: {picks_main}")
     print(f"高胜率方案({MOM_SAFE}日) 应买入: {picks_safe}")
 
-    # 生成 HTML
-    html = build_html(rank_main, picks_main, rank_safe, picks_safe, 
-                      asof, update_time, etf_info, data_quality, signal_type)
+    html = build_html(rank_main, picks_main, rank_safe, picks_safe,
+                      asof, update_time, etf_info, data_quality, signal_type, price_verify)
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(html)
 
-    # 生成 JSON
     data = {
         'update_time': update_time,
         'asof': asof,
         'signal_type': signal_type,
         'data_quality': {k: v for k, v in data_quality.items() if k != 'etf_has_today'},
         'etf_has_today': data_quality.get('etf_has_today', {}),
+        'price_verify': price_verify,  # 新增：价格验证快照
         'main_plan': {
             'window': MOM_MAIN, 'top_k': TOP_MAIN, 'buy': picks_main,
             'ranking': rank_main.reset_index().rename(columns={'index': 'name'}).to_dict('records') if rank_main is not None else []
