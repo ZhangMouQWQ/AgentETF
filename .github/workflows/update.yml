@@ -1,38 +1,27 @@
+# .github/workflows/update.yml
 name: 更新ETF动量轮动信号
 
 on:
   schedule:
-    # 午盘休盘: 北京时间 11:35 (UTC 03:35), 工作日(周一~周五)
-    - cron: '35 3 * * 1-5'
-    # 收盘后: 北京时间 15:05 (UTC 07:05), 工作日(周一~周五)
-    - cron: '5 7 * * 1-5'
-  workflow_dispatch:  # 支持手动触发
-
-permissions:
-  contents: write  # 允许提交生成的网页与持仓状态回仓库
+    # UTC 3:30 = 北京时间 11:30，上午休市刷新
+    - cron: '30 3 * * 1-5'
+    # UTC 7:00 = 北京时间 15:00，下午收盘刷新
+    - cron: '0 7 * * 1-5'
+  workflow_dispatch:
 
 jobs:
-  update:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: 检出仓库
-        uses: actions/checkout@v4
-
-      - name: 安装Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: 安装依赖
-        run: pip install -r requirements.txt
-
-      - name: 运行策略计算并生成网页
-        run: python strategy.py
-
-      - name: 提交结果到仓库
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - run: pip install -r requirements.txt
+      - run: python strategy.py
+      - run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
           git add index.html data.json
-          git commit -m "更新盯盘信号 $(date -u +'%Y-%m-%d %H:%M')" || echo "无变化,跳过提交"
+          git diff --staged --quiet || git commit -m "update $(date +'%Y-%m-%d %H:%M')"
           git push
