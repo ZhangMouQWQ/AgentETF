@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-行业ETF动量轮动策略 - 自洽仓位管理版（完整修复版）
+行业ETF动量轮动策略 - 双层架构版（稳定层+灵活层）
 ========================================
-修复内容：
-1. 上午11:30用60分钟K线合成上午收盘价，解决日K线盘中不同步问题
-2. 下午15:00用日K线收盘数据
-3. 自维护portfolio.json，不依赖外部持仓输入
-4. 四层过滤买入 + 三层风控卖出 + 明确仓位成数
-5. 上午只风控（卖/减），下午可买可卖，T+1安全
+改进内容：
+1. 40日动量基于昨日收盘计算（稳定层），不受盘中未完成数据干扰
+2. 当日涨跌/5日动量独立用于风控和买入确认（灵活层）
+3. 买入增加"当日涨幅<5%"过滤，避免盘中追高
+4. 60分钟K线仅用于合成当日最新价，不用于历史动量计算
+5. 波动率基于历史日K线（不含今天盘中噪声）
 """
 import requests
 import pandas as pd
@@ -36,6 +36,7 @@ MOM_LONG = 40
 MOM_SHORT = 5
 STOP_LOSS = -4.0
 MAX_DAILY_DROP = -4.0
+MAX_DAILY_RISE = 5.0
 TOP_K = 3
 PORTFOLIO_FILE = 'portfolio.json'
 # ==============================================
@@ -88,54 +89,49 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
     return price, etf_info
 
 
-def fetch_morning_snapshot(pool):
-    """上午11:30专用：用60分钟K线合成上午收盘价"""
+def fetch_intraday_snapshot(pool):
+    """盘中通用：用60分钟K线合成当日最新收盘价（不限上午下午）"""
     today = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
     snapshot = {}
-    print(f"\n拉取60分钟K线合成上午收盘价 (今日 {today})...")
+    print(f"\n拉取60分钟K线合成当日数据 (今日 {today})...")
     for code, (sina, name) in pool.items():
-        df = get_etf_sina(sina, scale=60, datalen=10)
-        if df is None or len(df) < 2:
+        df = get_etf_sina(sina, scale=60, datalen=20)
+        if df is None or len(df) < 1:
             print(f"  fail {name}: 无分钟K线")
             continue
         df['date'] = df['day'].str[:10]
         df_today = df[df['date'] == today].sort_values('day')
-        if len(df_today) < 2:
-            print(f"  warn {name}: 今日仅 {len(df_today)} 根60分钟K线")
+        if len(df_today) < 1:
+            print(f"  warn {name}: 今日无60分钟K线")
             continue
-        k1, k2 = df_today.iloc[0], df_today.iloc[1]
+        last = df_today.iloc[-1]
         snapshot[name] = {
             'code': code,
-            'open': float(k1['open']),
-            'high': max(float(k1['high']), float(k2['high'])),
-            'low': min(float(k1['low']), float(k2['low'])),
-            'close': float(k2['close']),
-            'volume': float(k1['volume']) + float(k2['volume'])
+            'close': float(last['close']),
         }
-        print(f"  ok {name}: 上午收 {snapshot[name]['close']:.3f} "
-              f"(区间 {snapshot[name]['low']:.3f}~{snapshot[name]['high']:.3f})")
+        print(f"  ok {name}: 最新 {snapshot[name]['close']:.3f} (基于 {df_today['day'].iloc[-1]})")
         time.sleep(0.15)
     return snapshot
 
 
-def merge_morning_price(price_daily, morning_snapshot, etf_info):
-    """将上午合成的收盘价合并到日K线中"""
-    if not morning_snapshot or price_daily is None:
+def merge_intraday_price(price_daily, intraday_snapshot, etf_info):
+    """将盘中合成的收盘价合并到日K线中"""
+    if not intraday_snapshot or price_daily is None:
         return price_daily
     today_str = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
-    print(f"\n合并上午数据到日K线...")
+    print(f"\n合并盘中数据到日K线...")
 
     if price_daily.index[-1] == today_str:
         print(f"日K最新日期已是 {today_str}，用60分钟数据覆盖")
-        for name, snap in morning_snapshot.items():
+        for name, snap in intraday_snapshot.items():
             if name in price_daily.columns:
                 price_daily.loc[today_str, name] = snap['close']
     else:
         print(f"日K最新日期 {price_daily.index[-1]}，追加今日 {today_str}")
         new_row = pd.Series({n: np.nan for n in price_daily.columns}, name=today_str)
         for name in price_daily.columns:
-            if name in morning_snapshot:
-                new_row[name] = morning_snapshot[name]['close']
+            if name in intraday_snapshot:
+                new_row[name] = intraday_snapshot[name]['close']
             else:
                 new_row[name] = price_daily[name].iloc[-1]
         price_daily = pd.concat([price_daily, new_row.to_frame().T])
@@ -146,7 +142,7 @@ def merge_morning_price(price_daily, morning_snapshot, etf_info):
 
 
 def calc_metrics(price, etf_info):
-    """计算每只ETF的多维度指标"""
+    """计算每只ETF的多维度指标（双层架构）"""
     metrics = {}
     if price is None or len(price) < MOM_LONG + 2:
         return metrics
@@ -154,21 +150,30 @@ def calc_metrics(price, etf_info):
         s = price[name]
         if len(s) < MOM_LONG + 2:
             continue
-        latest = s.iloc[-1]
-        prev = s.iloc[-2]
-        mom_long = (latest / s.iloc[-MOM_LONG-1] - 1) * 100
-        mom_short = (latest / s.iloc[-MOM_SHORT-1] - 1) * 100
-        daily_change = (latest / prev - 1) * 100
-        rets = s.pct_change().iloc[-MOM_LONG:]
+
+        latest = s.iloc[-1]      # 今日最新（可能是盘中合成价）
+        prev = s.iloc[-2]        # 昨日收盘价
+
+        # === Layer 1: 稳定层（基于历史日K线，排除今日盘中未完成数据）===
+        # 40日动量基于昨日收盘 vs 40天前收盘，避免盘中数据干扰排名
+        mom_long = (prev / s.iloc[-MOM_LONG-1] - 1) * 100
+
+        # 波动率基于历史日K线（不含今日盘中噪声）
+        rets = s.iloc[:-1].pct_change().iloc[-MOM_LONG:]
         vol = rets.std() * np.sqrt(252) * 100
         score = (mom_long / vol) if vol > 0 else -999
+
+        # === Layer 2: 灵活层（含今日盘中数据，用于风控和短期确认）===
+        daily_change = (latest / prev - 1) * 100  # 今日涨跌
+        mom_short = (latest / s.iloc[-MOM_SHORT-1] - 1) * 100  # 5日动量（含今天）
+
         metrics[name] = {
             'code': etf_info.get(name, ''),
             'latest': round(latest, 3),
             'prev': round(prev, 3),
             'daily_change': round(daily_change, 2),
-            'mom_long': round(mom_long, 2),
-            'mom_short': round(mom_short, 2),
+            'mom_long': round(mom_long, 2),      # 稳定层：40日动量（基于昨日收盘）
+            'mom_short': round(mom_short, 2),    # 灵活层：5日动量（含今日盘中）
             'vol': round(vol, 1),
             'score': round(score, 3),
         }
@@ -176,7 +181,7 @@ def calc_metrics(price, etf_info):
 
 
 def market_timing(metrics):
-    """大盘择时：决定总仓位几成"""
+    """大盘择时：决定总仓位几成（基于稳定层40日动量）"""
     m = metrics.get('沪深300ETF')
     if m is None:
         return 0.0, "0成（空仓）", "沪深300数据缺失，保守观望", "danger"
@@ -189,12 +194,15 @@ def market_timing(metrics):
 
 
 def build_target(metrics, position_ratio):
-    """基于最新数据构建目标持仓"""
+    """基于双层架构构建目标持仓"""
     if position_ratio <= 0:
         return []
     candidates = [
         (n, m) for n, m in metrics.items()
-        if m['mom_long'] > 0 and m['mom_short'] > -2 and m['daily_change'] > MAX_DAILY_DROP
+        if m['mom_long'] > 0           # Layer 1: 40日动量正（中期趋势好）
+        and m['mom_short'] > -2         # Layer 2: 5日动量不太差（短期不暴跌）
+        and m['daily_change'] > MAX_DAILY_DROP  # Layer 2: 当日不追大跌
+        and m['daily_change'] < MAX_DAILY_RISE  # Layer 2: 当日不追暴涨（避免盘中追高）
     ]
     candidates.sort(key=lambda x: x[1]['score'], reverse=True)
     selected = candidates[:TOP_K]
@@ -434,7 +442,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 
 <div class="note"><b>策略逻辑</b><br>
 <b>仓位</b>：沪深300 40日动量>0且5日动量>0→满仓10成；40日>0但5日≤0→半仓5成；40日≤0→空仓0成。<br>
-<b>选股</b>：40日风险调整动量前{TOP_K} + 40日动量>0 + 5日动量>-2% + 当日跌幅>{MAX_DAILY_DROP}%。<br>
+<b>选股</b>：40日风险调整动量前{TOP_K} + 40日动量>0 + 5日动量>-2% + 当日跌幅>{MAX_DAILY_DROP}% + 当日涨幅<{MAX_DAILY_RISE}%。<br>
 <b>上午</b>：只风控（卖出/减仓），不买入（T+1保护）。<br>
 <b>下午</b>：重新评估，给出次日目标持仓，可买可卖。<br><br>
 <b>T+1 制度说明</b><br>
@@ -448,7 +456,16 @@ def main():
     bj = timezone(timedelta(hours=8))
     now = datetime.now(bj)
     update_time = now.strftime('%Y-%m-%d %H:%M:%S')
-    signal_type = 'morning' if 11 <= now.hour <= 12 else 'close'
+
+    if 11 <= now.hour <= 12:
+        signal_type = 'morning'
+        print("时段: 上午风控 (11:30 盘中，负责下午操作)")
+    elif 15 <= now.hour <= 16:
+        signal_type = 'close'
+        print("时段: 收盘决策 (15:00 后，负责次日/尾盘操作)")
+    else:
+        signal_type = 'close'
+        print(f"时段: 下午盘中 ({now.hour}:{now.minute:02d} 手动触发，按收盘逻辑处理)")
 
     print(f"\n{'='*60}")
     print(f"[{update_time}] 信号类型: {signal_type}")
@@ -460,14 +477,17 @@ def main():
         print("日K线获取失败")
         return
 
-    # 2. 上午额外拉取60分钟K线合成
-    if signal_type == 'morning':
-        morning_snapshot = fetch_morning_snapshot(ETF_POOL)
-        price = merge_morning_price(price_daily, morning_snapshot, etf_info)
+    # 2. 检查日K线是否包含今天，如果没有，用60分钟K线合成
+    today_str = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
+    if price_daily.index[-1] != today_str:
+        print(f"\n日K线最新日期 {price_daily.index[-1]} 不是今天，尝试用60分钟K线合成...")
+        intraday_snapshot = fetch_intraday_snapshot(ETF_POOL)
+        price = merge_intraday_price(price_daily, intraday_snapshot, etf_info)
     else:
+        print(f"\n日K线已包含今天数据，直接使用")
         price = price_daily
 
-    # 3. 计算指标
+    # 3. 计算指标（双层架构）
     metrics = calc_metrics(price, etf_info)
     if not metrics:
         print("指标计算失败")
@@ -476,7 +496,7 @@ def main():
     asof = price.index[-1]
     print(f"\n统一数据基准日期: {asof}")
 
-    # 4. 大盘择时
+    # 4. 大盘择时（基于稳定层40日动量）
     position_ratio, position_text, position_reason, market_cls = market_timing(metrics)
     print(f"大盘: {position_text} ({position_reason})")
 
@@ -485,7 +505,7 @@ def main():
     current = portfolio.get('holdings', [])
     print(f"当前建议持仓: {[(h['name'], h['weight']) for h in current]}")
 
-    # 6. 构建目标持仓
+    # 6. 构建目标持仓（双层过滤）
     target = build_target(metrics, position_ratio)
     print(f"目标持仓: {[(h['name'], h['weight']) for h in target]}")
 
