@@ -37,6 +37,8 @@ MOM_SHORT = 5
 STOP_LOSS = -4.0
 MAX_DAILY_DROP = -4.0
 MAX_DAILY_RISE = 5.0
+VOL_WINDOW = 60
+MIN_VOL = 5.0
 TOP_K = 3
 PORTFOLIO_FILE = 'portfolio.json'
 # ==============================================
@@ -158,14 +160,16 @@ def calc_metrics(price, etf_info):
         # 40日动量基于昨日收盘 vs 40天前收盘，避免盘中数据干扰排名
         mom_long = (prev / s.iloc[-MOM_LONG-1] - 1) * 100
 
-        # 波动率基于历史日K线（不含今日盘中噪声）
-        rets = s.iloc[:-1].pct_change().iloc[-MOM_LONG:]
-        vol = rets.std() * np.sqrt(252) * 100
-        score = (mom_long / vol) if vol > 0 else -999
+        # 波动率基于历史日K线（不含今日盘中噪声），使用更长窗口
+        rets = s.iloc[:-1].pct_change().dropna().iloc[-VOL_WINDOW:]
+        vol = rets.std() * np.sqrt(252) * 100 if len(rets) >= VOL_WINDOW // 2 else 999.0
+        vol = max(vol, MIN_VOL)
+        score = (mom_long / vol) if mom_long > 0 else -999.0
 
         # === Layer 2: 灵活层（含今日盘中数据，用于风控和短期确认）===
         daily_change = (latest / prev - 1) * 100  # 今日涨跌
-        mom_short = (latest / s.iloc[-MOM_SHORT-1] - 1) * 100  # 5日动量（含今天）
+        # 5日动量也基于历史日K线（不含今日盘中），与40日动量保持一致
+        mom_short = (prev / s.iloc[-MOM_SHORT-1] - 1) * 100
 
         metrics[name] = {
             'code': etf_info.get(name, ''),
@@ -181,19 +185,19 @@ def calc_metrics(price, etf_info):
 
 
 def market_timing(metrics):
-    """大盘择时：决定总仓位几成（基于稳定层40日动量）"""
+    """大盘择时：决定总仓位几成（仅基于稳定层40日动量）"""
     m = metrics.get('沪深300ETF')
     if m is None:
         return 0.0, "0成（空仓）", "沪深300数据缺失，保守观望", "danger"
-    if m['mom_long'] > 0 and m['mom_short'] > 0:
+    if m['mom_long'] > 2:
         return 1.0, "10成（满仓）", "大盘强势，积极参与", "ok"
-    elif m['mom_long'] > 0 and m['mom_short'] <= 0:
+    elif m['mom_long'] > 0:
         return 0.5, "5成（半仓）", "大盘震荡，控制仓位", "warn"
     else:
         return 0.0, "0成（空仓）", "大盘弱势，观望为主", "danger"
 
 
-def build_target(metrics, position_ratio):
+def build_target(metrics, position_ratio, signal_type='close'):
     """基于双层架构构建目标持仓"""
     if position_ratio <= 0:
         return []
@@ -204,6 +208,9 @@ def build_target(metrics, position_ratio):
         and m['daily_change'] > MAX_DAILY_DROP  # Layer 2: 当日不追大跌
         and m['daily_change'] < MAX_DAILY_RISE  # Layer 2: 当日不追暴涨（避免盘中追高）
     ]
+    # 收盘决策时，过滤掉当日下跌的标的（避免抄底接刀）
+    if signal_type == 'close':
+        candidates = [(n, m) for n, m in candidates if m['daily_change'] > 0]
     candidates.sort(key=lambda x: x[1]['score'], reverse=True)
     selected = candidates[:TOP_K]
     if not selected:
@@ -506,7 +513,7 @@ def main():
     print(f"当前建议持仓: {[(h['name'], h['weight']) for h in current]}")
 
     # 6. 构建目标持仓（双层过滤）
-    target = build_target(metrics, position_ratio)
+    target = build_target(metrics, position_ratio, signal_type)
     print(f"目标持仓: {[(h['name'], h['weight']) for h in target]}")
 
     # 7. 生成操作指令
