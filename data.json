@@ -1,5 +1,5 @@
 {
-  "update_time": "2026-07-15 17:04:44",
+  "update_time": "2026-07-15 20:28:28",
   "asof": "2026-07-15 00:00:00",
   "signal_type": "close",
   "market": {
@@ -28,8 +28,8 @@
       "daily_change": 0.0,
       "mom_long": -0.68,
       "mom_short": -1.59,
-      "vol": 23.2,
-      "score": -0.029
+      "vol": 20.3,
+      "score": -999.0
     },
     "中证500ETF": {
       "code": "510500",
@@ -38,8 +38,8 @@
       "daily_change": 0.0,
       "mom_long": -6.82,
       "mom_short": -7.42,
-      "vol": 31.3,
-      "score": -0.218
+      "vol": 28.3,
+      "score": -999.0
     },
     "创业板ETF": {
       "code": "159915",
@@ -48,8 +48,8 @@
       "daily_change": 0.0,
       "mom_long": -2.64,
       "mom_short": -5.25,
-      "vol": 42.8,
-      "score": -0.062
+      "vol": 38.0,
+      "score": -999.0
     },
     "科创50ETF": {
       "code": "588000",
@@ -58,8 +58,8 @@
       "daily_change": 0.0,
       "mom_long": 5.02,
       "mom_short": -12.89,
-      "vol": 59.0,
-      "score": 0.085
+      "vol": 53.6,
+      "score": 0.094
     },
     "有色金属ETF": {
       "code": "512400",
@@ -68,8 +68,8 @@
       "daily_change": 0.0,
       "mom_long": -12.39,
       "mom_short": -0.34,
-      "vol": 48.7,
-      "score": -0.255
+      "vol": 44.3,
+      "score": -999.0
     },
     "稀土ETF": {
       "code": "516780",
@@ -78,8 +78,8 @@
       "daily_change": 0.0,
       "mom_long": -56.97,
       "mom_short": -6.5,
-      "vol": 132.0,
-      "score": -0.432
+      "vol": 110.0,
+      "score": -999.0
     },
     "煤炭ETF": {
       "code": "515220",
@@ -88,8 +88,8 @@
       "daily_change": 0.0,
       "mom_long": -3.5,
       "mom_short": 5.99,
-      "vol": 42.0,
-      "score": -0.083
+      "vol": 38.1,
+      "score": -999.0
     },
     "券商ETF": {
       "code": "512000",
@@ -98,8 +98,8 @@
       "daily_change": 0.0,
       "mom_long": 7.78,
       "mom_short": -0.37,
-      "vol": 35.2,
-      "score": 0.221
+      "vol": 30.3,
+      "score": 0.257
     },
     "银行ETF": {
       "code": "512800",
@@ -108,8 +108,8 @@
       "daily_change": 0.0,
       "mom_long": 2.86,
       "mom_short": 3.81,
-      "vol": 18.7,
-      "score": 0.153
+      "vol": 16.1,
+      "score": 0.178
     },
     "芯片ETF": {
       "code": "159995",
@@ -118,8 +118,8 @@
       "daily_change": 0.0,
       "mom_long": -45.15,
       "mom_short": -14.92,
-      "vol": 144.7,
-      "score": -0.312
+      "vol": 121.5,
+      "score": -999.0
     },
     "科技ETF": {
       "code": "515000",
@@ -128,8 +128,8 @@
       "daily_change": 0.0,
       "mom_long": 11.57,
       "mom_short": -9.62,
-      "vol": 55.2,
-      "score": 0.21
+      "vol": 47.9,
+      "score": 0.241
     },
     "军工ETF": {
       "code": "512660",
@@ -138,8 +138,8 @@
       "daily_change": 0.0,
       "mom_long": -16.63,
       "mom_short": -8.05,
-      "vol": 36.3,
-      "score": -0.458
+      "vol": 33.7,
+      "score": -999.0
     },
     "医药ETF": {
       "code": "512010",
@@ -148,8 +148,8 @@
       "daily_change": 0.0,
       "mom_long": 9.22,
       "mom_short": 6.46,
-      "vol": 29.9,
-      "score": 0.308
+      "vol": 27.0,
+      "score": 0.341
     },
     "酒ETF": {
       "code": "512690",
@@ -158,8 +158,8 @@
       "daily_change": 0.0,
       "mom_long": -8.57,
       "mom_short": 8.62,
-      "vol": 28.6,
-      "score": -0.3
+      "vol": 25.1,
+      "score": -999.0
     },
     "消费ETF": {
       "code": "159928",
@@ -168,8 +168,8 @@
       "daily_change": 0.0,
       "mom_long": -6.15,
       "mom_short": 6.15,
-      "vol": 23.6,
-      "score": -0.261
+      "vol": 20.5,
+      "score": -999.0
     },
     "创新药ETF": {
       "code": "515120",
@@ -178,8 +178,8 @@
       "daily_change": 0.0,
       "mom_long": 16.33,
       "mom_short": 10.32,
-      "vol": 39.8,
-      "score": 0.41
+      "vol": 35.3,
+      "score": 0.463
     },
     "新能源车ETF": {
       "code": "515030",
@@ -188,8 +188,8 @@
       "daily_change": 0.0,
       "mom_long": -21.2,
       "mom_short": -5.43,
-      "vol": 35.1,
-      "score": -0.604
+      "vol": 34.0,
+      "score": -999.0
     },
     "光伏ETF": {
       "code": "515790",
@@ -198,8 +198,8 @@
       "daily_change": 0.0,
       "mom_long": -24.51,
       "mom_short": -6.9,
-      "vol": 34.6,
-      "score": -0.708
+      "vol": 31.4,
+      "score": -999.0
     },
     "汽车ETF": {
       "code": "516110",
@@ -208,8 +208,8 @@
       "daily_change": 0.0,
       "mom_long": -11.9,
       "mom_short": 1.08,
-      "vol": 26.5,
-      "score": -0.449
+      "vol": 22.9,
+      "score": -999.0
     },
     "黄金ETF": {
       "code": "518880",
@@ -218,8 +218,8 @@
       "daily_change": 0.0,
       "mom_long": -10.65,
       "mom_short": -2.05,
-      "vol": 24.5,
-      "score": -0.435
+      "vol": 21.5,
+      "score": -999.0
     }
   }
 }
