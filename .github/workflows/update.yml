@@ -2,10 +2,10 @@ name: 更新ETF动量轮动信号
 
 on:
   schedule:
-    # UTC 4:00 = 北京时间 12:00，上午休市刷新
-    - cron: '0 4 * * 1-5'
-    # UTC 7:00 = 北京时间 15:00，下午收盘刷新
-    - cron: '0 7 * * 1-5'
+    # UTC 3:45 = 北京时间 11:45，上午休市后刷新（A股11:30休市）
+    - cron: '45 3 * * 1-5'
+    # UTC 7:15 = 北京时间 15:15，下午收盘后刷新（A股15:00收盘）
+    - cron: '15 7 * * 1-5'
   workflow_dispatch:
 
 jobs:
@@ -21,6 +21,6 @@ jobs:
       - run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add index.html data.json
+          git add index.html data.json portfolio.json
           git diff --staged --quiet || git commit -m "update $(date +'%Y-%m-%d %H:%M')"
           git push

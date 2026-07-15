@@ -457,10 +457,10 @@ def main():
     now = datetime.now(bj)
     update_time = now.strftime('%Y-%m-%d %H:%M:%S')
 
-    if 11 <= now.hour <= 12:
+    if 11 <= now.hour < 13:
         signal_type = 'morning'
         print("时段: 上午风控 (11:30 盘中，负责下午操作)")
-    elif 15 <= now.hour <= 16:
+    elif now.hour >= 15:
         signal_type = 'close'
         print("时段: 收盘决策 (15:00 后，负责次日/尾盘操作)")
     else:
