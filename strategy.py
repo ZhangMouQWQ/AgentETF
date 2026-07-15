@@ -61,7 +61,11 @@ def get_etf_sina(sina_code, scale=240, datalen=DATA_LEN, retry=3):
                 for c in ['open', 'high', 'low', 'close', 'volume']:
                     if c in df.columns:
                         df[c] = df[c].astype(float)
-                df['day'] = pd.to_datetime(df['day']).dt.strftime('%Y-%m-%d %H:%M:%S')
+                # 日K数据只保留日期部分，避免与盘中合成数据的日期格式不一致
+                if scale == 240:
+                    df['day'] = pd.to_datetime(df['day']).dt.strftime('%Y-%m-%d')
+                else:
+                    df['day'] = pd.to_datetime(df['day']).dt.strftime('%Y-%m-%d %H:%M:%S')
                 return df[['day', 'open', 'high', 'low', 'close', 'volume']]
         except Exception as e:
             print(f"  [警告] {sina_code} scale={scale} 第{attempt+1}次失败: {e}")
@@ -262,7 +266,7 @@ def generate_actions(current, target, signal_type, metrics):
                 "msg": f"【{window}清仓】{name}({h['code']}) {h['weight']*10:.0f}成，原因：{'、'.join(risk_reasons)}",
                 "urgency": urgency, "reason": "、".join(risk_reasons)
             })
-        elif target_dict.get(name, {}).get('weight', 0) < h['weight'] - 0.03:
+        elif name in target_dict and target_dict[name]['weight'] < h['weight'] - 0.03:
             tw = target_dict[name]['weight']
             window = "下午" if signal_type == 'morning' else "次日"
             actions.append({
