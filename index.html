@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ETF动量轮动 - 上午风控</title>
+<title>ETF动量轮动 - 收盘决策</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
@@ -44,8 +44,8 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 .tag-morning{background:#f39c12;color:#fff} .tag-close{background:#27ae60;color:#fff}
 @media(max-width:700px){.grid{grid-template-columns:1fr} table{font-size:12px} .nm{min-width:100px}}
 </style></head><body><div class="wrap">
-<div class="head"><h1>📊 ETF 动量轮动 - 上午风控<span class="tag tag-morning">上午风控</span></h1>
-<p>11:30 盘中 - 下午操作窗口 13:00-15:00 - 仓位管理 + T+1安全</p></div>
+<div class="head"><h1>📊 ETF 动量轮动 - 收盘决策<span class="tag tag-close">收盘决策</span></h1>
+<p>15:00 收盘 - 次日开盘操作或尾盘固定价 - 仓位管理 + T+1安全</p></div>
 
 <div class="signal"><div class="lab">当前建议总仓位</div>
 <div class="val market-danger">0成（空仓）</div>
@@ -53,7 +53,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 
 <div class="info-box">
 <b>📋 操作提示</b><br>
-⚠️ T+1 保护：上午只建议卖出/减仓，不建议买入（下午买入后当日无法止损）<br>
+💡 T+1 提示：今日买入的标的，需待下一个交易日才能卖出；今日卖出资金当日可用<br>
 <small>本次共 1 条指令，按紧急程度排序</small>
 </div>
 
@@ -61,7 +61,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <div class="mini"><div class="t">当前建议持仓</div><div class="v" style="font-size:14px;line-height:1.6">
 <p style="color:#999;text-align:center;padding:10px">当前持仓：无</p>
 </div></div>
-<div class="mini"><div class="t">目标持仓（上午风控后）</div><div class="v" style="font-size:14px;line-height:1.6">
+<div class="mini"><div class="t">目标持仓（收盘决策后）</div><div class="v" style="font-size:14px;line-height:1.6">
 <p style="color:#999;text-align:center;padding:10px">目标持仓：无</p>
 </div></div>
 </div>
@@ -72,14 +72,14 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 
 <div class="card"><h2>📊 大盘与标的监控</h2>
 <table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>5日动量</th><th>当日涨跌</th><th>波动率</th><th>得分</th></tr></thead>
-<tbody><tr><td class="nm">创新药ETF(515120)</td><td class="pos">+16.33%</td><td class="pos">+10.32%</td><td class="pos">+0.29%</td><td>35.3%</td><td class="sc">0.463</td></tr>
+<tbody><tr><td class="nm">创新药ETF(515120)</td><td class="pos">+16.33%</td><td class="pos">+10.32%</td><td class="neg">-0.44%</td><td>35.3%</td><td class="sc">0.463</td></tr>
 <tr><td class="nm">医药ETF(512010)</td><td class="pos">+9.22%</td><td class="pos">+6.46%</td><td class="pos">+0.53%</td><td>27.0%</td><td class="sc">0.341</td></tr>
-<tr><td class="nm">券商ETF(512000)</td><td class="pos">+7.78%</td><td class="neg">-0.37%</td><td class="neg">-1.30%</td><td>30.3%</td><td class="sc">0.257</td></tr>
-<tr><td class="nm">科技ETF(515000)</td><td class="pos">+11.57%</td><td class="neg">-9.62%</td><td class="neg">-2.32%</td><td>47.9%</td><td class="sc">0.241</td></tr>
+<tr><td class="nm">券商ETF(512000)</td><td class="pos">+7.78%</td><td class="neg">-0.37%</td><td class="neg">-1.11%</td><td>30.3%</td><td class="sc">0.257</td></tr>
+<tr><td class="nm">科技ETF(515000)</td><td class="pos">+11.57%</td><td class="neg">-9.62%</td><td class="neg">-3.75%</td><td>47.9%</td><td class="sc">0.241</td></tr>
 <tr><td class="nm">银行ETF(512800)</td><td class="pos">+2.86%</td><td class="pos">+3.81%</td><td class="neg">-0.76%</td><td>16.1%</td><td class="sc">0.178</td></tr>
-<tr><td class="nm">科创50ETF(588000)</td><td class="pos">+5.02%</td><td class="neg">-12.89%</td><td class="neg">-0.94%</td><td>53.6%</td><td class="sc">0.094</td></tr>
-<tr><td class="nm">沪深300ETF(510300)</td><td class="neg">-0.68%</td><td class="neg">-1.59%</td><td class="neg">-0.87%</td><td>20.3%</td><td class="sc">-999.000</td></tr>
-<tr><td class="nm">中证500ETF(510500)</td><td class="neg">-6.82%</td><td class="neg">-7.42%</td><td class="neg">-0.90%</td><td>28.3%</td><td class="sc">-999.000</td></tr></tbody></table></div>
+<tr><td class="nm">科创50ETF(588000)</td><td class="pos">+5.02%</td><td class="neg">-12.89%</td><td class="neg">-2.96%</td><td>53.6%</td><td class="sc">0.094</td></tr>
+<tr><td class="nm">沪深300ETF(510300)</td><td class="neg">-0.68%</td><td class="neg">-1.59%</td><td class="neg">-1.45%</td><td>20.3%</td><td class="sc">-999.000</td></tr>
+<tr><td class="nm">中证500ETF(510500)</td><td class="neg">-6.82%</td><td class="neg">-7.42%</td><td class="neg">-1.78%</td><td>28.3%</td><td class="sc">-999.000</td></tr></tbody></table></div>
 
 <div class="note"><b>策略逻辑</b><br>
 <b>仓位</b>：沪深300 40日动量>0且5日动量>0→满仓10成；40日>0但5日≤0→半仓5成；40日≤0→空仓0成。<br>
@@ -89,5 +89,5 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <b>T+1 制度说明</b><br>
 A股 ETF 实行T+1交易：今日买入的份额，需待下一个交易日才能卖出；今日卖出资金当日可用（可继续买入其他ETF），但不可取现至银行卡。</div>
 
-<div class="foot">更新于 2026-07-16 11:58:55 - 数据源: 新浪财经 - 策略状态自动维护</div>
+<div class="foot">更新于 2026-07-16 14:05:30 - 数据源: 新浪财经 - 策略状态自动维护</div>
 </div></body></html>
