@@ -184,6 +184,17 @@ def merge_intraday_price(price_daily, intraday_snapshot, etf_info):
     return price_daily.sort_index()
 
 
+def calc_momentum_change(series, lookback=MOM_LONG):
+    if len(series) < lookback + 3:
+        return None, None, None
+    prev_day = series.iloc[-2]
+    prev_prev_day = series.iloc[-3]
+    current_mom = (prev_day / series.iloc[-lookback-1] - 1) * 100
+    previous_mom = (prev_prev_day / series.iloc[-lookback-2] - 1) * 100
+    change = current_mom - previous_mom
+    return current_mom, previous_mom, change
+
+
 def calc_metrics(price, etf_info, etf_sector):
     metrics = {}
     if price is None or len(price) < MOM_LONG + 2:
@@ -197,6 +208,7 @@ def calc_metrics(price, etf_info, etf_sector):
         prev = s.iloc[-2]
 
         mom_long = (prev / s.iloc[-MOM_LONG-1] - 1) * 100
+        _, _, mom_long_change = calc_momentum_change(s, lookback=MOM_LONG)
         rets = s.iloc[:-1].pct_change().dropna().iloc[-VOL_WINDOW:]
         vol = rets.std() * np.sqrt(252) * 100 if len(rets) >= VOL_WINDOW // 2 else 999.0
         vol = max(vol, MIN_VOL)
@@ -204,6 +216,13 @@ def calc_metrics(price, etf_info, etf_sector):
 
         daily_change = (latest / prev - 1) * 100
         mom_short = (prev / s.iloc[-MOM_SHORT-1] - 1) * 100
+
+        direction = '持平'
+        if mom_long_change is not None:
+            if mom_long_change > 0:
+                direction = '上升'
+            elif mom_long_change < 0:
+                direction = '下降'
 
         metrics[name] = {
             'code': etf_info.get(name, ''),
@@ -213,6 +232,9 @@ def calc_metrics(price, etf_info, etf_sector):
             'daily_change': round(daily_change, 2),
             'mom_long': round(mom_long, 2),
             'mom_short': round(mom_short, 2),
+            'mom_long_change': round(mom_long_change, 2) if mom_long_change is not None else 0.0,
+            'mom_long_change_direction': direction,
+            'mom_long_change_text': (('↑' if mom_long_change and mom_long_change > 0 else '↓' if mom_long_change and mom_long_change < 0 else '→') + f"{abs(mom_long_change):.2f}%") if mom_long_change is not None else '→0.00%',
             'vol': round(vol, 1),
             'score': raw_score,
         }
@@ -399,9 +421,11 @@ def build_html(actions, current, target, position_text, position_reason, market_
                 mom_cls = 'pos' if m['mom_long'] > 0 else 'neg'
                 short_cls = 'pos' if m['mom_short'] > 0 else 'neg'
                 daily_cls = 'pos' if m['daily_change'] > 0 else 'neg'
+                change_cls = 'pos' if m['mom_long_change'] > 0 else 'neg' if m['mom_long_change'] < 0 else ''
                 out.append(
                     '<tr><td class="nm" style="padding-left:24px">' + name + '(' + m["code"] + ')</td>' +
                     '<td class="' + mom_cls + '">' + ('+' if m["mom_long"] >= 0 else '') + str(round(m["mom_long"], 2)) + '%</td>' +
+                    '<td class="' + change_cls + '">' + m["mom_long_change_text"] + '</td>' +
                     '<td class="' + short_cls + '">' + ('+' if m["mom_short"] >= 0 else '') + str(round(m["mom_short"], 2)) + '%</td>' +
                     '<td class="' + daily_cls + '">' + ('+' if m["daily_change"] >= 0 else '') + str(round(m["daily_change"], 2)) + '%</td>' +
                     '<td>' + str(round(m["vol"], 1)) + '%</td><td class="sc">' + str(round(m["score"], 1)) + '</td></tr>')
@@ -438,10 +462,11 @@ background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);min-height:100vh;padd
 .card{background:#fff;border-radius:16px;padding:22px;margin-bottom:18px;
 box-shadow:0 10px 30px rgba(0,0,0,.25)}
 .card h2{font-size:17px;color:#2c5364;border-left:4px solid #2c5364;padding-left:10px;margin-bottom:14px}
-table{width:100%;border-collapse:collapse;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
 th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #f0f0f0;vertical-align:top}
 th{background:#f7f9fb;color:#666;font-weight:600}
 td.nm{min-width:140px;font-weight:600}
+.table-wrap{overflow-x:auto;border-radius:12px}
 .pos{color:#d7263d;font-weight:600} .neg{color:#1a936f;font-weight:600}
 .warn-text{color:#e67e22;font-weight:600} .hold{color:#666}
 td.sc{font-weight:700;color:#2c5364}
@@ -497,8 +522,8 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <tbody>""" + action_rows_html + """</tbody></table></div>
 
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分8个板块)</h2>
-<table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>5日动量</th><th>当日涨跌</th><th>波动率</th><th>得分</th></tr></thead>
-<tbody>""" + monitor_rows_html + """</tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>当日涨跌</th><th>波动率</th><th>得分</th></tr></thead>
+<tbody>"" + monitor_rows_html + ""</tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>
 <b>板块分组</b>:8大概念板块(宽基指数,周期资源,科技成长,新能源,医药医疗,大消费,金融地产,先进制造),共20只代表性ETF.<br>
