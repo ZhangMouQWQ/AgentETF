@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ETF动量轮动 - 收盘决策</title>
+<title>ETF板块轮动 - 收盘决策</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
@@ -43,33 +43,34 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 .foot{text-align:center;color:#fff;opacity:.7;font-size:12px;margin-top:14px}
 .tag{display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;margin-left:8px;vertical-align:middle}
 .tag-morning{background:#f39c12;color:#fff} .tag-close{background:#27ae60;color:#fff}
+.sector-tag{display:inline-block;background:#e8f6ff;color:#1a5276;font-size:11px;padding:1px 6px;border-radius:3px;margin-left:6px}
 @media(max-width:700px){.grid{grid-template-columns:1fr} table{font-size:12px} .nm{min-width:100px}}
 </style></head><body><div class="wrap">
-<div class="head"><h1>📊 ETF 动量轮动 - 收盘决策<span class="tag tag-close">收盘决策</span></h1>
-<p>15:00 收盘 - 次日开盘操作或尾盘固定价 - 仓位管理 + T+1安全</p></div>
+<div class="head"><h1>&#128202; ETF 板块轮动 - 收盘决策<span class="tag tag-close>收盘决策</span></h1>
+<p>15:00 收盘 - 次日开盘操作或尾盘固定价 - 概念板块分组 &#183; 仓位管理 &#183; T+1安全</p></div>
 
 <div class="signal"><div class="lab">当前建议总仓位</div>
-<div class="val market-danger">0成（空仓）</div>
-<div class="sub">大盘弱势，观望为主 - 数据截至 2026-07-17</div></div>
+<div class="val market-danger>0成(空仓)</div>
+<div class="sub">大盘弱势,观望为主 - 数据截至 2026-07-17</div></div>
 
 <div class="info-box">
-<b>📋 操作提示</b><br>
-💡 T+1 提示：今日买入的标的，需待下一个交易日才能卖出；今日卖出资金当日可用<br>
-<small>本次共 1 条指令，按紧急程度排序</small>
+<b>&#128203; 操作提示</b><br>
+&#128161; T+1 提示:今日买入的标的,需待下一个交易日才能卖出;今日卖出资金当日可用<br>
+<small>本次共 1 条指令,按紧急程度排序</small>
 </div>
 
 <div class="grid">
 <div class="mini"><div class="t">当前建议持仓</div><div class="v" style="font-size:14px;line-height:1.6">
-<p style="color:#999;text-align:center;padding:10px">当前持仓：无</p>
+<p style="color:#999;text-align:center;padding:10px">当前持仓:无</p>
 </div></div>
-<div class="mini"><div class="t">目标持仓（收盘决策后）</div><div class="v" style="font-size:14px;line-height:1.6">
-<p style="color:#999;text-align:center;padding:10px">目标持仓：无</p>
+<div class="mini"><div class="t">目标持仓(收盘决策后)</div><div class="v" style="font-size:14px;line-height:1.6">
+<p style="color:#999;text-align:center;padding:10px">目标持仓:无</p>
 </div></div>
 </div>
 
-<div class="card"><h2>🎯 操作指令清单</h2>
+<div class="card"><h2>&#127919; 操作指令清单</h2>
 <table><thead><tr><th class="nm">标的</th><th>操作详情</th><th>触发原因</th></tr></thead>
-<tbody><tr><td class="nm"><span class="badge-wait">观望</span> 空仓()</td><td class="hold">【观望】空仓等待，无符合条件的标的</td><td>大盘弱势或个股无机会</td></tr></tbody></table></div>
+<tbody><tr><td class="nm"><span class="badge-wait">观望</span> 空仓()</td><td class="hold">【观望】空仓等待,无符合条件的标的</td><td>大盘弱势或板块无机会</td></tr></tbody></table></div>
 
 <div class="card"><h2>📊 大盘与标的监控（共 20 只）</h2>
 <div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>当日涨跌</th><th>波动率</th><th>得分(0-100)</th></tr></thead>
@@ -95,12 +96,13 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <tr><td class="nm">黄金ETF(518880)</td><td class="neg">-11.50%</td><td class="neg">↓ 0.00%</td><td class="neg">-2.08%</td><td class="neg">-0.62%</td><td>21.5%</td><td class="sc">0.0</td></tr></tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>
-<b>仓位</b>：沪深300 40日动量>0且5日动量>0→满仓10成；40日>0但5日≤0→半仓5成；40日≤0→空仓0成。<br>
-<b>选股</b>：40日风险调整动量前3 + 40日动量>0 + 5日动量>-2% + 当日跌幅>-4.0% + 当日涨幅<5.0%。<br>
-<b>上午</b>：只风控（卖出/减仓），不买入（T+1保护）。<br>
-<b>下午</b>：重新评估，给出次日目标持仓，可买可卖。<br><br>
+<b>板块分组</b>:8大概念板块(宽基指数,周期资源,科技成长,新能源,医药医疗,大消费,金融地产,先进制造),共20只代表性ETF.<br>
+<b>仓位</b>:沪深300 40日动量&gt;0且5日动量&gt;0&#8594;满仓10成;40日&gt;0但5日&#8804;0&#8594;半仓5成;40日&#8804;0&#8594;空仓0成.<br>
+<b>选股</b>:40日风险调整动量前3 + 40日动量&gt;0 + 5日动量&gt;-2% + 当日跌幅&gt;-4.0% + 当日涨幅&lt;5.0%.<br>
+<b>上午</b>:只风控(卖出/减仓),不买入(T+1保护).<br>
+<b>下午</b>:重新评估,给出次日目标持仓,可买可卖.<br><br>
 <b>T+1 制度说明</b><br>
-A股 ETF 实行T+1交易：今日买入的份额，需待下一个交易日才能卖出；今日卖出资金当日可用（可继续买入其他ETF），但不可取现至银行卡。</div>
+A股 ETF 实行T+1交易:今日买入的份额,需待下一个交易日才能卖出;今日卖出资金当日可用(可继续买入其他ETF),但不可取现至银行卡.</div>
 
-<div class="foot">更新于 2026-07-17 17:07:31 - 数据源: 新浪财经 - 策略状态自动维护</div>
+<div class="foot">更新于 2026-07-17 19:36:11 - 数据源: 新浪财经 - 策略状态自动维护</div>
 </div></body></html>
