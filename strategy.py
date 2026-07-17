@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-行业ETF动量轮动策略 - 双层架构版（稳定层+灵活层）
+行业ETF动量轮动策略 - 概念板块分组版(双层架构)
 ========================================
-改进内容：
-1. 40日动量基于昨日收盘计算（稳定层），不受盘中未完成数据干扰
-2. 当日涨跌/5日动量独立用于风控和买入确认（灵活层）
-3. 买入增加"当日涨幅<5%"过滤，避免盘中追高
-4. 60分钟K线仅用于合成当日最新价，不用于历史动量计算
-5. 波动率基于历史日K线（不含今天盘中噪声）
+改进内容:
+1. ETF按热门概念板块分组,每个板块放最具代表性的ETF
+2. 40日动量基于昨日收盘计算(稳定层),不受盘中未完成数据干扰
+3. 当日涨跌/5日动量独立用于风控和买入确认(灵活层)
+4. 买入增加"当日涨幅<5%"过滤,避免盘中追高
+5. 60分钟K线仅用于合成当日最新价,不用于历史动量计算
+6. 波动率基于历史日K线(不含今天盘中噪声)
 """
 import requests
 import pandas as pd
@@ -19,18 +20,59 @@ import os
 from datetime import datetime, timezone, timedelta
 
 # ==================== 配置 ====================
-ETF_POOL = {
-    '510300': ('sh510300', '沪深300ETF'), '510500': ('sh510500', '中证500ETF'),
-    '159915': ('sz159915', '创业板ETF'),  '588000': ('sh588000', '科创50ETF'),
-    '512400': ('sh512400', '有色金属ETF'), '516780': ('sh516780', '稀土ETF'),
-    '515220': ('sh515220', '煤炭ETF'),    '512000': ('sh512000', '券商ETF'),
-    '512800': ('sh512800', '银行ETF'),    '159995': ('sz159995', '芯片ETF'),
-    '515000': ('sh515000', '科技ETF'),    '512660': ('sh512660', '军工ETF'),
-    '512010': ('sh512010', '医药ETF'),    '512690': ('sh512690', '酒ETF'),
-    '159928': ('sz159928', '消费ETF'),    '515120': ('sh515120', '创新药ETF'),
-    '515030': ('sh515030', '新能源车ETF'), '515790': ('sh515790', '光伏ETF'),
-    '516110': ('sh516110', '汽车ETF'),    '518880': ('sh518880', '黄金ETF'),
+SECTOR_ETF_POOL = {
+    '宽基指数': {
+        '510300': ('sh510300', '沪深300ETF'),
+        '510500': ('sh510500', '中证500ETF'),
+        '159915': ('sz159915', '创业板ETF'),
+        '588000': ('sh588000', '科创50ETF'),
+    },
+    '周期资源': {
+        '512400': ('sh512400', '有色金属ETF'),
+        '516780': ('sh516780', '稀土ETF'),
+        '515220': ('sh515220', '煤炭ETF'),
+        '518880': ('sh518880', '黄金ETF'),
+    },
+    '科技成长': {
+        '159995': ('sz159995', '芯片ETF'),
+        '515000': ('sh515000', '科技ETF'),
+    },
+    '新能源': {
+        '515030': ('sh515030', '新能源车ETF'),
+        '515790': ('sh515790', '光伏ETF'),
+    },
+    '医药医疗': {
+        '512010': ('sh512010', '医药ETF'),
+        '515120': ('sh515120', '创新药ETF'),
+    },
+    '大消费': {
+        '512690': ('sh512690', '酒ETF'),
+        '159928': ('sz159928', '消费ETF'),
+    },
+    '金融地产': {
+        '512000': ('sh512000', '券商ETF'),
+        '512800': ('sh512800', '银行ETF'),
+    },
+    '先进制造': {
+        '512660': ('sh512660', '军工ETF'),
+        '516110': ('sh516110', '汽车ETF'),
+    },
 }
+
+
+def flatten_pool(sector_pool):
+    """将分组ETF池扁平化,同时记录每个ETF所属板块"""
+    flat = {}
+    etf_sector = {}
+    for sector, etfs in sector_pool.items():
+        for code, (sina, name) in etfs.items():
+            flat[code] = (sina, name)
+            etf_sector[name] = sector
+    return flat, etf_sector
+
+
+ETF_POOL, ETF_SECTOR = flatten_pool(SECTOR_ETF_POOL)
+
 DATA_LEN = 260
 MOM_LONG = 40
 MOM_SHORT = 5
@@ -45,7 +87,6 @@ PORTFOLIO_FILE = 'portfolio.json'
 
 
 def get_etf_sina(sina_code, scale=240, datalen=DATA_LEN, retry=3):
-    """通用新浪K线接口，支持scale=240(日K)或60(60分钟K)"""
     url = ("http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/"
            f"CN_MarketData.getKLineData?symbol={sina_code}&scale={scale}&ma=no&datalen={datalen}")
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -61,7 +102,6 @@ def get_etf_sina(sina_code, scale=240, datalen=DATA_LEN, retry=3):
                 for c in ['open', 'high', 'low', 'close', 'volume']:
                     if c in df.columns:
                         df[c] = df[c].astype(float)
-                # 日K数据只保留日期部分，避免与盘中合成数据的日期格式不一致
                 if scale == 240:
                     df['day'] = pd.to_datetime(df['day']).dt.strftime('%Y-%m-%d')
                 else:
@@ -74,7 +114,6 @@ def get_etf_sina(sina_code, scale=240, datalen=DATA_LEN, retry=3):
 
 
 def fetch_daily_data(pool, datalen=DATA_LEN):
-    """拉取历史日K线（scale=240），返回DataFrame和etf_info"""
     all_close = {}
     etf_info = {}
     print("拉取历史日K线...")
@@ -96,7 +135,6 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
 
 
 def fetch_intraday_snapshot(pool):
-    """盘中通用：用60分钟K线合成当日最新收盘价（不限上午下午）"""
     today = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
     snapshot = {}
     print(f"\n拉取60分钟K线合成当日数据 (今日 {today})...")
@@ -121,19 +159,18 @@ def fetch_intraday_snapshot(pool):
 
 
 def merge_intraday_price(price_daily, intraday_snapshot, etf_info):
-    """将盘中合成的收盘价合并到日K线中"""
     if not intraday_snapshot or price_daily is None:
         return price_daily
     today_str = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
     print(f"\n合并盘中数据到日K线...")
 
     if price_daily.index[-1] == today_str:
-        print(f"日K最新日期已是 {today_str}，用60分钟数据覆盖")
+        print(f"日K最新日期已是 {today_str}, 用60分钟数据覆盖")
         for name, snap in intraday_snapshot.items():
             if name in price_daily.columns:
                 price_daily.loc[today_str, name] = snap['close']
     else:
-        print(f"日K最新日期 {price_daily.index[-1]}，追加今日 {today_str}")
+        print(f"日K最新日期 {price_daily.index[-1]}, 追加今日 {today_str}")
         new_row = pd.Series({n: np.nan for n in price_daily.columns}, name=today_str)
         for name in price_daily.columns:
             if name in intraday_snapshot:
@@ -147,8 +184,7 @@ def merge_intraday_price(price_daily, intraday_snapshot, etf_info):
     return price_daily.sort_index()
 
 
-def calc_metrics(price, etf_info):
-    """计算每只ETF的多维度指标（双层架构）"""
+def calc_metrics(price, etf_info, etf_sector):
     metrics = {}
     if price is None or len(price) < MOM_LONG + 2:
         return metrics
@@ -157,62 +193,62 @@ def calc_metrics(price, etf_info):
         if len(s) < MOM_LONG + 2:
             continue
 
-        latest = s.iloc[-1]      # 今日最新（可能是盘中合成价）
-        prev = s.iloc[-2]        # 昨日收盘价
+        latest = s.iloc[-1]
+        prev = s.iloc[-2]
 
-        # === Layer 1: 稳定层（基于历史日K线，排除今日盘中未完成数据）===
-        # 40日动量基于昨日收盘 vs 40天前收盘，避免盘中数据干扰排名
         mom_long = (prev / s.iloc[-MOM_LONG-1] - 1) * 100
-
-        # 波动率基于历史日K线（不含今日盘中噪声），使用更长窗口
         rets = s.iloc[:-1].pct_change().dropna().iloc[-VOL_WINDOW:]
         vol = rets.std() * np.sqrt(252) * 100 if len(rets) >= VOL_WINDOW // 2 else 999.0
         vol = max(vol, MIN_VOL)
-        score = (mom_long / vol) if mom_long > 0 else -999.0
+        raw_score = (mom_long / vol) if mom_long > 0 else None
 
-        # === Layer 2: 灵活层（含今日盘中数据，用于风控和短期确认）===
-        daily_change = (latest / prev - 1) * 100  # 今日涨跌
-        # 5日动量也基于历史日K线（不含今日盘中），与40日动量保持一致
+        daily_change = (latest / prev - 1) * 100
         mom_short = (prev / s.iloc[-MOM_SHORT-1] - 1) * 100
 
         metrics[name] = {
             'code': etf_info.get(name, ''),
+            'sector': etf_sector.get(name, '其他'),
             'latest': round(latest, 3),
             'prev': round(prev, 3),
             'daily_change': round(daily_change, 2),
-            'mom_long': round(mom_long, 2),      # 稳定层：40日动量（基于昨日收盘）
-            'mom_short': round(mom_short, 2),    # 灵活层：5日动量（含今日盘中）
+            'mom_long': round(mom_long, 2),
+            'mom_short': round(mom_short, 2),
             'vol': round(vol, 1),
-            'score': round(score, 3),
+            'score': raw_score,
         }
+
+    positives = [m['score'] for m in metrics.values() if m['score'] is not None]
+    for m in metrics.values():
+        if m['score'] is None or not positives:
+            m['score'] = 0.0
+        else:
+            lo, hi = min(positives), max(positives)
+            m['score'] = 100.0 if hi == lo else round((m['score'] - lo) / (hi - lo) * 100, 1)
     return metrics
 
 
 def market_timing(metrics):
-    """大盘择时：决定总仓位几成（仅基于稳定层40日动量）"""
     m = metrics.get('沪深300ETF')
     if m is None:
-        return 0.0, "0成（空仓）", "沪深300数据缺失，保守观望", "danger"
+        return 0.0, "0成(空仓)", "沪深300数据缺失,保守观望", "danger"
     if m['mom_long'] > 2:
-        return 1.0, "10成（满仓）", "大盘强势，积极参与", "ok"
+        return 1.0, "10成(满仓)", "大盘强势,积极参与", "ok"
     elif m['mom_long'] > 0:
-        return 0.5, "5成（半仓）", "大盘震荡，控制仓位", "warn"
+        return 0.5, "5成(半仓)", "大盘震荡,控制仓位", "warn"
     else:
-        return 0.0, "0成（空仓）", "大盘弱势，观望为主", "danger"
+        return 0.0, "0成(空仓)", "大盘弱势,观望为主", "danger"
 
 
 def build_target(metrics, position_ratio, signal_type='close'):
-    """基于双层架构构建目标持仓"""
     if position_ratio <= 0:
         return []
     candidates = [
         (n, m) for n, m in metrics.items()
-        if m['mom_long'] > 0           # Layer 1: 40日动量正（中期趋势好）
-        and m['mom_short'] > -2         # Layer 2: 5日动量不太差（短期不暴跌）
-        and m['daily_change'] > MAX_DAILY_DROP  # Layer 2: 当日不追大跌
-        and m['daily_change'] < MAX_DAILY_RISE  # Layer 2: 当日不追暴涨（避免盘中追高）
+        if m['mom_long'] > 0
+        and m['mom_short'] > -2
+        and m['daily_change'] > MAX_DAILY_DROP
+        and m['daily_change'] < MAX_DAILY_RISE
     ]
-    # 收盘决策时，过滤掉当日下跌的标的（避免抄底接刀）
     if signal_type == 'close':
         candidates = [(n, m) for n, m in candidates if m['daily_change'] > 0]
     candidates.sort(key=lambda x: x[1]['score'], reverse=True)
@@ -223,13 +259,12 @@ def build_target(metrics, position_ratio, signal_type='close'):
     weights = [weight] * len(selected)
     weights[-1] = round(position_ratio - sum(weights[:-1]), 2)
     return [
-        {"name": n, "code": m['code'], "weight": w, "mom_long": m['mom_long'], "score": m['score']}
+        {"name": n, "code": m['code'], "weight": w, "mom_long": m['mom_long'], "score": m['score'], "sector": m['sector']}
         for (n, m), w in zip(selected, weights)
     ]
 
 
 def load_portfolio():
-    """读取策略当前建议持仓"""
     if os.path.exists(PORTFOLIO_FILE):
         with open(PORTFOLIO_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
@@ -242,12 +277,10 @@ def save_portfolio(portfolio):
 
 
 def generate_actions(current, target, signal_type, metrics):
-    """对比当前与目标持仓，生成操作指令"""
     actions = []
     current_dict = {h['name']: h for h in current}
     target_dict = {h['name']: h for h in target}
 
-    # 卖出/减仓（上午和下午都可建议）
     for name, h in current_dict.items():
         m = metrics.get(name, {})
         risk_reasons = []
@@ -263,7 +296,7 @@ def generate_actions(current, target, signal_type, metrics):
             window = "下午" if signal_type == 'morning' else "次日"
             actions.append({
                 "type": "SELL", "name": name, "code": h['code'], "weight": h['weight'],
-                "msg": f"【{window}清仓】{name}({h['code']}) {h['weight']*10:.0f}成，原因：{'、'.join(risk_reasons)}",
+                "msg": f"【{window}清仓】{name}({h['code']}) {h['weight']*10:.0f}成,原因:{'、'.join(risk_reasons)}",
                 "urgency": urgency, "reason": "、".join(risk_reasons)
             })
         elif name in target_dict and target_dict[name]['weight'] < h['weight'] - 0.03:
@@ -275,14 +308,13 @@ def generate_actions(current, target, signal_type, metrics):
                 "urgency": "medium", "reason": "大盘降仓或排名下降"
             })
 
-    # 买入/加仓（仅下午建议）
     if signal_type == 'close':
         for name, h in target_dict.items():
             if name not in current_dict:
                 actions.append({
                     "type": "BUY", "name": name, "code": h['code'], "weight": h['weight'],
                     "msg": f"【次日买入】{name}({h['code']}) {h['weight']*10:.0f}成",
-                    "urgency": "normal", "reason": f"40日动量{h['mom_long']:+.2f}%，排名进入前{TOP_K}"
+                    "urgency": "normal", "reason": f"40日动量{h['mom_long']:+.2f}%,排名进入前{TOP_K}"
                 })
             elif h['weight'] > current_dict[name].get('weight', 0) + 0.03:
                 diff = round(h['weight'] - current_dict[name]['weight'], 2)
@@ -292,45 +324,46 @@ def generate_actions(current, target, signal_type, metrics):
                     "urgency": "normal", "reason": "大盘加仓或排名上升"
                 })
 
-    # 持有
     for name, h in target_dict.items():
         if name in current_dict and abs(h['weight'] - current_dict[name].get('weight', 0)) <= 0.03:
             actions.append({
                 "type": "HOLD", "name": name, "code": h['code'], "weight": h['weight'],
                 "msg": f"【持有】{name}({h['code']}) {h['weight']*10:.0f}成",
-                "urgency": "low", "reason": "状态良好，无需操作"
+                "urgency": "low", "reason": "状态良好,无需操作"
             })
 
-    # 空仓观望
     if not target and not current:
         actions.append({
             "type": "WAIT", "name": "空仓", "code": "", "weight": 0,
-            "msg": "【观望】空仓等待，无符合条件的标的",
-            "urgency": "low", "reason": "大盘弱势或个股无机会"
+            "msg": "【观望】空仓等待,无符合条件的标的",
+            "urgency": "low", "reason": "大盘弱势或板块无机会"
         })
 
     urgency_order = {"high": 0, "medium": 1, "normal": 2, "low": 3}
     actions.sort(key=lambda x: urgency_order.get(x['urgency'], 99))
     return actions
 
-
 def build_html(actions, current, target, position_text, position_reason, market_cls,
                asof, update_time, signal_type, metrics):
+
     def fmt_holdings(holdings, title):
         if not holdings:
-            return f'<p style="color:#999;text-align:center;padding:10px">{title}：无</p>'
+            return '<p style="color:#999;text-align:center;padding:10px">' + title + ':无</p>'
         out = []
         total = sum(h['weight'] for h in holdings)
         for h in holdings:
             m = metrics.get(h['name'], {})
             daily = m.get('daily_change', 0)
             dcls = 'pos' if daily > 0 else ('neg' if daily < 0 else '')
+            sector = m.get('sector', '')
+            sector_tag = ''
+            if sector:
+                sector_tag = '<span style="background:#e8f6ff;color:#1a5276;font-size:11px;padding:1px 6px;border-radius:3px;margin-left:6px">' + sector + '</span>'
             out.append(
-                f'<div class="hold-item"><b>{h["name"]}({h["code"]})</b> '
-                f'<span>{h["weight"]*10:.0f}成</span> '
-                f'<span class="{dcls}">{daily:+.2f}%</span></div>')
-        out.append(f'<div class="hold-item" style="border-top:1px solid #eee;margin-top:8px;padding-top:8px">'
-                   f'<b>现金</b> <span>{(1-total)*10:.0f}成</span></div>')
+                '<div class="hold-item"><b>' + h["name"] + '(' + h["code"] + ')</b>' + sector_tag +
+                ' <span>' + str(int(h["weight"]*10)) + '成</span> ' +
+                '<span class="' + dcls + '">' + ('+' if daily >= 0 else '') + str(round(daily, 2)) + '%</span></div>')
+        out.append('<div class="hold-item" style="border-top:1px solid #eee;margin-top:8px;padding-top:8px"><b>现金</b> <span>' + str(int((1-total)*10)) + '成</span></div>')
         return "\n".join(out)
 
     def action_rows():
@@ -338,130 +371,147 @@ def build_html(actions, current, target, position_text, position_reason, market_
             return '<tr><td colspan="3" style="text-align:center;color:#999">无操作</td></tr>'
         out = []
         for a in actions:
-            cls = {"SELL": "neg", "REDUCE": "warn-text", "BUY": "pos", "ADD": "pos",
-                   "HOLD": "hold", "WAIT": "hold"}.get(a['type'], "")
-            badge = {"SELL": "清仓", "REDUCE": "减仓", "BUY": "买入", "ADD": "加仓",
-                     "HOLD": "持有", "WAIT": "观望"}.get(a['type'], a['type'])
+            cls_map = {"SELL": "neg", "REDUCE": "warn-text", "BUY": "pos", "ADD": "pos", "HOLD": "hold", "WAIT": "hold"}
+            badge_map = {"SELL": "清仓", "REDUCE": "减仓", "BUY": "买入", "ADD": "加仓", "HOLD": "持有", "WAIT": "观望"}
+            cls = cls_map.get(a['type'], "")
+            badge = badge_map.get(a['type'], a['type'])
             out.append(
-                f'<tr><td class="nm"><span class="badge-{a["type"].lower()}">{badge}</span> '
-                f'{a["name"]}({a["code"]})</td>'
-                f'<td class="{cls}">{a["msg"]}</td>'
-                f'<td>{a["reason"]}</td></tr>')
+                '<tr><td class="nm"><span class="badge-' + a["type"].lower() + '">' + badge + '</span> ' +
+                a["name"] + '(' + a["code"] + ')</td>' +
+                '<td class="' + cls + '">' + a["msg"] + '</td>' +
+                '<td>' + a["reason"] + '</td></tr>')
         return "\n".join(out)
 
     def monitor_rows():
-        ranked = sorted(metrics.items(), key=lambda x: x[1]['score'], reverse=True)
+        sector_groups = {}
+        for name, m in metrics.items():
+            sector = m['sector']
+            sector_groups.setdefault(sector, []).append((name, m))
+        sector_order = sorted(sector_groups.keys(),
+                              key=lambda s: max(m['score'] for _, m in sector_groups[s]),
+                              reverse=True)
         out = []
-        for name, m in ranked[:8]:
-            mom_cls = 'pos' if m['mom_long'] > 0 else 'neg'
-            short_cls = 'pos' if m['mom_short'] > 0 else 'neg'
-            daily_cls = 'pos' if m['daily_change'] > 0 else 'neg'
+        for sector in sector_order:
+            items = sorted(sector_groups[sector], key=lambda x: x[1]['score'], reverse=True)
             out.append(
-                f'<tr><td class="nm">{name}({m["code"]})</td>'
-                f'<td class="{mom_cls}">{m["mom_long"]:+.2f}%</td>'
-                f'<td class="{short_cls}">{m["mom_short"]:+.2f}%</td>'
-                f'<td class="{daily_cls}">{m["daily_change"]:+.2f}%</td>'
-                f'<td>{m["vol"]:.1f}%</td><td class="sc">{m["score"]:.3f}</td></tr>')
+                '<tr style="background:#f0f7ff"><td colspan="6" style="font-weight:700;color:#2c5364;padding:8px 10px">&#128193; ' + sector + '</td></tr>')
+            for name, m in items:
+                mom_cls = 'pos' if m['mom_long'] > 0 else 'neg'
+                short_cls = 'pos' if m['mom_short'] > 0 else 'neg'
+                daily_cls = 'pos' if m['daily_change'] > 0 else 'neg'
+                out.append(
+                    '<tr><td class="nm" style="padding-left:24px">' + name + '(' + m["code"] + ')</td>' +
+                    '<td class="' + mom_cls + '">' + ('+' if m["mom_long"] >= 0 else '') + str(round(m["mom_long"], 2)) + '%</td>' +
+                    '<td class="' + short_cls + '">' + ('+' if m["mom_short"] >= 0 else '') + str(round(m["mom_short"], 2)) + '%</td>' +
+                    '<td class="' + daily_cls + '">' + ('+' if m["daily_change"] >= 0 else '') + str(round(m["daily_change"], 2)) + '%</td>' +
+                    '<td>' + str(round(m["vol"], 1)) + '%</td><td class="sc">' + str(round(m["score"], 1)) + '</td></tr>')
         return "\n".join(out)
 
     if signal_type == 'morning':
         label = "上午风控"
         sublabel = "11:30 盘中 - 下午操作窗口 13:00-15:00"
-        tip = "⚠️ T+1 保护：上午只建议卖出/减仓，不建议买入（下午买入后当日无法止损）"
+        tip = "&#9888; T+1 保护:上午只建议卖出/减仓,不建议买入(下午买入后当日无法止损)"
         tag_color = "tag-morning"
     else:
         label = "收盘决策"
         sublabel = "15:00 收盘 - 次日开盘操作或尾盘固定价"
-        tip = "💡 T+1 提示：今日买入的标的，需待下一个交易日才能卖出；今日卖出资金当日可用"
+        tip = "&#128161; T+1 提示:今日买入的标的,需待下一个交易日才能卖出;今日卖出资金当日可用"
         tag_color = "tag-close"
 
-    return f'''<!DOCTYPE html>
+    fmt_holdings_current = fmt_holdings(current, "当前持仓")
+    fmt_holdings_target = fmt_holdings(target, "目标持仓")
+    action_rows_html = action_rows()
+    monitor_rows_html = monitor_rows()
+
+    html = """<!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ETF动量轮动 - {label}</title>
+<title>ETF板块轮动 - """ + label + """</title>
 <style>
-*{{margin:0;padding:0;box-sizing:border-box}}
-body{{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);min-height:100vh;padding:20px;color:#222}}
-.wrap{{max-width:960px;margin:0 auto}}
-.head{{text-align:center;color:#fff;margin-bottom:22px}}
-.head h1{{font-size:24px;letter-spacing:1px}}
-.head p{{opacity:.8;font-size:13px;margin-top:6px}}
-.card{{background:#fff;border-radius:16px;padding:22px;margin-bottom:18px;
-box-shadow:0 10px 30px rgba(0,0,0,.25)}}
-.card h2{{font-size:17px;color:#2c5364;border-left:4px solid #2c5364;padding-left:10px;margin-bottom:14px}}
-table{{width:100%;border-collapse:collapse;font-size:13px}}
-th,td{{padding:10px 8px;text-align:left;border-bottom:1px solid #f0f0f0;vertical-align:top}}
-th{{background:#f7f9fb;color:#666;font-weight:600}}
-td.nm{{min-width:140px;font-weight:600}}
-.pos{{color:#d7263d;font-weight:600}} .neg{{color:#1a936f;font-weight:600}}
-.warn-text{{color:#e67e22;font-weight:600}} .hold{{color:#666}}
-td.sc{{font-weight:700;color:#2c5364}}
-.badge-sell,.badge-reduce{{display:inline-block;background:#d7263d;color:#fff;font-size:11px;
-padding:2px 8px;border-radius:4px;margin-right:6px}}
-.badge-buy,.badge-add{{display:inline-block;background:#27ae60;color:#fff;font-size:11px;
-padding:2px 8px;border-radius:4px;margin-right:6px}}
-.badge-hold,.badge-wait{{display:inline-block;background:#95a5a6;color:#fff;font-size:11px;
-padding:2px 8px;border-radius:4px;margin-right:6px}}
-.signal{{background:linear-gradient(135deg,#d7263d,#f46036);color:#fff;border-radius:14px;
-padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215,38,61,.35)}}
-.signal .lab{{font-size:13px;opacity:.9}}
-.signal .val{{font-size:28px;font-weight:700;margin-top:8px}}
-.signal .sub{{font-size:14px;margin-top:6px;opacity:.9}}
-.grid{{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}}
-.mini{{background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.2)}}
-.mini .t{{font-size:13px;color:#888}} .mini .v{{font-size:20px;font-weight:700;color:#2c5364;margin-top:6px}}
-.hold-item{{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:14px}}
-.market-ok{{color:#27ae60}} .market-warn{{color:#e67e22}} .market-danger{{color:#d7263d}}
-.info-box{{background:#e8f6ff;border-left:4px solid #3498db;padding:14px 18px;border-radius:8px;margin-bottom:18px;color:#1a5276;font-size:14px;line-height:1.6}}
-.note{{background:#fff;border-radius:14px;padding:18px;font-size:13px;color:#555;line-height:1.9}}
-.note b{{color:#2c5364}}
-.foot{{text-align:center;color:#fff;opacity:.7;font-size:12px;margin-top:14px}}
-.tag{{display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;margin-left:8px;vertical-align:middle}}
-.tag-morning{{background:#f39c12;color:#fff}} .tag-close{{background:#27ae60;color:#fff}}
-@media(max-width:700px){{.grid{{grid-template-columns:1fr}} table{{font-size:12px}} .nm{{min-width:100px}}}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);min-height:100vh;padding:20px;color:#222}
+.wrap{max-width:960px;margin:0 auto}
+.head{text-align:center;color:#fff;margin-bottom:22px}
+.head h1{font-size:24px;letter-spacing:1px}
+.head p{opacity:.8;font-size:13px;margin-top:6px}
+.card{background:#fff;border-radius:16px;padding:22px;margin-bottom:18px;
+box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.card h2{font-size:17px;color:#2c5364;border-left:4px solid #2c5364;padding-left:10px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #f0f0f0;vertical-align:top}
+th{background:#f7f9fb;color:#666;font-weight:600}
+td.nm{min-width:140px;font-weight:600}
+.pos{color:#d7263d;font-weight:600} .neg{color:#1a936f;font-weight:600}
+.warn-text{color:#e67e22;font-weight:600} .hold{color:#666}
+td.sc{font-weight:700;color:#2c5364}
+.badge-sell,.badge-reduce{display:inline-block;background:#d7263d;color:#fff;font-size:11px;
+padding:2px 8px;border-radius:4px;margin-right:6px}
+.badge-buy,.badge-add{display:inline-block;background:#27ae60;color:#fff;font-size:11px;
+padding:2px 8px;border-radius:4px;margin-right:6px}
+.badge-hold,.badge-wait{display:inline-block;background:#95a5a6;color:#fff;font-size:11px;
+padding:2px 8px;border-radius:4px;margin-right:6px}
+.signal{background:linear-gradient(135deg,#d7263d,#f46036);color:#fff;border-radius:14px;
+padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215,38,61,.35)}
+.signal .lab{font-size:13px;opacity:.9}
+.signal .val{font-size:28px;font-weight:700;margin-top:8px}
+.signal .sub{font-size:14px;margin-top:6px;opacity:.9}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.mini{background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.mini .t{font-size:13px;color:#888} .mini .v{font-size:20px;font-weight:700;color:#2c5364;margin-top:6px}
+.hold-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:14px}
+.market-ok{color:#27ae60} .market-warn{color:#e67e22} .market-danger{color:#d7263d}
+.info-box{background:#e8f6ff;border-left:4px solid #3498db;padding:14px 18px;border-radius:8px;margin-bottom:18px;color:#1a5276;font-size:14px;line-height:1.6}
+.note{background:#fff;border-radius:14px;padding:18px;font-size:13px;color:#555;line-height:1.9}
+.note b{color:#2c5364}
+.foot{text-align:center;color:#fff;opacity:.7;font-size:12px;margin-top:14px}
+.tag{display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;margin-left:8px;vertical-align:middle}
+.tag-morning{background:#f39c12;color:#fff} .tag-close{background:#27ae60;color:#fff}
+.sector-tag{display:inline-block;background:#e8f6ff;color:#1a5276;font-size:11px;padding:1px 6px;border-radius:3px;margin-left:6px}
+@media(max-width:700px){.grid{grid-template-columns:1fr} table{font-size:12px} .nm{min-width:100px}}
 </style></head><body><div class="wrap">
-<div class="head"><h1>📊 ETF 动量轮动 - {label}<span class="tag {tag_color}">{label}</span></h1>
-<p>{sublabel} - 仓位管理 + T+1安全</p></div>
+<div class="head"><h1>&#128202; ETF 板块轮动 - """ + label + """<span class="tag """ + tag_color + """>""" + label + """</span></h1>
+<p>""" + sublabel + """ - 概念板块分组 &#183; 仓位管理 &#183; T+1安全</p></div>
 
 <div class="signal"><div class="lab">当前建议总仓位</div>
-<div class="val market-{market_cls}">{position_text}</div>
-<div class="sub">{position_reason} - 数据截至 {asof}</div></div>
+<div class="val market-""" + market_cls + """>""" + position_text + """</div>
+<div class="sub">""" + position_reason + """ - 数据截至 """ + asof + """</div></div>
 
 <div class="info-box">
-<b>📋 操作提示</b><br>
-{tip}<br>
-<small>本次共 {len(actions)} 条指令，按紧急程度排序</small>
+<b>&#128203; 操作提示</b><br>
+""" + tip + """<br>
+<small>本次共 """ + str(len(actions)) + """ 条指令,按紧急程度排序</small>
 </div>
 
 <div class="grid">
 <div class="mini"><div class="t">当前建议持仓</div><div class="v" style="font-size:14px;line-height:1.6">
-{fmt_holdings(current, "当前持仓")}
+""" + fmt_holdings_current + """
 </div></div>
-<div class="mini"><div class="t">目标持仓（{label}后）</div><div class="v" style="font-size:14px;line-height:1.6">
-{fmt_holdings(target, "目标持仓")}
+<div class="mini"><div class="t">目标持仓(""" + label + """后)</div><div class="v" style="font-size:14px;line-height:1.6">
+""" + fmt_holdings_target + """
 </div></div>
 </div>
 
-<div class="card"><h2>🎯 操作指令清单</h2>
+<div class="card"><h2>&#127919; 操作指令清单</h2>
 <table><thead><tr><th class="nm">标的</th><th>操作详情</th><th>触发原因</th></tr></thead>
-<tbody>{action_rows()}</tbody></table></div>
+<tbody>""" + action_rows_html + """</tbody></table></div>
 
-<div class="card"><h2>📊 大盘与标的监控</h2>
+<div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分8个板块)</h2>
 <table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>5日动量</th><th>当日涨跌</th><th>波动率</th><th>得分</th></tr></thead>
-<tbody>{monitor_rows()}</tbody></table></div>
+<tbody>""" + monitor_rows_html + """</tbody></table></div>
 
 <div class="note"><b>策略逻辑</b><br>
-<b>仓位</b>：沪深300 40日动量>0且5日动量>0→满仓10成；40日>0但5日≤0→半仓5成；40日≤0→空仓0成。<br>
-<b>选股</b>：40日风险调整动量前{TOP_K} + 40日动量>0 + 5日动量>-2% + 当日跌幅>{MAX_DAILY_DROP}% + 当日涨幅<{MAX_DAILY_RISE}%。<br>
-<b>上午</b>：只风控（卖出/减仓），不买入（T+1保护）。<br>
-<b>下午</b>：重新评估，给出次日目标持仓，可买可卖。<br><br>
+<b>板块分组</b>:8大概念板块(宽基指数,周期资源,科技成长,新能源,医药医疗,大消费,金融地产,先进制造),共20只代表性ETF.<br>
+<b>仓位</b>:沪深300 40日动量&gt;0且5日动量&gt;0&#8594;满仓10成;40日&gt;0但5日&#8804;0&#8594;半仓5成;40日&#8804;0&#8594;空仓0成.<br>
+<b>选股</b>:40日风险调整动量前""" + str(TOP_K) + """ + 40日动量&gt;0 + 5日动量&gt;-2% + 当日跌幅&gt;""" + str(MAX_DAILY_DROP) + """% + 当日涨幅&lt;""" + str(MAX_DAILY_RISE) + """%.<br>
+<b>上午</b>:只风控(卖出/减仓),不买入(T+1保护).<br>
+<b>下午</b>:重新评估,给出次日目标持仓,可买可卖.<br><br>
 <b>T+1 制度说明</b><br>
-A股 ETF 实行T+1交易：今日买入的份额，需待下一个交易日才能卖出；今日卖出资金当日可用（可继续买入其他ETF），但不可取现至银行卡。</div>
+A股 ETF 实行T+1交易:今日买入的份额,需待下一个交易日才能卖出;今日卖出资金当日可用(可继续买入其他ETF),但不可取现至银行卡.</div>
 
-<div class="foot">更新于 {update_time} - 数据源: 新浪财经 - 策略状态自动维护</div>
-</div></body></html>'''
-
+<div class="foot">更新于 """ + update_time + """ - 数据源: 新浪财经 - 策略状态自动维护</div>
+</div></body></html>"""
+    return html
 
 def main():
     bj = timezone(timedelta(hours=8))
@@ -470,36 +520,33 @@ def main():
 
     if 11 <= now.hour < 13:
         signal_type = 'morning'
-        print("时段: 上午风控 (11:30 盘中，负责下午操作)")
+        print("时段: 上午风控 (11:30 盘中,负责下午操作)")
     elif now.hour >= 15:
         signal_type = 'close'
-        print("时段: 收盘决策 (15:00 后，负责次日/尾盘操作)")
+        print("时段: 收盘决策 (15:00 后,负责次日/尾盘操作)")
     else:
         signal_type = 'close'
-        print(f"时段: 下午盘中 ({now.hour}:{now.minute:02d} 手动触发，按收盘逻辑处理)")
+        print(f"时段: 下午盘中 ({now.hour}:{now.minute:02d} 手动触发,按收盘逻辑处理)")
 
     print(f"\n{'='*60}")
     print(f"[{update_time}] 信号类型: {signal_type}")
     print(f"{'='*60}")
 
-    # 1. 拉取历史日K线
     price_daily, etf_info = fetch_daily_data(ETF_POOL)
     if price_daily is None:
         print("日K线获取失败")
         return
 
-    # 2. 检查日K线是否包含今天，如果没有，用60分钟K线合成
     today_str = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
     if price_daily.index[-1] != today_str:
-        print(f"\n日K线最新日期 {price_daily.index[-1]} 不是今天，尝试用60分钟K线合成...")
+        print(f"\n日K线最新日期 {price_daily.index[-1]} 不是今天,尝试用60分钟K线合成...")
         intraday_snapshot = fetch_intraday_snapshot(ETF_POOL)
         price = merge_intraday_price(price_daily, intraday_snapshot, etf_info)
     else:
-        print(f"\n日K线已包含今天数据，直接使用")
+        print(f"\n日K线已包含今天数据,直接使用")
         price = price_daily
 
-    # 3. 计算指标（双层架构）
-    metrics = calc_metrics(price, etf_info)
+    metrics = calc_metrics(price, etf_info, ETF_SECTOR)
     if not metrics:
         print("指标计算失败")
         return
@@ -507,25 +554,20 @@ def main():
     asof = price.index[-1]
     print(f"\n统一数据基准日期: {asof}")
 
-    # 4. 大盘择时（基于稳定层40日动量）
     position_ratio, position_text, position_reason, market_cls = market_timing(metrics)
     print(f"大盘: {position_text} ({position_reason})")
 
-    # 5. 读取当前建议持仓
     portfolio = load_portfolio()
     current = portfolio.get('holdings', [])
     print(f"当前建议持仓: {[(h['name'], h['weight']) for h in current]}")
 
-    # 6. 构建目标持仓（双层过滤）
     target = build_target(metrics, position_ratio, signal_type)
     print(f"目标持仓: {[(h['name'], h['weight']) for h in target]}")
 
-    # 7. 生成操作指令
     actions = generate_actions(current, target, signal_type, metrics)
     for a in actions:
         print(f"  {a['type']}: {a['msg']}")
 
-    # 8. 更新建议持仓状态
     new_holdings = []
     if signal_type == 'morning':
         sold = {a['name'] for a in actions if a['type'] == 'SELL'}
@@ -552,13 +594,11 @@ def main():
         "position_ratio": position_ratio
     })
 
-    # 9. 生成网页
     html = build_html(actions, current, target, position_text, position_reason,
                       market_cls, asof, update_time, signal_type, metrics)
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(html)
 
-    # 10. data.json
     data = {
         'update_time': update_time, 'asof': asof, 'signal_type': signal_type,
         'market': {'position_text': position_text, 'reason': position_reason, 'ratio': position_ratio},
