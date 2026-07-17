@@ -352,7 +352,7 @@ def build_html(actions, current, target, position_text, position_reason, market_
     def monitor_rows():
         ranked = sorted(metrics.items(), key=lambda x: x[1]['score'], reverse=True)
         out = []
-        for name, m in ranked[:8]:
+        for name, m in ranked:
             mom_cls = 'pos' if m['mom_long'] > 0 else 'neg'
             short_cls = 'pos' if m['mom_short'] > 0 else 'neg'
             daily_cls = 'pos' if m['daily_change'] > 0 else 'neg'
