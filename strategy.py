@@ -168,7 +168,8 @@ def calc_metrics(price, etf_info):
         rets = s.iloc[:-1].pct_change().dropna().iloc[-VOL_WINDOW:]
         vol = rets.std() * np.sqrt(252) * 100 if len(rets) >= VOL_WINDOW // 2 else 999.0
         vol = max(vol, MIN_VOL)
-        score = (mom_long / vol) if mom_long > 0 else -999.0
+        # 先算原始风险调整动量，循环结束后统一归一化到 0~100
+        raw_score = (mom_long / vol) if mom_long > 0 else None
 
         # === Layer 2: 灵活层（含今日盘中数据，用于风控和短期确认）===
         daily_change = (latest / prev - 1) * 100  # 今日涨跌
@@ -183,8 +184,18 @@ def calc_metrics(price, etf_info):
             'mom_long': round(mom_long, 2),      # 稳定层：40日动量（基于昨日收盘）
             'mom_short': round(mom_short, 2),    # 灵活层：5日动量（含今日盘中）
             'vol': round(vol, 1),
-            'score': round(score, 3),
+            'score': raw_score,
         }
+
+    # === 得分归一化到 0~100（min-max）===
+    # 40日动量为正的标的按其原始得分线性映射到 0~100，动量为负的一律记 0 分
+    positives = [m['score'] for m in metrics.values() if m['score'] is not None]
+    for m in metrics.values():
+        if m['score'] is None or not positives:
+            m['score'] = 0.0
+        else:
+            lo, hi = min(positives), max(positives)
+            m['score'] = 100.0 if hi == lo else round((m['score'] - lo) / (hi - lo) * 100, 1)
     return metrics
 
 
@@ -361,7 +372,7 @@ def build_html(actions, current, target, position_text, position_reason, market_
                 f'<td class="{mom_cls}">{m["mom_long"]:+.2f}%</td>'
                 f'<td class="{short_cls}">{m["mom_short"]:+.2f}%</td>'
                 f'<td class="{daily_cls}">{m["daily_change"]:+.2f}%</td>'
-                f'<td>{m["vol"]:.1f}%</td><td class="sc">{m["score"]:.3f}</td></tr>')
+                f'<td>{m["vol"]:.1f}%</td><td class="sc">{m["score"]:.1f}</td></tr>')
         return "\n".join(out)
 
     if signal_type == 'morning':
@@ -447,8 +458,8 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <table><thead><tr><th class="nm">标的</th><th>操作详情</th><th>触发原因</th></tr></thead>
 <tbody>{action_rows()}</tbody></table></div>
 
-<div class="card"><h2>📊 大盘与标的监控</h2>
-<table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>5日动量</th><th>当日涨跌</th><th>波动率</th><th>得分</th></tr></thead>
+<div class="card"><h2>📊 大盘与标的监控（共 {len(metrics)} 只）</h2>
+<table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>5日动量</th><th>当日涨跌</th><th>波动率</th><th>得分(0-100)</th></tr></thead>
 <tbody>{monitor_rows()}</tbody></table></div>
 
 <div class="note"><b>策略逻辑</b><br>
