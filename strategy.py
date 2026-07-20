@@ -390,18 +390,23 @@ def build_html(actions, current, target, position_text, position_reason, market_
 
     def action_rows():
         if not actions:
-            return '<tr><td colspan="3" style="text-align:center;color:#999">无操作</td></tr>'
+            return '<tr><td colspan="2" style="text-align:center;color:#999">无操作</td></tr>'
         out = []
         for a in actions:
             cls_map = {"SELL": "neg", "REDUCE": "warn-text", "BUY": "pos", "ADD": "pos", "HOLD": "hold", "WAIT": "hold"}
             badge_map = {"SELL": "清仓", "REDUCE": "减仓", "BUY": "买入", "ADD": "加仓", "HOLD": "持有", "WAIT": "观望"}
             cls = cls_map.get(a['type'], "")
             badge = badge_map.get(a['type'], a['type'])
+            # 将 msg 中的关键信息拆分成多行显示
+            msg_parts = a["msg"].split('，')
+            if len(msg_parts) == 1:
+                msg_parts = a["msg"].split(',')
+            msg_html = '<br>'.join(['<div style="margin:2px 0">' + p.strip() + '</div>' for p in msg_parts if p.strip()])
             out.append(
-                '<tr><td class="nm"><span class="badge-' + a["type"].lower() + '">' + badge + '</span> ' +
-                a["name"] + '(' + a["code"] + ')</td>' +
-                '<td class="' + cls + '">' + a["msg"] + '</td>' +
-                '<td>' + a["reason"] + '</td></tr>')
+                '<tr><td class="nm" style="vertical-align:top;padding-top:12px"><span class="badge-' + a["type"].lower() + '">' + badge + '</span> ' +
+                '<div style="margin-top:6px;font-weight:600">' + a["name"] + '</div>' +
+                '<div style="font-size:12px;color:#888">' + a["code"] + '</div></td>' +
+                '<td class="' + cls + '" style="line-height:1.8">' + msg_html + '</td></tr>')
         return "\n".join(out)
 
     def monitor_rows():
@@ -518,7 +523,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 </div>
 
 <div class="card"><h2>&#127919; 操作指令清单</h2>
-<table><thead><tr><th class="nm">标的</th><th>操作详情</th><th>触发原因</th></tr></thead>
+<table><thead><tr><th class="nm">标的</th><th>操作详情</th></tr></thead>
 <tbody>""" + action_rows_html + """</tbody></table></div>
 
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分8个板块)</h2>
