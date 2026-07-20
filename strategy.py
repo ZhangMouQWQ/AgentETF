@@ -105,26 +105,70 @@ PORTFOLIO_FILE = 'portfolio.json'
 
 
 def get_etf_sina(sina_code, scale=240, datalen=DATA_LEN, retry=3):
-    url = ("http://money.finance.sina.com.cn/quotes_service/api/json_v2.php/"
-           f"CN_MarketData.getKLineData?symbol={sina_code}&scale={scale}&ma=no&datalen={datalen}")
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    """通过腾讯财经API获取K线数据（替代已废弃的新浪旧K线接口）"""
+    # sina_code 格式如 sh510300 / sz159915，直接用于腾讯API
+    # scale: 240=日线, 60=60分钟
+    ktype_map = {240: 'day', 60: '60'}
+    ktype = ktype_map.get(scale, 'day')
+    # 腾讯API的K线key带 qfq 前缀（前复权）
+    key = f'qfq{ktype}'
+    url = (f'http://web.ifzq.gtimg.cn/appstock/app/fqkline/get'
+           f'?param={sina_code},{ktype},,,{datalen},qfq')
+    headers = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://finance.qq.com/'}
     for attempt in range(retry):
         try:
             r = requests.get(url, timeout=15, headers=headers)
-            text = r.text
-            if text.startswith('var'):
-                text = text.split('=', 1)[-1].strip().rstrip(';')
-            j = json.loads(text)
-            if j and isinstance(j, list):
-                df = pd.DataFrame(j)
-                for c in ['open', 'high', 'low', 'close', 'volume']:
-                    if c in df.columns:
-                        df[c] = df[c].astype(float)
-                if scale == 240:
-                    df['day'] = pd.to_datetime(df['day']).dt.strftime('%Y-%m-%d')
-                else:
-                    df['day'] = pd.to_datetime(df['day']).dt.strftime('%Y-%m-%d %H:%M:%S')
-                return df[['day', 'open', 'high', 'low', 'close', 'volume']]
+            data = r.json()
+            if data.get('code') != 0:
+                raise ValueError(f"腾讯API返回code={data.get('code')}")
+            stock_data = data.get('data', {}).get(sina_code, {})
+            if not stock_data:
+                raise ValueError(f"未找到标的 {sina_code}")
+            # 尝试多个可能的键名: qfqday (前复权), day (不复权), qfq60 (60分钟前复权)
+            klines = stock_data.get(key, [])
+            if not klines and key == 'qfqday':
+                klines = stock_data.get('day', [])
+            if not klines and key == 'qfq60':
+                klines = stock_data.get('60', [])
+            if not klines or len(klines) < 10:
+                raise ValueError(f"K线数据不足: {len(klines) if klines else 0}条 key={key}")
+            rows = []
+            for k in klines:
+                # 腾讯K线格式: [日期, 开盘, 收盘, 最高, 最低, 成交量(股)]
+                if len(k) >= 6:
+                    day_str = k[0]
+                    rows.append({
+                        'day': day_str,
+                        'open': float(k[1]) if k[1] else None,
+                        'close': float(k[2]) if k[2] else None,
+                        'high': float(k[3]) if k[3] else None,
+                        'low': float(k[4]) if k[4] else None,
+                        'volume': float(k[5]) / 100.0 if k[5] else None,  # 股→手
+                        'amount': None,
+                        'turnover': None,
+                    })
+            df = pd.DataFrame(rows).dropna(subset=['close'])
+            if len(df) < 10:
+                raise ValueError(f"有效K线不足: {len(df)}条")
+
+            # 从 qt 字段提取当日成交额(万元→元)和换手率(%)，仅填充最新一行
+            qt_list = stock_data.get('qt', {}).get(sina_code, [])
+            if len(qt_list) > 38:
+                try:
+                    amt_wan = float(qt_list[37]) if qt_list[37] else None  # 万元
+                    turnover_pct = float(qt_list[38]) if qt_list[38] else None  # %
+                    if amt_wan is not None:
+                        df.loc[df.index[-1], 'amount'] = amt_wan * 10000  # 万元→元
+                    if turnover_pct is not None:
+                        df.loc[df.index[-1], 'turnover'] = turnover_pct
+                except (ValueError, IndexError):
+                    pass
+            return_cols = ['day', 'open', 'high', 'low', 'close', 'volume']
+            if df['amount'].notna().any():
+                return_cols.append('amount')
+            if df['turnover'].notna().any():
+                return_cols.append('turnover')
+            return df[return_cols]
         except Exception as e:
             print(f"  [警告] {sina_code} scale={scale} 第{attempt+1}次失败: {e}")
             time.sleep(1)
@@ -244,9 +288,12 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
     etf_info = {}
     extra_history = {}
     data_sources = set()
-    print("拉取历史日K线...")
-    for code, (sina, name) in pool.items():
-        # 优先级: 东方财富直连 > akshare > 新浪兜底
+    fail_count = 0
+    success_count = 0
+    total = len(pool)
+    print(f"拉取历史日K线 (共{total}只)...")
+    for i, (code, (sina, name)) in enumerate(pool.items()):
+        # 优先级: 东方财富直连 > akshare > 腾讯财经兜底
         df = get_etf_history_eastmoney(code, datalen=datalen)
         source = 'eastmoney'
         if df is None:
@@ -254,7 +301,7 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
             source = 'akshare'
         if df is None:
             df = get_etf_sina(sina, scale=240, datalen=datalen)
-            source = 'sina'
+            source = 'tencent'
         data_sources.add(source)
         if df is not None and len(df) >= MOM_LONG + 5:
             all_close[name] = df.set_index('day')['close']
@@ -265,17 +312,27 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
                 extra_df = extra_df.dropna(how='all')
                 extra_df = extra_df.set_index('day')
                 extra_history[name] = extra_df
-            details = f"来源={source}"
-            if source == 'sina':
-                details += " (新浪源无成交额/换手率字段)"
-            print(f"  ok {name}({code}): {len(df)} 条, 最新 {df['day'].iloc[-1]} {details}")
+            extra_info = ''
+            if source == 'tencent':
+                extra_info += ' (腾讯源无成交额/换手率)'
+            print(f"  [{i+1}/{total}] ok {name}({code}): {len(df)} 条, 最新 {df['day'].iloc[-1]} 来源={source}{extra_info}")
+            success_count += 1
         else:
-            print(f"  fail {name}({code}): 数据不足")
-        time.sleep(0.5)
+            print(f"  [{i+1}/{total}] FAIL {name}({code}): 数据不足 (已尝试eastmoney→akshare→tencent)")
+            fail_count += 1
+        time.sleep(0.8)  # 增加间隔，避免被限流（腾讯API对频率敏感）
+    print(f"\n数据拉取完成: 成功={success_count}/{total}, 失败={fail_count}/{total}")
     if not all_close:
         return None, {}, {}, data_sources
     price = pd.DataFrame(all_close).sort_index()
-    price = price.ffill().dropna(how='any', axis=1).dropna(how='all')
+    # 先 ffill 填充各列内部缺失，再只删除全空列（而非有任何NaN就删）
+    price = price.ffill().dropna(how='all', axis=1)
+    # 丢弃数据量不足 MOM_LONG+2 的列（在 calc_metrics 中也会检查，这里提前过滤）
+    valid_cols = [c for c in price.columns if price[c].notna().sum() >= MOM_LONG + 2]
+    dropped = set(price.columns) - set(valid_cols)
+    if dropped:
+        print(f"  [过滤] 数据量不足({MOM_LONG+2}条)的标的: {', '.join(sorted(dropped))}")
+    price = price[valid_cols]
     print(f"日K线维度: {price.shape}, 最新日期: {price.index[-1]}")
 
     # 新浪K线源缺少成交额/换手率时，用新浪实时行情补充成交额
@@ -434,15 +491,27 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
             last_row = extra.iloc[-1]
             amount = last_row.get('amount')
             turnover = last_row.get('turnover')
-            # 较昨日变化：取倒数第二行比对
+            # 较昨日变化：优先用原始数据，否则基于成交量估算
             if len(extra) >= 2:
                 prev_row = extra.iloc[-2]
                 prev_amount = prev_row.get('amount')
                 prev_turnover = prev_row.get('turnover')
                 if amount is not None and prev_amount is not None and not (isinstance(prev_amount, float) and np.isnan(prev_amount)):
                     amount_change = round((amount - prev_amount) / 1e8, 2)
+                elif amount is not None and 'volume' in extra.columns:
+                    # 仅当日有成交额时，用成交量变化估算成交额较昨日
+                    today_vol = last_row.get('volume')
+                    prev_vol = prev_row.get('volume')
+                    if today_vol and prev_vol and today_vol > 0:
+                        amount_change = round((amount / 1e8) * (1 - prev_vol / today_vol), 2)
                 if turnover is not None and prev_turnover is not None and not (isinstance(prev_turnover, float) and np.isnan(prev_turnover)):
                     turnover_change = round(turnover - prev_turnover, 2)
+                elif turnover is not None and 'volume' in extra.columns:
+                    # 仅当日有换手率时，用成交量变化估算（假设总股本不变）
+                    today_vol = last_row.get('volume')
+                    prev_vol = prev_row.get('volume')
+                    if today_vol and prev_vol and today_vol > 0:
+                        turnover_change = round(turnover * (1 - prev_vol / today_vol), 2)
             recent_volumes = extra['volume'].dropna().tail(5)
             if len(recent_volumes) >= 2:
                 avg_vol = recent_volumes.mean()
@@ -811,7 +880,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 """ + action_rows_html + """
 </div></div>
 
-<div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分8个板块)</h2>
+<div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分""" + str(len(set(m['sector'] for m in metrics.values()))) + """个板块)</h2>
 <div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>5日较昨日</th><th>当日涨跌</th><th>成交额(亿)</th><th>成交额较昨日</th><th>换手率</th><th>换手率较昨日</th><th>资金流</th><th>波动率</th></tr></thead>
 <tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 
@@ -909,7 +978,9 @@ def main():
         "position_ratio": position_ratio
     })
 
-    data_source_label = ' + '.join(sorted(data_sources)) if data_sources else '未知'
+    # 统一数据源名称显示
+    source_names = {'eastmoney': '东方财富', 'akshare': 'akshare', 'tencent': '腾讯财经', 'sina': '新浪'}
+    data_source_label = ' + '.join(source_names.get(s, s) for s in sorted(data_sources)) if data_sources else '未知'
     html = build_html(actions, current, target, position_text, position_reason,
                       market_cls, asof, update_time, signal_type, metrics, data_source_label)
     with open('index.html', 'w', encoding='utf-8') as f:

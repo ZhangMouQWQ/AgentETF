@@ -1,0 +1,12 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^c:/Users/Administrator/Documents/AgentETF/\\.venv/Scripts/python\\.exe c:/Users/Administrator/Documents/AgentETF/strategy\\.py$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^& \"c:\\\\Users\\\\Administrator\\\\Documents\\\\AgentETF\\\\\\.venv\\\\Scripts\\\\python\\.exe\" -c \"import requests,json; r=requests\\.get\\('http://web\\.ifzq\\.gtimg\\.cn/appstock/app/fqkline/get\\?param=sh510300,day,,,5,qfq',headers=\\{'User-Agent':'Mozilla/5\\.0'\\},timeout=10\\); data=r\\.json\\(\\); print\\(json\\.dumps\\(data,indent=2,ensure_ascii=False\\)\\[:3000\\]\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

@@ -14,6 +14,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       TZ: Asia/Shanghai
     steps:
@@ -36,10 +37,24 @@ jobs:
       - name: Run unit tests
         run: python -m unittest discover tests
       - name: Execute strategy and generate output
+        id: strategy
         run: python strategy.py
+        # 策略失败不阻断，但标记状态供后续步骤判断
+        continue-on-error: true
+
+      - name: Verify output files exist
+        run: |
+          for f in index.html data.json portfolio.json; do
+            if [ ! -f "$f" ] || [ ! -s "$f" ]; then
+              echo "ERROR: $f missing or empty — strategy may have failed"
+              exit 1
+            fi
+          done
+          echo "All output files generated successfully"
+
       - name: Commit generated files
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add index.html data.json portfolio.json
-          git diff --staged --quiet || (git commit -m "update $(date +'%Y-%m-%d %H:%M')" && git push)
+          git diff --staged --quiet || (git commit -m "📊 $(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M') 自动更新" && git push)
