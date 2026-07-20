@@ -24,18 +24,25 @@ SECTOR_ETF_POOL = {
     '宽基指数': {
         '510300': ('sh510300', '沪深300ETF'),
         '510500': ('sh510500', '中证500ETF'),
+        '512100': ('sh512100', '中证1000ETF'),
         '159915': ('sz159915', '创业板ETF'),
         '588000': ('sh588000', '科创50ETF'),
     },
-    '周期资源': {
+    '周期商品': {
         '512400': ('sh512400', '有色金属ETF'),
         '516780': ('sh516780', '稀土ETF'),
         '515220': ('sh515220', '煤炭ETF'),
         '518880': ('sh518880', '黄金ETF'),
     },
-    '科技成长': {
+    '科技': {
         '159995': ('sz159995', '芯片ETF'),
         '515000': ('sh515000', '科技ETF'),
+        '159819': ('sz159819', '人工智能ETF'),
+    },
+    '智能制造': {
+        '512660': ('sh512660', '军工ETF'),
+        '516110': ('sh516110', '汽车ETF'),
+        '159530': ('sz159530', '机器人ETF'),
     },
     '新能源': {
         '515030': ('sh515030', '新能源车ETF'),
@@ -44,18 +51,24 @@ SECTOR_ETF_POOL = {
     '医药医疗': {
         '512010': ('sh512010', '医药ETF'),
         '515120': ('sh515120', '创新药ETF'),
+        '159898': ('sz159898', '医疗器械ETF'),
     },
     '大消费': {
         '512690': ('sh512690', '酒ETF'),
         '159928': ('sz159928', '消费ETF'),
+        '159869': ('sz159869', '游戏ETF'),
     },
     '金融地产': {
         '512000': ('sh512000', '券商ETF'),
         '512800': ('sh512800', '银行ETF'),
+        '512200': ('sh512200', '房地产ETF'),
     },
-    '先进制造': {
-        '512660': ('sh512660', '军工ETF'),
-        '516110': ('sh516110', '汽车ETF'),
+    '基础设施': {
+        '159611': ('sz159611', '电力ETF'),
+        '515880': ('sh515880', '通信ETF'),
+    },
+    '红利防御': {
+        '510880': ('sh510880', '红利ETF'),
     },
 }
 
@@ -390,18 +403,27 @@ def build_html(actions, current, target, position_text, position_reason, market_
 
     def action_rows():
         if not actions:
-            return '<tr><td colspan="3" style="text-align:center;color:#999">无操作</td></tr>'
+            return '<div style="text-align:center;color:#999;padding:20px">无操作</div>'
         out = []
+        cls_map = {"SELL": "neg", "REDUCE": "warn-text", "BUY": "pos", "ADD": "pos", "HOLD": "hold", "WAIT": "hold"}
         for a in actions:
-            cls_map = {"SELL": "neg", "REDUCE": "warn-text", "BUY": "pos", "ADD": "pos", "HOLD": "hold", "WAIT": "hold"}
-            badge_map = {"SELL": "清仓", "REDUCE": "减仓", "BUY": "买入", "ADD": "加仓", "HOLD": "持有", "WAIT": "观望"}
             cls = cls_map.get(a['type'], "")
-            badge = badge_map.get(a['type'], a['type'])
+            # 从 msg 提取操作描述（去掉原因部分）
+            msg = a["msg"]
+            if '，原因:' in msg:
+                op_desc = msg.split('，原因:', 1)[0].strip()
+            elif ',原因:' in msg:
+                op_desc = msg.split(',原因:', 1)[0].strip()
+            else:
+                op_desc = msg.strip()
+            reason = a.get("reason", "")
             out.append(
-                '<tr><td class="nm"><span class="badge-' + a["type"].lower() + '">' + badge + '</span> ' +
-                a["name"] + '(' + a["code"] + ')</td>' +
-                '<td class="' + cls + '">' + a["msg"] + '</td>' +
-                '<td>' + a["reason"] + '</td></tr>')
+                '<div class="action-card ' + cls + '">' +
+                '<div class="action-row"><span class="action-label">操作</span>' +
+                '<span class="action-value">' + op_desc + '</span></div>' +
+                '<div class="action-row"><span class="action-label">原因</span>' +
+                '<span class="action-value">' + reason + '</span></div>' +
+                '</div>')
         return "\n".join(out)
 
     def monitor_rows():
@@ -493,6 +515,19 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 .tag{display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;margin-left:8px;vertical-align:middle}
 .tag-morning{background:#f39c12;color:#fff} .tag-close{background:#27ae60;color:#fff}
 .sector-tag{display:inline-block;background:#e8f6ff;color:#1a5276;font-size:11px;padding:1px 6px;border-radius:3px;margin-left:6px}
+.action-list{display:flex;flex-direction:column;gap:10px}
+.action-card{background:#fafbfc;border-radius:10px;padding:14px 16px;border-left:4px solid #ccc;font-size:13px}
+.action-card.neg{border-left-color:#d7263d;background:#fff5f5}
+.action-card.warn-text{border-left-color:#e67e22;background:#fffaf0}
+.action-card.pos{border-left-color:#27ae60;background:#f0fff4}
+.action-card.hold{border-left-color:#95a5a6;background:#f8f9fa}
+.action-row{display:flex;align-items:flex-start;padding:5px 0;border-bottom:1px solid #eee}
+.action-row:last-child{border-bottom:none}
+.action-label{min-width:56px;color:#888;font-size:12px;font-weight:600;flex-shrink:0;margin-top:1px}
+.action-value{flex:1;color:#333;line-height:1.6;word-break:break-all}
+.action-card.neg .action-value{color:#d7263d}
+.action-card.warn-text .action-value{color:#e67e22}
+.action-card.pos .action-value{color:#27ae60}
 @media(max-width:700px){.grid{grid-template-columns:1fr} table{font-size:12px} .nm{min-width:100px}}
 </style></head><body><div class="wrap">
 <div class="head"><h1>&#128202; ETF 板块轮动 - """ + label + """<span class="tag """ + tag_color + """>""" + label + """</span></h1>
@@ -518,15 +553,16 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 </div>
 
 <div class="card"><h2>&#127919; 操作指令清单</h2>
-<table><thead><tr><th class="nm">标的</th><th>操作详情</th><th>触发原因</th></tr></thead>
-<tbody>""" + action_rows_html + """</tbody></table></div>
+<div class="action-list">
+""" + action_rows_html + """
+</div></div>
 
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分8个板块)</h2>
 <div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>当日涨跌</th><th>波动率</th><th>得分</th></tr></thead>
-<tbody>"" + monitor_rows_html + ""</tbody></table></div></div>
+<tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>
-<b>板块分组</b>:8大概念板块(宽基指数,周期资源,科技成长,新能源,医药医疗,大消费,金融地产,先进制造),共20只代表性ETF.<br>
+<b>板块分组</b>:10大概念板块(宽基指数,周期商品,科技,智能制造,新能源,医药医疗,大消费,金融地产,基础设施,红利防御),共29只代表性ETF.<br>
 <b>仓位</b>:沪深300 40日动量&gt;0且5日动量&gt;0&#8594;满仓10成;40日&gt;0但5日&#8804;0&#8594;半仓5成;40日&#8804;0&#8594;空仓0成.<br>
 <b>选股</b>:40日风险调整动量前""" + str(TOP_K) + """ + 40日动量&gt;0 + 5日动量&gt;-2% + 当日跌幅&gt;""" + str(MAX_DAILY_DROP) + """% + 当日涨幅&lt;""" + str(MAX_DAILY_RISE) + """%.<br>
 <b>上午</b>:只风控(卖出/减仓),不买入(T+1保护).<br>
