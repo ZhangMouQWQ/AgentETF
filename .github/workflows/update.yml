@@ -2,18 +2,18 @@ name: 更新ETF动量轮动信号
 
 on:
   schedule:
-    # UTC 3:45 = 北京时间 11:45，上午休市后刷新（A股11:30休市）
-    - cron: '30 3 * * 1-5'
-    # UTC 7:15 = 北京时间 15:15，下午收盘后刷新（A股15:00收盘）
-    - cron: '0 7 * * 1-5'
+    # UTC 3:45 = 北京时间 11:45（上午休市后，数据已稳定）
+    - cron: '45 3 * * 1-5'
+    # UTC 7:15 = 北京时间 15:15（下午收盘后，数据已稳定）
+    - cron: '15 7 * * 1-5'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt
@@ -22,5 +22,4 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add index.html data.json portfolio.json
-          git diff --staged --quiet || git commit -m "update $(date +'%Y-%m-%d %H:%M')"
-          git push
+          git diff --staged --quiet || (git commit -m "update $(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')" && git push)
