@@ -784,11 +784,11 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 .action-card.pos .action-value{color:#27ae60}
 @media(max-width:700px){.grid{grid-template-columns:1fr} table{font-size:12px} .nm{min-width:100px}}
 </style></head><body><div class="wrap">
-<div class="head"><h1>&#128202; ETF 板块轮动 - """ + label + """<span class="tag """ + tag_color + """>""" + label + """</span></h1>
+<div class="head"><h1>&#128202; ETF 板块轮动 - """ + label + """ <span class='tag """ + tag_color + """'>""" + label + """</span></h1>
 <p>""" + sublabel + """ - 概念板块分组 &#183; 仓位管理 &#183; T+1安全</p></div>
 
 <div class="signal"><div class="lab">当前建议总仓位</div>
-<div class="val market-""" + market_cls + """>""" + position_text + """</div>
+<div class='val market-""" + market_cls + """'>""" + position_text + """</div>
 <div class="sub">""" + position_reason + """ - 数据截至 """ + asof + """</div></div>
 
 <div class="info-box">
