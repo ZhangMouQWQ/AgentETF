@@ -109,7 +109,6 @@ MAX_DAILY_RISE = 5.0
 VOL_WINDOW = 60
 MIN_VOL = 5.0
 TOP_K = 3
-PORTFOLIO_FILE = 'portfolio.json'
 # ==============================================
 
 
@@ -588,12 +587,12 @@ def market_timing(metrics):
 
 
 def build_target(metrics, position_ratio, signal_type='close'):
+    """V2 相对动量选股: 不设绝对值门槛，按排名取前N只"""
     if position_ratio <= 0:
         return []
     candidates = [
         (n, m) for n, m in metrics.items()
-        if m['mom_long'] > 0
-        and m['mom_short'] > -2
+        if m['mom_short'] > -3
         and m['daily_change'] > MAX_DAILY_DROP
         and m['daily_change'] < MAX_DAILY_RISE
     ]
@@ -610,19 +609,6 @@ def build_target(metrics, position_ratio, signal_type='close'):
         {"name": n, "code": m['code'], "weight": w, "mom_long": m['mom_long'], "score": m['score'], "sector": m['sector']}
         for (n, m), w in zip(selected, weights)
     ]
-
-
-def load_portfolio():
-    if os.path.exists(PORTFOLIO_FILE):
-        with open(PORTFOLIO_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {"holdings": [], "cash_ratio": 1.0, "last_update": "", "position_ratio": 0}
-
-
-def save_portfolio(portfolio):
-    with open(PORTFOLIO_FILE, 'w', encoding='utf-8') as f:
-        json.dump(portfolio, f, ensure_ascii=False, indent=2)
-
 
 def generate_actions(current, target, signal_type, metrics):
     actions = []
@@ -691,28 +677,8 @@ def generate_actions(current, target, signal_type, metrics):
     actions.sort(key=lambda x: urgency_order.get(x['urgency'], 99))
     return actions
 
-def build_html(actions, current, target, position_text, position_reason, market_cls,
+def build_html(actions, position_text, position_reason, market_cls,
                asof, update_time, signal_type, metrics, data_source_label):
-
-    def fmt_holdings(holdings, title):
-        if not holdings:
-            return '<p style="color:#999;text-align:center;padding:10px">' + title + ':无</p>'
-        out = []
-        total = sum(h['weight'] for h in holdings)
-        for h in holdings:
-            m = metrics.get(h['name'], {})
-            daily = m.get('daily_change', 0)
-            dcls = 'pos' if daily > 0 else ('neg' if daily < 0 else '')
-            sector = m.get('sector', '')
-            sector_tag = ''
-            if sector:
-                sector_tag = '<span style="background:#e8f6ff;color:#1a5276;font-size:11px;padding:1px 6px;border-radius:3px;margin-left:6px">' + sector + '</span>'
-            out.append(
-                '<div class="hold-item"><b>' + h["name"] + '(' + h["code"] + ')</b>' + sector_tag +
-                ' <span>' + str(int(h["weight"]*10)) + '成</span> ' +
-                '<span class="' + dcls + '">' + ('+' if daily >= 0 else '') + str(round(daily, 2)) + '%</span></div>')
-        out.append('<div class="hold-item" style="border-top:1px solid #eee;margin-top:8px;padding-top:8px"><b>现金</b> <span>' + str(int((1-total)*10)) + '成</span></div>')
-        return "\n".join(out)
 
     def action_rows():
         if not actions:
@@ -775,17 +741,17 @@ def build_html(actions, current, target, position_text, position_reason, market_
                 flow_text = '-' if flow_value is None else format_metric_value(flow_value)
                 out.append(
                     '<tr><td class="nm" style="padding-left:24px">' + name + '(' + m["code"] + ')</td>' +
-                    '<td class="' + mom_cls + '">' + format_metric_value(m["mom_long"], show_sign=True) + '</td>' +
+                    '<td class="' + mom_cls + '">' + format_metric_value(m["mom_long"], show_sign=True) + '%</td>' +
                     '<td class="' + change_cls + '">' + m["mom_long_change_text"] + '</td>' +
-                    '<td class="' + short_cls + '">' + format_metric_value(m["mom_short"], show_sign=True) + '</td>' +
+                    '<td class="' + short_cls + '">' + format_metric_value(m["mom_short"], show_sign=True) + '%</td>' +
                     '<td class="' + short_change_cls + '">' + m["mom_short_change_text"] + '</td>' +
-                    '<td class="' + daily_cls + '">' + format_metric_value(m["daily_change"], show_sign=True) + '</td>' +
+                    '<td class="' + daily_cls + '">' + format_metric_value(m["daily_change"], show_sign=True) + '%</td>' +
                     '<td>' + amount_text + '</td>' +
                     '<td class="' + amount_change_cls + '">' + amount_change_text + '</td>' +
-                    '<td>' + turnover_text + '</td>' +
+                    '<td>' + (turnover_text if turnover_text == '-' else turnover_text + '%') + '</td>' +
                     '<td class="' + turnover_change_cls + '">' + turnover_change_text + '</td>' +
                     '<td class="' + flow_cls + '">' + flow_text + '</td>' +
-                    '<td>' + vol_text + '</td></tr>')
+                    '<td>' + (vol_text if vol_text == '-' else vol_text + '%') + '</td></tr>')
         return "\n".join(out)
 
     if signal_type == 'morning':
@@ -799,8 +765,6 @@ def build_html(actions, current, target, position_text, position_reason, market_
         tip = "&#128161; T+1 提示:今日买入的标的,需待下一个交易日才能卖出;今日卖出资金当日可用"
         tag_color = "tag-close"
 
-    fmt_holdings_current = fmt_holdings(current, "当前持仓")
-    fmt_holdings_target = fmt_holdings(target, "目标持仓")
     action_rows_html = action_rows()
     monitor_rows_html = monitor_rows()
 
@@ -884,30 +848,19 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <small>本次共 """ + str(len(actions)) + """ 条指令,按紧急程度排序</small>
 </div>
 
-<div class="grid">
-<div class="mini"><div class="t">当前建议持仓</div><div class="v" style="font-size:14px;line-height:1.6">
-""" + fmt_holdings_current + """
-</div></div>
-<div class="mini"><div class="t">目标持仓(""" + label + """后)</div><div class="v" style="font-size:14px;line-height:1.6">
-""" + fmt_holdings_target + """
-</div></div>
-</div>
-
 <div class="card"><h2>&#127919; 操作指令清单</h2>
 <div class="action-list">
 """ + action_rows_html + """
 </div></div>
 
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分""" + str(len(set(m['sector'] for m in metrics.values()))) + """个板块)</h2>
-<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>5日较昨日</th><th>当日涨跌</th><th>成交额(亿)</th><th>成交额较昨日</th><th>换手率</th><th>换手率较昨日</th><th>资金流</th><th>波动率</th></tr></thead>
+<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量(%)</th><th>较昨日</th><th>5日动量(%)</th><th>5日较昨日</th><th>当日涨跌(%)</th><th>成交额(亿)</th><th>成交额较昨日</th><th>换手率(%)</th><th>换手率较昨日</th><th>资金流评分</th><th>波动率(%)</th></tr></thead>
 <tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>
-<b>板块分组</b>:12大概念板块(宽基指数,周期商品,科技,传媒互联网,军工国防,高端制造,新能源,医药医疗,大消费,金融地产,基础设施,红利防御),共34只代表性ETF.<br>
 <b>仓位</b>:沪深300 40日动量&gt;0且5日动量&gt;0&#8594;满仓10成;40日&gt;0但5日&#8804;0&#8594;半仓5成;40日&#8804;0&#8594;空仓0成.<br>
-<b>选股</b>:40日风险调整动量前""" + str(TOP_K) + """ + 40日动量&gt;0 + 5日动量&gt;-2% + 当日跌幅&gt;""" + str(MAX_DAILY_DROP) + """% + 当日涨幅&lt;""" + str(MAX_DAILY_RISE) + """% + 资金流评分优先.<br>
-<b>上午</b>:只风控(卖出/减仓),不买入(T+1保护).<br>
-<b>下午</b>:重新评估,给出次日目标持仓,可买可卖.<br><br>
+<b>选股</b>:40日风险调整动量排名前""" + str(TOP_K) + """(不设绝对值门槛) + 5日动量&gt;-3% + 当日跌幅&gt;""" + str(MAX_DAILY_DROP) + """% + 当日涨幅&lt;""" + str(MAX_DAILY_RISE) + """% + 资金流评分优先.<br>
+<b>上午</b>:只风控(卖出/减仓),不买入(T+1保护).<br><br>
 <b>T+1 制度说明</b><br>
 A股 ETF 实行T+1交易:今日买入的份额,需待下一个交易日才能卖出;今日卖出资金当日可用(可继续买入其他ETF),但不可取现至银行卡.</div>
 
@@ -959,47 +912,15 @@ def main():
     position_ratio, position_text, position_reason, market_cls = market_timing(metrics)
     print(f"大盘: {position_text} ({position_reason})")
 
-    portfolio = load_portfolio()
-    current = portfolio.get('holdings', [])
-    print(f"当前建议持仓: {[(h['name'], h['weight']) for h in current]}")
-
     target = build_target(metrics, position_ratio, signal_type)
-    print(f"目标持仓: {[(h['name'], h['weight']) for h in target]}")
-
-    actions = generate_actions(current, target, signal_type, metrics)
+    actions = generate_actions([], target, signal_type, metrics)
     for a in actions:
         print(f"  {a['type']}: {a['msg']}")
-
-    new_holdings = []
-    if signal_type == 'morning':
-        sold = {a['name'] for a in actions if a['type'] == 'SELL'}
-        reduced = {a['name']: a for a in actions if a['type'] == 'REDUCE'}
-        for h in current:
-            if h['name'] in sold:
-                continue
-            if h['name'] in reduced:
-                for t in target:
-                    if t['name'] == h['name']:
-                        new_holdings.append({**h, 'weight': t['weight']})
-                        break
-            else:
-                new_holdings.append(h)
-        cash = 1 - sum(h['weight'] for h in new_holdings)
-    else:
-        new_holdings = target
-        cash = 1 - sum(h['weight'] for h in target)
-
-    save_portfolio({
-        "holdings": new_holdings,
-        "cash_ratio": round(cash, 2),
-        "last_update": update_time,
-        "position_ratio": position_ratio
-    })
 
     # 统一数据源名称显示
     source_names = {'eastmoney': '东方财富', 'akshare': 'akshare', 'tencent': '腾讯财经', 'sina': '新浪'}
     data_source_label = ' + '.join(source_names.get(s, s) for s in sorted(data_sources)) if data_sources else '未知'
-    html = build_html(actions, current, target, position_text, position_reason,
+    html = build_html(actions, position_text, position_reason,
                       market_cls, asof, update_time, signal_type, metrics, data_source_label)
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(html)
@@ -1008,13 +929,12 @@ def main():
         'update_time': update_time, 'asof': asof, 'signal_type': signal_type,
         'data_source': data_source_label,
         'market': {'position_text': position_text, 'reason': position_reason, 'ratio': position_ratio},
-        'current_holdings': current, 'target_holdings': target,
         'actions': actions, 'metrics': metrics
     }
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    print(f"\n已生成 index.html, data.json, {PORTFOLIO_FILE}")
+    print(f"\n已生成 index.html, data.json")
     print(f"{'='*60}\n")
 
 
