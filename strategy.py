@@ -560,6 +560,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分8个板块)</h2>
 <div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>当日涨跌</th><th>波动率</th><th>得分</th></tr></thead>
 <tbody>""" + monitor_rows_html + """</tbody></table></div></div>
+<tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>
 <b>板块分组</b>:10大概念板块(宽基指数,周期商品,科技,智能制造,新能源,医药医疗,大消费,金融地产,基础设施,红利防御),共29只代表性ETF.<br>
