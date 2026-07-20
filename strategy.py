@@ -33,54 +33,61 @@ SECTOR_ETF_POOL = {
         '159915': ('sz159915', '创业板ETF'),
         '588000': ('sh588000', '科创50ETF'),
     },
-    '周期商品': {
-        '512400': ('sh512400', '有色金属ETF'),
-        '516780': ('sh516780', '稀土ETF'),
-        '515220': ('sh515220', '煤炭ETF'),
-        '518880': ('sh518880', '黄金ETF'),
+    '金融': {
+        '512800': ('sh512800', '银行ETF'),
+        '512000': ('sh512000', '券商ETF'),
+        '512200': ('sh512200', '房地产ETF'),
     },
-    '科技': {
-        '159995': ('sz159995', '芯片ETF'),
-        '512480': ('sh512480', '半导体ETF'),
-        '159819': ('sz159819', '人工智能ETF'),
-        '515000': ('sh515000', '科技ETF'),
+    '消费': {
+        '515170': ('sh515170', '食品饮料ETF'),
+        '512690': ('sh512690', '酒ETF'),
+        '159996': ('sz159996', '家电ETF'),
+        '159865': ('sz159865', '养殖ETF'),
     },
-    '传媒互联网': {
-        '159869': ('sz159869', '游戏ETF'),
-        '512980': ('sh512980', '传媒ETF'),
-    },
-    '军工国防': {
-        '512660': ('sh512660', '军工ETF'),
-        '512670': ('sh512670', '国防ETF'),
-    },
-    '高端制造': {
-        '516110': ('sh516110', '汽车ETF'),
-        '159530': ('sz159530', '机器人ETF'),
-    },
-    '新能源': {
-        '515030': ('sh515030', '新能源车ETF'),
-        '515790': ('sh515790', '光伏ETF'),
-    },
-    '医药医疗': {
+    '医药': {
         '512010': ('sh512010', '医药ETF'),
         '515120': ('sh515120', '创新药ETF'),
         '512170': ('sh512170', '医疗ETF'),
     },
-    '大消费': {
-        '512690': ('sh512690', '酒ETF'),
-        '159928': ('sz159928', '消费ETF'),
-        '159865': ('sz159865', '养殖ETF'),
+    '电子': {
+        '512480': ('sh512480', '半导体ETF'),
+        '159995': ('sz159995', '芯片ETF'),
     },
-    '金融地产': {
-        '512000': ('sh512000', '券商ETF'),
-        '512800': ('sh512800', '银行ETF'),
-        '512200': ('sh512200', '房地产ETF'),
+    '计算机': {
+        '159819': ('sz159819', '人工智能ETF'),
+        '512720': ('sh512720', '计算机ETF'),
     },
-    '基础设施': {
+    '电力新能源': {
+        '515030': ('sh515030', '新能源车ETF'),
+        '515790': ('sh515790', '光伏ETF'),
         '159611': ('sz159611', '电力ETF'),
-        '515880': ('sh515880', '通信ETF'),
     },
-    '红利防御': {
+    '军工': {
+        '512660': ('sh512660', '军工ETF'),
+        '512670': ('sh512670', '国防ETF'),
+    },
+    '金属矿产': {
+        '512400': ('sh512400', '有色金属ETF'),
+        '516780': ('sh516780', '稀土ETF'),
+        '518880': ('sh518880', '黄金ETF'),
+    },
+    '能源化工': {
+        '515220': ('sh515220', '煤炭ETF'),
+        '159697': ('sz159697', '油气ETF'),
+        '159870': ('sz159870', '化工ETF'),
+        '515210': ('sh515210', '钢铁ETF'),
+    },
+    '通信传媒': {
+        '515880': ('sh515880', '通信ETF'),
+        '512980': ('sh512980', '传媒ETF'),
+        '159869': ('sz159869', '游戏ETF'),
+    },
+    '制造基建': {
+        '516110': ('sh516110', '汽车ETF'),
+        '159530': ('sz159530', '机器人ETF'),
+        '516970': ('sh516970', '基建ETF'),
+    },
+    '红利': {
         '510880': ('sh510880', '红利ETF'),
         '515080': ('sh515080', '中证红利ETF'),
     },
@@ -677,31 +684,150 @@ def generate_actions(current, target, signal_type, metrics):
     actions.sort(key=lambda x: urgency_order.get(x['urgency'], 99))
     return actions
 
-def build_html(actions, position_text, position_reason, market_cls,
+def build_html(target, position_text, position_reason, market_cls,
                asof, update_time, signal_type, metrics, data_source_label):
 
-    def action_rows():
-        if not actions:
-            return '<div style="text-align:center;color:#999;padding:20px">无操作</div>'
+    def buy_picks():
+        """买入推荐：截面 z-score 质量评分 + 板块分组"""
+        if not target:
+            return ('<div class="action-card hold">'
+                    '<div class="action-row"><span class="action-label">建议</span>'
+                    '<span class="action-value">【观望】暂不推荐，大盘弱势或板块无机会</span></div>'
+                    '</div>')
+
+        # 计算全市场截面 z-score 用于展示相对优势
+        items = [(n, m) for n, m in metrics.items() if m.get('sector') != '宽基指数']
+        vals_mom    = np.array([m.get('mom_long', 0) for _, m in items])
+        vals_score  = np.array([m.get('score', 0) for _, m in items])
+        vals_flow   = np.array([m.get('flow_signal', 0) for _, m in items])
+
+        def safe_z(arr, val):
+            return (val - np.mean(arr)) / (np.std(arr) or 1.0)
+
+        # 按板块分组
+        sector_items = {}
+        for i, h in enumerate(target):
+            s = h.get('sector', '')
+            sector_items.setdefault(s, []).append((i, h))
+
         out = []
-        cls_map = {"SELL": "neg", "REDUCE": "warn-text", "BUY": "pos", "ADD": "pos", "HOLD": "hold", "WAIT": "hold"}
-        for a in actions:
-            cls = cls_map.get(a['type'], "")
-            # 从 msg 提取操作描述（去掉原因部分）
-            msg = a["msg"]
-            if '，原因:' in msg:
-                op_desc = msg.split('，原因:', 1)[0].strip()
-            elif ',原因:' in msg:
-                op_desc = msg.split(',原因:', 1)[0].strip()
+        for sector, items_in_sector in sector_items.items():
+            out.append('<div style="font-size:12px;font-weight:700;color:#2c5364;padding:8px 0 4px 0;border-bottom:1px solid #e8ecf0;margin-top:4px">&#128193; ' + sector + '</div>')
+            for rank, h in items_in_sector:
+                m = metrics.get(h['name'], {})
+                z_mom   = safe_z(vals_mom,   h.get('mom_long', 0))
+                z_score = safe_z(vals_score, h.get('score', 0))
+                z_flow  = safe_z(vals_flow,  m.get('flow_signal', 0))
+                quality = z_mom * 0.4 + z_score * 0.35 + z_flow * 0.25
+
+                mom_str   = f"{h['mom_long']:+.2f}%" if h.get('mom_long') is not None else '-'
+                short_str = (format_metric_value(m.get('mom_short', 0), show_sign=True) + '%') if m.get('mom_short') is not None else '-'
+                daily_str = (format_metric_value(m.get('daily_change', 0), show_sign=True) + '%') if m.get('daily_change') is not None else '-'
+                score_str = f"{h['score']:.1f}" if h.get('score') is not None else '-'
+                flow_str  = f"{m.get('flow_signal', 0):.1f}" if m.get('flow_signal') is not None else '-'
+                vol_str   = (str(round(m.get('vol', 0), 1)) + '%') if m.get('vol') is not None else '-'
+                q_label   = '⭐⭐⭐' if quality > 1.2 else '⭐⭐' if quality > 0.5 else '⭐'
+
+                out.append(
+                    '<div class="action-card pos">'
+                    '<div class="action-row"><span class="action-label">#' + str(rank + 1) + '</span>'
+                    '<span class="action-value"><b>' + h['name'] + '(' + h['code'] + ')</b>'
+                    ' | 权重 <b>' + str(int(h['weight'] * 10)) + '成</b>'
+                    ' <span style="font-size:11px">' + q_label + ' 质量 ' + f'{quality:+.1f}' + '</span></span></div>'
+                    '<div class="action-row"><span class="action-label">动量</span>'
+                    '<span class="action-value">40日 ' + mom_str + ' (z=' + f'{z_mom:+.1f}' + ')'
+                    + ' | 5日 ' + short_str
+                    + ' | 当日 ' + daily_str + '</span></div>'
+                    '<div class="action-row"><span class="action-label">评分</span>'
+                    '<span class="action-value">得分 ' + score_str + ' (z=' + f'{z_score:+.1f}' + ')'
+                    + ' | 资金流 ' + flow_str + ' (z=' + f'{z_flow:+.1f}' + ')'
+                    + ' | 波动率 ' + vol_str + '</span></div>'
+                    '</div>')
+        return "\n".join(out)
+
+    def risk_warnings():
+        """风险警示：截面 z-score 法，自适应市场环境"""
+        # 收集非宽基 ETF 的三项指标
+        items = [(n, m) for n, m in metrics.items() if m.get('sector') != '宽基指数']
+        n_all = len(items)
+        if n_all < 5:
+            return ('<div class="action-card hold">'
+                    '<div class="action-row"><span class="action-label">安全</span>'
+                    '<span class="action-value">样本不足，无法评估风险</span></div>'
+                    '</div>')
+
+        # 提取三个维度的原始值
+        vals_daily   = np.array([m.get('daily_change', 0) for _, m in items])
+        vals_short   = np.array([m.get('mom_short', 0) for _, m in items])
+        vals_long_chg = np.array([m.get('mom_long_change', 0) for _, m in items])
+
+        # 计算 z-score: (值 - 均值) / 标准差。负值 = 低于平均 = 危险
+        def safe_z(arr, val):
+            std = np.std(arr) or 1.0
+            return (val - np.mean(arr)) / std
+
+        raw = []
+        for name, m in items:
+            z_daily   = safe_z(vals_daily,   m.get('daily_change', 0))
+            z_short   = safe_z(vals_short,   m.get('mom_short', 0))
+            z_long    = safe_z(vals_long_chg, m.get('mom_long_change', 0))
+
+            # 综合风险分：三个 z 加权（负分越多越危险）
+            risk = z_daily * 0.3 + z_short * 0.4 + z_long * 0.3
+
+            # 只报告 risk < -1.0 (低于均值1个标准差以上)
+            if risk < -1.0:
+                signals = []
+                if z_daily < -1.5:
+                    signals.append(('stop', f'当日跌幅 z={z_daily:.1f}σ（{m["daily_change"]:+.1f}%），截面显著弱于同行'))
+                if z_long < -1.5:
+                    signals.append(('top', f'40日动量变化 z={z_long:.1f}σ（{m["mom_long_change"]:+.1f}pp），长期趋势崩坏'))
+                if z_short < -1.5:
+                    signals.append(('deteriorate', f'5日动量 z={z_short:.1f}σ（{m["mom_short"]:+.1f}%），短线严重落后'))
+                # 放低门槛兜底：至少有一条显著落后就收录
+                if not signals and risk < -1.0:
+                    worst = min([(z_daily, 'stop', '当日跌幅'), (z_short, 'deteriorate', '5日动量'), (z_long, 'top', '40日动量变化')], key=lambda x: x[0])
+                    signals.append((worst[1], f'{worst[2]} z={worst[0]:.1f}σ，综合风险分 {risk:.1f}'))
+                raw.append((m['sector'], name, m['code'], signals, -risk))
+
+        if not raw:
+            return ('<div class="action-card hold">'
+                    '<div class="action-row"><span class="action-label">安全</span>'
+                    '<span class="action-value">当前无显著截面风险（所有 ETF 偏离均在 1σ 以内）</span></div>'
+                    '</div>')
+
+        # 按板块分组，板块按总风险排序
+        sector_order = sorted(set(r[0] for r in raw),
+            key=lambda s: sum(r[4] for r in raw if r[0] == s), reverse=True)
+
+        type_label = {'stop': '跌幅', 'top': '到顶', 'deteriorate': '恶化'}
+        out = []
+        last_sector = None
+        for sector, name, code, signals, risk_score in sorted(raw,
+                key=lambda r: (sector_order.index(r[0]), -r[4])):
+            if sector != last_sector:
+                out.append('<div style="font-size:12px;font-weight:700;color:#2c5364;padding:8px 0 4px 0;border-bottom:1px solid #e8ecf0;margin-top:4px">&#128193; ' + sector + '</div>')
+                last_sector = sector
+
+            # 风险分决定卡片颜色和等级标识
+            if risk_score > 2.0:
+                card_cls, risk_icon, risk_label = 'neg', '🔴🔴🔴', '高风险'
+            elif risk_score > 1.5:
+                card_cls, risk_icon, risk_label = 'neg', '🔴🔴', '中高风险'
+            elif risk_score > 1.2:
+                card_cls, risk_icon, risk_label = 'warn-text', '🔴', '中风险'
             else:
-                op_desc = msg.strip()
-            reason = a.get("reason", "")
+                card_cls, risk_icon, risk_label = 'warn-text', '🟠', '关注'
+
+            rows = []
+            for stype, sreason in signals:
+                rows.append('<div class="action-row"><span class="action-label">' + type_label.get(stype, '') + '</span><span class="action-value">' + sreason + '</span></div>')
             out.append(
-                '<div class="action-card ' + cls + '">' +
-                '<div class="action-row"><span class="action-label">操作</span>' +
-                '<span class="action-value">' + op_desc + '</span></div>' +
-                '<div class="action-row"><span class="action-label">原因</span>' +
-                '<span class="action-value">' + reason + '</span></div>' +
+                '<div class="action-card ' + card_cls + '">'
+                '<div class="action-row"><span class="action-label">标的</span>'
+                '<span class="action-value"><b>' + name + '(' + code + ')</b>'
+                ' <span style="font-size:11px">' + risk_icon + ' ' + risk_label + ' ' + f'{risk_score:.1f}' + '</span></span></div>'
+                + "\n".join(rows) +
                 '</div>')
         return "\n".join(out)
 
@@ -765,7 +891,22 @@ def build_html(actions, position_text, position_reason, market_cls,
         tip = "&#128161; T+1 提示:今日买入的标的,需待下一个交易日才能卖出;今日卖出资金当日可用"
         tag_color = "tag-close"
 
-    action_rows_html = action_rows()
+    # 市场概览数据
+    non_broad = [(n, m) for n, m in metrics.items() if m.get('sector') != '宽基指数']
+    up_today = sum(1 for _, m in non_broad if m.get('daily_change', 0) > 0)
+    down_today = len(non_broad) - up_today
+    sectors_pos = len(set(m['sector'] for _, m in non_broad if m.get('mom_long', 0) > 0))
+    sectors_total = len(set(m['sector'] for _, m in non_broad))
+    hs300_mom = metrics.get('沪深300ETF', {}).get('mom_long', 0)
+
+    market_summary = (
+        f'<b>沪深300 40日动量</b> <span class="{"pos" if hs300_mom > 0 else "neg"}">{hs300_mom:+.1f}%</span>'
+        f' &nbsp;|&nbsp; <b>板块动量</b> {sectors_pos}/{sectors_total} 板块为正'
+        f' &nbsp;|&nbsp; <b>今日涨跌</b> <span class="pos">{up_today}涨</span> / <span class="neg">{down_today}跌</span>'
+    )
+
+    buy_picks_html = buy_picks()
+    risk_warnings_html = risk_warnings()
     monitor_rows_html = monitor_rows()
 
     html = """<!DOCTYPE html>
@@ -803,16 +944,17 @@ padding:2px 8px;border-radius:4px;margin-right:6px}
 padding:2px 8px;border-radius:4px;margin-right:6px}
 .badge-hold,.badge-wait{display:inline-block;background:#95a5a6;color:#fff;font-size:11px;
 padding:2px 8px;border-radius:4px;margin-right:6px}
-.signal{background:linear-gradient(135deg,#d7263d,#f46036);color:#fff;border-radius:14px;
-padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215,38,61,.35)}
+.signal{color:#fff;border-radius:14px;padding:24px;text-align:center;margin-bottom:18px}
+.signal.signal-danger{background:linear-gradient(135deg,#c0392b,#e74c3c);box-shadow:0 8px 24px rgba(192,57,43,.4)}
+.signal.signal-warn{background:linear-gradient(135deg,#d35400,#e67e22);box-shadow:0 8px 24px rgba(211,84,0,.4)}
+.signal.signal-ok{background:linear-gradient(135deg,#1e8449,#27ae60);box-shadow:0 8px 24px rgba(30,132,73,.4)}
 .signal .lab{font-size:13px;opacity:.9}
-.signal .val{font-size:28px;font-weight:700;margin-top:8px}
+.signal .val{font-size:28px;font-weight:700;margin-top:8px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.25)}
 .signal .sub{font-size:14px;margin-top:6px;opacity:.9}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
 .mini{background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
 .mini .t{font-size:13px;color:#888} .mini .v{font-size:20px;font-weight:700;color:#2c5364;margin-top:6px}
 .hold-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:14px}
-.market-ok{color:#27ae60} .market-warn{color:#e67e22} .market-danger{color:#d7263d}
 .info-box{background:#e8f6ff;border-left:4px solid #3498db;padding:14px 18px;border-radius:8px;margin-bottom:18px;color:#1a5276;font-size:14px;line-height:1.6}
 .note{background:#fff;border-radius:14px;padding:18px;font-size:13px;color:#555;line-height:1.9}
 .note b{color:#2c5364}
@@ -838,19 +980,23 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <div class="head"><h1>&#128202; ETF 板块轮动 - """ + label + """ <span class='tag """ + tag_color + """'>""" + label + """</span></h1>
 <p>""" + sublabel + """ - 概念板块分组 &#183; 仓位管理 &#183; T+1安全</p></div>
 
-<div class="signal"><div class="lab">当前建议总仓位</div>
-<div class='val market-""" + market_cls + """'>""" + position_text + """</div>
+<div class="signal signal-""" + market_cls + """"><div class="lab">当前建议总仓位</div>
+<div class='val'>""" + position_text + """</div>
 <div class="sub">""" + position_reason + """ - 数据截至 """ + asof + """</div></div>
 
 <div class="info-box">
-<b>&#128203; 操作提示</b><br>
-""" + tip + """<br>
-<small>本次共 """ + str(len(actions)) + """ 条指令,按紧急程度排序</small>
+<b>&#128203; 市场概览</b><br>
+""" + market_summary + """
 </div>
 
-<div class="card"><h2>&#127919; 操作指令清单</h2>
+<div class="card"><h2>&#127919; 买入推荐</h2>
 <div class="action-list">
-""" + action_rows_html + """
+""" + buy_picks_html + """
+</div></div>
+
+<div class="card"><h2>&#9888; 风险警示</h2>
+<div class="action-list">
+""" + risk_warnings_html + """
 </div></div>
 
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分""" + str(len(set(m['sector'] for m in metrics.values()))) + """个板块)</h2>
@@ -893,12 +1039,18 @@ def main():
         return
 
     today_str = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
-    if price_daily.index[-1] != today_str:
-        print(f"\n日K线最新日期 {price_daily.index[-1]} 不是今天,尝试用60分钟K线合成...")
+    trade_date = price_daily.index[-1]
+    # 盘中时间(9:30-15:00)且日K最新不是今天，才尝试用60分钟K线合成当日数据
+    is_market_hours = 9 <= now.hour < 15 or (now.hour == 9 and now.minute >= 30)
+    if trade_date != today_str and is_market_hours:
+        print(f"\n日K最新 {trade_date}，盘中时段，尝试用60分钟K线合成今日数据...")
         intraday_snapshot = fetch_intraday_snapshot(ETF_POOL)
         price = merge_intraday_price(price_daily, intraday_snapshot, etf_info)
     else:
-        print(f"\n日K线已包含今天数据,直接使用")
+        if trade_date != today_str:
+            print(f"\n日K最新 {trade_date}（非盘中时段），直接使用")
+        else:
+            print(f"\n日K已包含今天数据，直接使用")
         price = price_daily
 
     metrics = calc_metrics(price, etf_info, ETF_SECTOR, extra_history)
@@ -920,7 +1072,7 @@ def main():
     # 统一数据源名称显示
     source_names = {'eastmoney': '东方财富', 'akshare': 'akshare', 'tencent': '腾讯财经', 'sina': '新浪'}
     data_source_label = ' + '.join(source_names.get(s, s) for s in sorted(data_sources)) if data_sources else '未知'
-    html = build_html(actions, position_text, position_reason,
+    html = build_html(target, position_text, position_reason,
                       market_cls, asof, update_time, signal_type, metrics, data_source_label)
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(html)
