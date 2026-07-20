@@ -133,6 +133,7 @@ def get_etf_sina(sina_code, scale=240, datalen=DATA_LEN, retry=3):
 
 def get_etf_history_akshare(code, datalen=DATA_LEN):
     if ak is None:
+        print(f"  [提示] akshare 未安装或不可用, {code} 将回退到新浪数据")
         return None
     try:
         end_date = datetime.now(timezone(timedelta(hours=8))).strftime('%Y%m%d')
@@ -169,11 +170,15 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
     all_close = {}
     etf_info = {}
     extra_history = {}
+    data_sources = set()
     print("拉取历史日K线...")
     for code, (sina, name) in pool.items():
         df = get_etf_history_akshare(code, datalen=datalen)
+        source = 'akshare'
         if df is None:
             df = get_etf_sina(sina, scale=240, datalen=datalen)
+            source = 'sina'
+        data_sources.add(source)
         if df is not None and len(df) >= MOM_LONG + 5:
             all_close[name] = df.set_index('day')['close']
             etf_info[name] = code
@@ -183,16 +188,19 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
                 extra_df = extra_df.dropna(how='all')
                 extra_df = extra_df.set_index('day')
                 extra_history[name] = extra_df
-            print(f"  ok {name}({code}): {len(df)} 条, 最新 {df['day'].iloc[-1]}")
+            details = f"来源={source}"
+            if source == 'sina':
+                details += " (新浪源无成交额/换手率字段)"
+            print(f"  ok {name}({code}): {len(df)} 条, 最新 {df['day'].iloc[-1]} {details}")
         else:
             print(f"  fail {name}({code}): 数据不足")
         time.sleep(0.15)
     if not all_close:
-        return None, {}, {}
+        return None, {}, {}, data_sources
     price = pd.DataFrame(all_close).sort_index()
     price = price.ffill().dropna(how='any', axis=1).dropna(how='all')
     print(f"日K线维度: {price.shape}, 最新日期: {price.index[-1]}")
-    return price, etf_info, extra_history
+    return price, etf_info, extra_history, data_sources
 
 
 def fetch_intraday_snapshot(pool):
@@ -293,6 +301,7 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
 
         mom_long = (prev / s.iloc[-MOM_LONG-1] - 1) * 100
         _, _, mom_long_change = calc_momentum_change(s, lookback=MOM_LONG)
+        _, _, mom_short_change = calc_momentum_change(s, lookback=MOM_SHORT)
         rets = s.iloc[:-1].pct_change().dropna().iloc[-VOL_WINDOW:]
         vol = rets.std() * np.sqrt(252) * 100 if len(rets) >= VOL_WINDOW // 2 else 999.0
         vol = max(vol, MIN_VOL)
@@ -336,9 +345,11 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
             'daily_change': round(daily_change, 2),
             'mom_long': round(mom_long, 2),
             'mom_short': round(mom_short, 2),
+            'mom_short_change': round(mom_short_change, 2) if mom_short_change is not None else 0.0,
             'mom_long_change': round(mom_long_change, 2) if mom_long_change is not None else 0.0,
             'mom_long_change_direction': direction,
             'mom_long_change_text': (("↑" if mom_long_change and mom_long_change > 0 else "↓" if mom_long_change and mom_long_change < 0 else "→") + format_metric_value(abs(mom_long_change), show_sign=False)) if mom_long_change is not None else '→0.00',
+            'mom_short_change_text': (("↑" if mom_short_change and mom_short_change > 0 else "↓" if mom_short_change and mom_short_change < 0 else "→") + format_metric_value(abs(mom_short_change), show_sign=False)) if mom_short_change is not None else '→0.00',
             'vol': round(vol, 1),
             'amount': round(amount / 1e8, 2) if amount is not None else None,
             'turnover': round(turnover, 2) if turnover is not None else None,
@@ -483,7 +494,7 @@ def generate_actions(current, target, signal_type, metrics):
     return actions
 
 def build_html(actions, current, target, position_text, position_reason, market_cls,
-               asof, update_time, signal_type, metrics):
+               asof, update_time, signal_type, metrics, data_source_label):
 
     def fmt_holdings(holdings, title):
         if not holdings:
@@ -542,10 +553,11 @@ def build_html(actions, current, target, position_text, position_reason, market_
         for sector in sector_order:
             items = sorted(sector_groups[sector], key=lambda x: x[1]['score'], reverse=True)
             out.append(
-                '<tr style="background:#f0f7ff"><td colspan="9" style="font-weight:700;color:#2c5364;padding:8px 10px">&#128193; ' + sector + '</td></tr>')
+                '<tr style="background:#f0f7ff"><td colspan="10" style="font-weight:700;color:#2c5364;padding:8px 10px">&#128193; ' + sector + '</td></tr>')
             for name, m in items:
                 mom_cls = 'pos' if m['mom_long'] > 0 else 'neg'
                 short_cls = 'pos' if m['mom_short'] > 0 else 'neg'
+                short_change_cls = 'pos' if m['mom_short_change'] > 0 else 'neg' if m['mom_short_change'] < 0 else ''
                 daily_cls = 'pos' if m['daily_change'] > 0 else 'neg'
                 change_cls = 'pos' if m['mom_long_change'] > 0 else 'neg' if m['mom_long_change'] < 0 else ''
                 amount_text = '-' if m.get('amount') is None else format_metric_value(m['amount'])
@@ -559,6 +571,7 @@ def build_html(actions, current, target, position_text, position_reason, market_
                     '<td class="' + mom_cls + '">' + format_metric_value(m["mom_long"], show_sign=True) + '</td>' +
                     '<td class="' + change_cls + '">' + m["mom_long_change_text"] + '</td>' +
                     '<td class="' + short_cls + '">' + format_metric_value(m["mom_short"], show_sign=True) + '</td>' +
+                    '<td class="' + short_change_cls + '">' + m["mom_short_change_text"] + '</td>' +
                     '<td class="' + daily_cls + '">' + format_metric_value(m["daily_change"], show_sign=True) + '</td>' +
                     '<td>' + amount_text + '</td>' +
                     '<td>' + turnover_text + '</td>' +
@@ -671,7 +684,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 </div></div>
 
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分8个板块)</h2>
-<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>当日涨跌</th><th>成交额(亿)</th><th>换手率</th><th>资金流</th><th>波动率</th></tr></thead>
+<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>5日较昨日</th><th>当日涨跌</th><th>成交额(亿)</th><th>换手率</th><th>资金流</th><th>波动率</th></tr></thead>
 <tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>
@@ -683,7 +696,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <b>T+1 制度说明</b><br>
 A股 ETF 实行T+1交易:今日买入的份额,需待下一个交易日才能卖出;今日卖出资金当日可用(可继续买入其他ETF),但不可取现至银行卡.</div>
 
-<div class="foot">更新于 """ + update_time + """ - 数据源: 新浪财经 - 策略状态自动维护</div>
+<div class="foot">更新于 " + update_time + " - 数据源: " + data_source_label + " - 策略状态自动维护</div>
 </div></body></html>"""
     return html
 
@@ -706,7 +719,7 @@ def main():
     print(f"[{update_time}] 信号类型: {signal_type}")
     print(f"{'='*60}")
 
-    price_daily, etf_info, extra_history = fetch_daily_data(ETF_POOL)
+    price_daily, etf_info, extra_history, data_sources = fetch_daily_data(ETF_POOL)
     if price_daily is None:
         print("日K线获取失败")
         return
@@ -768,13 +781,15 @@ def main():
         "position_ratio": position_ratio
     })
 
+    data_source_label = ' + '.join(sorted(data_sources)) if data_sources else '未知'
     html = build_html(actions, current, target, position_text, position_reason,
-                      market_cls, asof, update_time, signal_type, metrics)
+                      market_cls, asof, update_time, signal_type, metrics, data_source_label)
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(html)
 
     data = {
         'update_time': update_time, 'asof': asof, 'signal_type': signal_type,
+        'data_source': data_source_label,
         'market': {'position_text': position_text, 'reason': position_reason, 'ratio': position_ratio},
         'current_holdings': current, 'target_holdings': target,
         'actions': actions, 'metrics': metrics
