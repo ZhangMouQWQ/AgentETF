@@ -41,11 +41,19 @@ SECTOR_ETF_POOL = {
     },
     '科技': {
         '159995': ('sz159995', '芯片ETF'),
-        '515000': ('sh515000', '科技ETF'),
+        '512480': ('sh512480', '半导体ETF'),
         '159819': ('sz159819', '人工智能ETF'),
+        '515000': ('sh515000', '科技ETF'),
     },
-    '智能制造': {
+    '传媒互联网': {
+        '159869': ('sz159869', '游戏ETF'),
+        '512980': ('sh512980', '传媒ETF'),
+    },
+    '军工国防': {
         '512660': ('sh512660', '军工ETF'),
+        '512670': ('sh512670', '国防ETF'),
+    },
+    '高端制造': {
         '516110': ('sh516110', '汽车ETF'),
         '159530': ('sz159530', '机器人ETF'),
     },
@@ -56,12 +64,12 @@ SECTOR_ETF_POOL = {
     '医药医疗': {
         '512010': ('sh512010', '医药ETF'),
         '515120': ('sh515120', '创新药ETF'),
-        '159898': ('sz159898', '医疗器械ETF'),
+        '512170': ('sh512170', '医疗ETF'),
     },
     '大消费': {
         '512690': ('sh512690', '酒ETF'),
         '159928': ('sz159928', '消费ETF'),
-        '159869': ('sz159869', '游戏ETF'),
+        '159865': ('sz159865', '养殖ETF'),
     },
     '金融地产': {
         '512000': ('sh512000', '券商ETF'),
@@ -74,6 +82,7 @@ SECTOR_ETF_POOL = {
     },
     '红利防御': {
         '510880': ('sh510880', '红利ETF'),
+        '515080': ('sh515080', '中证红利ETF'),
     },
 }
 
@@ -736,13 +745,16 @@ def build_html(actions, current, target, position_text, position_reason, market_
             sector = m['sector']
             sector_groups.setdefault(sector, []).append((name, m))
         sector_order = sorted(sector_groups.keys(),
-                              key=lambda s: max(m['score'] for _, m in sector_groups[s]),
+                              key=lambda s: sum(m.get('amount') or 0 for _, m in sector_groups[s]),
                               reverse=True)
         out = []
         for sector in sector_order:
-            items = sorted(sector_groups[sector], key=lambda x: x[1]['score'], reverse=True)
+            items = sorted(sector_groups[sector], key=lambda x: x[1].get('amount') or 0, reverse=True)
             out.append(
-                '<tr style="background:#f0f7ff"><td colspan="12" style="font-weight:700;color:#2c5364;padding:8px 10px">&#128193; ' + sector + '</td></tr>')
+                '<tr style="background:#f0f7ff">' +
+                '<td style="font-weight:700;color:#2c5364;padding:8px 10px;position:sticky;left:0;z-index:1;background:#f0f7ff;min-width:140px">&#128193; ' + sector + '</td>' +
+                '<td colspan="11" style="background:#f0f7ff;padding:8px 10px"></td>' +
+                '</tr>')
             for name, m in items:
                 mom_cls = 'pos' if m['mom_long'] > 0 else 'neg'
                 short_cls = 'pos' if m['mom_short'] > 0 else 'neg'
@@ -807,11 +819,17 @@ background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);min-height:100vh;padd
 .card{background:#fff;border-radius:16px;padding:22px;margin-bottom:18px;
 box-shadow:0 10px 30px rgba(0,0,0,.25)}
 .card h2{font-size:17px;color:#2c5364;border-left:4px solid #2c5364;padding-left:10px;margin-bottom:14px}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:960px}
-th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #f0f0f0;vertical-align:top}
-th{background:#f7f9fb;color:#666;font-weight:600}
-td.nm{min-width:140px;font-weight:600}
-.table-wrap{overflow-x:auto;border-radius:12px}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;min-width:960px}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #e8ecf0;vertical-align:top}
+th{background:#f0f3f7;color:#555;font-weight:600;position:sticky;top:0;z-index:2}
+th:first-child{left:0;z-index:3}
+td.nm{min-width:140px;font-weight:600;position:sticky;left:0;z-index:1;background:#fff}
+tr:nth-child(even) td.nm{background:#fafbfc}
+tr:hover td.nm{background:#eef2ff}
+tr:hover td{background:#eef2ff}
+/* 板块分隔行 hover 保持原色 */
+tr[style*="f0f7ff"]:hover td{background:#f0f7ff !important}
+.table-wrap{overflow:auto;max-height:70vh;border-radius:12px;border:1px solid #e8ecf0}
 .pos{color:#d7263d;font-weight:600} .neg{color:#1a936f;font-weight:600}
 .warn-text{color:#e67e22;font-weight:600} .hold{color:#666}
 td.sc{font-weight:700;color:#2c5364}
@@ -885,7 +903,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 <tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>
-<b>板块分组</b>:10大概念板块(宽基指数,周期商品,科技,智能制造,新能源,医药医疗,大消费,金融地产,基础设施,红利防御),共29只代表性ETF.<br>
+<b>板块分组</b>:12大概念板块(宽基指数,周期商品,科技,传媒互联网,军工国防,高端制造,新能源,医药医疗,大消费,金融地产,基础设施,红利防御),共34只代表性ETF.<br>
 <b>仓位</b>:沪深300 40日动量&gt;0且5日动量&gt;0&#8594;满仓10成;40日&gt;0但5日&#8804;0&#8594;半仓5成;40日&#8804;0&#8594;空仓0成.<br>
 <b>选股</b>:40日风险调整动量前""" + str(TOP_K) + """ + 40日动量&gt;0 + 5日动量&gt;-2% + 当日跌幅&gt;""" + str(MAX_DAILY_DROP) + """% + 当日涨幅&lt;""" + str(MAX_DAILY_RISE) + """% + 资金流评分优先.<br>
 <b>上午</b>:只风控(卖出/减仓),不买入(T+1保护).<br>
