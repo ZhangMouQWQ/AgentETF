@@ -5,7 +5,7 @@
   "data_source": "腾讯财经",
   "market": {
     "position_text": "0成(空仓)",
-    "reason": "大盘弱势,观望为主",
+    "reason": "沪深300数据缺失,保守观望",
     "ratio": 0.0
   },
   "current_holdings": [],
@@ -22,16 +22,16 @@
     }
   ],
   "metrics": {
-    "沪深300ETF": {
-      "code": "510300",
+    "中证500ETF": {
+      "code": "510500",
       "sector": "宽基指数",
-      "latest": 4.65,
-      "prev": 4.589,
-      "daily_change": 1.33,
-      "mom_long": -5.61,
-      "mom_short": -3.27,
-      "mom_short_change": -1.69,
-      "mom_long_change": -4.47,
+      "latest": 7.426,
+      "prev": 7.505,
+      "daily_change": -1.05,
+      "mom_long": -11.8,
+      "mom_short": -7.83,
+      "mom_short_change": -0.9,
+      "mom_long_change": -7.04,
       "mom_long_change_direction": "下降",
       "mom_long_change_text": "↓4.47",
       "mom_short_change_text": "↓1.69",
