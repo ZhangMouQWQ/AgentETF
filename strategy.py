@@ -19,6 +19,11 @@ import json
 import os
 from datetime import datetime, timezone, timedelta
 
+try:
+    import akshare as ak
+except Exception:
+    ak = None
+
 # ==================== 配置 ====================
 SECTOR_ETF_POOL = {
     '宽基指数': {
@@ -126,25 +131,68 @@ def get_etf_sina(sina_code, scale=240, datalen=DATA_LEN, retry=3):
     return None
 
 
+def get_etf_history_akshare(code, datalen=DATA_LEN):
+    if ak is None:
+        return None
+    try:
+        end_date = datetime.now(timezone(timedelta(hours=8))).strftime('%Y%m%d')
+        start_date = (datetime.now(timezone(timedelta(hours=8))) - timedelta(days=datalen + 60)).strftime('%Y%m%d')
+        df = ak.fund_etf_hist_em(symbol=code, start_date=start_date, end_date=end_date, adjust='')
+        if df is None or df.empty:
+            return None
+        df = df.copy()
+        rename_map = {
+            '日期': 'day', 'date': 'day', '交易日期': 'day',
+            '开盘': 'open', 'open': 'open',
+            '收盘': 'close', 'close': 'close',
+            '最高': 'high', 'high': 'high',
+            '最低': 'low', 'low': 'low',
+            '成交量': 'volume', 'volume': 'volume', 'vol': 'volume',
+            '成交额': 'amount', 'amount': 'amount', '额': 'amount',
+            '换手率': 'turnover', 'turnover': 'turnover', '换手': 'turnover',
+        }
+        df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
+        if 'day' not in df.columns:
+            return None
+        df['day'] = pd.to_datetime(df['day']).dt.strftime('%Y-%m-%d')
+        for col in ['open', 'close', 'high', 'low', 'volume', 'amount', 'turnover']:
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+        available = [c for c in ['day', 'open', 'high', 'low', 'close', 'volume', 'amount', 'turnover'] if c in df.columns]
+        return df[available]
+    except Exception as e:
+        print(f"  [警告] akshare 获取 {code} 失败: {e}")
+        return None
+
+
 def fetch_daily_data(pool, datalen=DATA_LEN):
     all_close = {}
     etf_info = {}
+    extra_history = {}
     print("拉取历史日K线...")
     for code, (sina, name) in pool.items():
-        df = get_etf_sina(sina, scale=240, datalen=datalen)
+        df = get_etf_history_akshare(code, datalen=datalen)
+        if df is None:
+            df = get_etf_sina(sina, scale=240, datalen=datalen)
         if df is not None and len(df) >= MOM_LONG + 5:
             all_close[name] = df.set_index('day')['close']
             etf_info[name] = code
+            available_extra = [c for c in ['volume', 'amount', 'turnover'] if c in df.columns]
+            if available_extra:
+                extra_df = df[['day'] + available_extra].copy()
+                extra_df = extra_df.dropna(how='all')
+                extra_df = extra_df.set_index('day')
+                extra_history[name] = extra_df
             print(f"  ok {name}({code}): {len(df)} 条, 最新 {df['day'].iloc[-1]}")
         else:
             print(f"  fail {name}({code}): 数据不足")
         time.sleep(0.15)
     if not all_close:
-        return None, {}
+        return None, {}, {}
     price = pd.DataFrame(all_close).sort_index()
     price = price.ffill().dropna(how='any', axis=1).dropna(how='all')
     print(f"日K线维度: {price.shape}, 最新日期: {price.index[-1]}")
-    return price, etf_info
+    return price, etf_info, extra_history
 
 
 def fetch_intraday_snapshot(pool):
@@ -208,7 +256,30 @@ def calc_momentum_change(series, lookback=MOM_LONG):
     return current_mom, previous_mom, change
 
 
-def calc_metrics(price, etf_info, etf_sector):
+def format_metric_value(value, show_sign=False):
+    if value is None:
+        return '0.00'
+    if show_sign:
+        return f"{value:+.2f}"
+    return f"{value:.2f}"
+
+
+def calc_flow_signal(extra_metrics):
+    turnover = extra_metrics.get('turnover')
+    amount = extra_metrics.get('amount')
+    volume_ratio = extra_metrics.get('volume_ratio')
+
+    score = 0.0
+    if turnover is not None:
+        score += min(turnover, 10.0) * 0.5
+    if amount is not None:
+        score += min(amount / 10.0, 10.0) * 0.3
+    if volume_ratio is not None:
+        score += max(min(volume_ratio / 5.0, 10.0), -5.0) * 0.2
+    return round(score, 2)
+
+
+def calc_metrics(price, etf_info, etf_sector, extra_history=None):
     metrics = {}
     if price is None or len(price) < MOM_LONG + 2:
         return metrics
@@ -237,6 +308,26 @@ def calc_metrics(price, etf_info, etf_sector):
             elif mom_long_change < 0:
                 direction = '下降'
 
+        extra = extra_history.get(name) if extra_history else None
+        amount = None
+        turnover = None
+        volume_ratio = None
+        if extra is not None and not extra.empty:
+            last_row = extra.iloc[-1]
+            amount = last_row.get('amount')
+            turnover = last_row.get('turnover')
+            recent_volumes = extra['volume'].dropna().tail(5)
+            if len(recent_volumes) >= 2:
+                avg_vol = recent_volumes.mean()
+                latest_vol = recent_volumes.iloc[-1]
+                if avg_vol and avg_vol > 0:
+                    volume_ratio = ((latest_vol / avg_vol) - 1) * 100
+
+        flow_signal = calc_flow_signal({
+            'turnover': turnover,
+            'amount': amount,
+            'volume_ratio': volume_ratio,
+        })
         metrics[name] = {
             'code': etf_info.get(name, ''),
             'sector': etf_sector.get(name, '其他'),
@@ -247,18 +338,31 @@ def calc_metrics(price, etf_info, etf_sector):
             'mom_short': round(mom_short, 2),
             'mom_long_change': round(mom_long_change, 2) if mom_long_change is not None else 0.0,
             'mom_long_change_direction': direction,
-            'mom_long_change_text': (('↑' if mom_long_change and mom_long_change > 0 else '↓' if mom_long_change and mom_long_change < 0 else '→') + f"{abs(mom_long_change):.2f}%") if mom_long_change is not None else '→0.00%',
+            'mom_long_change_text': (("↑" if mom_long_change and mom_long_change > 0 else "↓" if mom_long_change and mom_long_change < 0 else "→") + format_metric_value(abs(mom_long_change), show_sign=False)) if mom_long_change is not None else '→0.00',
             'vol': round(vol, 1),
+            'amount': round(amount / 1e8, 2) if amount is not None else None,
+            'turnover': round(turnover, 2) if turnover is not None else None,
+            'volume_ratio': round(volume_ratio, 2) if volume_ratio is not None else None,
+            'flow_signal': flow_signal,
             'score': raw_score,
         }
 
     positives = [m['score'] for m in metrics.values() if m['score'] is not None]
+    flow_values = [m['flow_signal'] for m in metrics.values()]
     for m in metrics.values():
         if m['score'] is None or not positives:
             m['score'] = 0.0
         else:
             lo, hi = min(positives), max(positives)
             m['score'] = 100.0 if hi == lo else round((m['score'] - lo) / (hi - lo) * 100, 1)
+        if flow_values:
+            flow_lo, flow_hi = min(flow_values), max(flow_values)
+            if flow_hi == flow_lo:
+                m['flow_score_norm'] = 50.0
+            else:
+                m['flow_score_norm'] = round((m['flow_signal'] - flow_lo) / (flow_hi - flow_lo) * 100, 1)
+        else:
+            m['flow_score_norm'] = 0.0
     return metrics
 
 
@@ -286,7 +390,7 @@ def build_target(metrics, position_ratio, signal_type='close'):
     ]
     if signal_type == 'close':
         candidates = [(n, m) for n, m in candidates if m['daily_change'] > 0]
-    candidates.sort(key=lambda x: x[1]['score'], reverse=True)
+    candidates.sort(key=lambda x: (x[1]['score'] + x[1].get('flow_score_norm', 0) * 0.3), reverse=True)
     selected = candidates[:TOP_K]
     if not selected:
         return []
@@ -349,14 +453,14 @@ def generate_actions(current, target, signal_type, metrics):
                 actions.append({
                     "type": "BUY", "name": name, "code": h['code'], "weight": h['weight'],
                     "msg": f"【次日买入】{name}({h['code']}) {h['weight']*10:.0f}成",
-                    "urgency": "normal", "reason": f"40日动量{h['mom_long']:+.2f}%,排名进入前{TOP_K}"
+                    "urgency": "normal", "reason": f"40日动量{h['mom_long']:+.2f}%,资金流{metrics.get(name, {}).get('flow_signal', 0):.2f},排名进入前{TOP_K}"
                 })
             elif h['weight'] > current_dict[name].get('weight', 0) + 0.03:
                 diff = round(h['weight'] - current_dict[name]['weight'], 2)
                 actions.append({
                     "type": "ADD", "name": name, "code": h['code'], "weight": diff,
                     "msg": f"【次日加仓】{name}({h['code']}) 加{diff*10:.0f}成至{h['weight']*10:.0f}成",
-                    "urgency": "normal", "reason": "大盘加仓或排名上升"
+                    "urgency": "normal", "reason": f"大盘加仓或排名上升,资金流{metrics.get(name, {}).get('flow_signal', 0):.2f}"
                 })
 
     for name, h in target_dict.items():
@@ -438,19 +542,28 @@ def build_html(actions, current, target, position_text, position_reason, market_
         for sector in sector_order:
             items = sorted(sector_groups[sector], key=lambda x: x[1]['score'], reverse=True)
             out.append(
-                '<tr style="background:#f0f7ff"><td colspan="6" style="font-weight:700;color:#2c5364;padding:8px 10px">&#128193; ' + sector + '</td></tr>')
+                '<tr style="background:#f0f7ff"><td colspan="8" style="font-weight:700;color:#2c5364;padding:8px 10px">&#128193; ' + sector + '</td></tr>')
             for name, m in items:
                 mom_cls = 'pos' if m['mom_long'] > 0 else 'neg'
                 short_cls = 'pos' if m['mom_short'] > 0 else 'neg'
                 daily_cls = 'pos' if m['daily_change'] > 0 else 'neg'
                 change_cls = 'pos' if m['mom_long_change'] > 0 else 'neg' if m['mom_long_change'] < 0 else ''
+                amount_text = '-' if m.get('amount') is None else format_metric_value(m['amount'])
+                turnover_text = '-' if m.get('turnover') is None else format_metric_value(m['turnover'])
+                vol_text = '-' if m.get('vol') is None else str(round(m['vol'], 1))
+                flow_value = m.get('flow_signal', 0)
+                flow_cls = 'pos' if flow_value >= 5 else 'neg' if flow_value <= 0 else ''
+                flow_text = '-' if flow_value is None else format_metric_value(flow_value)
                 out.append(
                     '<tr><td class="nm" style="padding-left:24px">' + name + '(' + m["code"] + ')</td>' +
-                    '<td class="' + mom_cls + '">' + ('+' if m["mom_long"] >= 0 else '') + str(round(m["mom_long"], 2)) + '%</td>' +
+                    '<td class="' + mom_cls + '">' + format_metric_value(m["mom_long"], show_sign=True) + '</td>' +
                     '<td class="' + change_cls + '">' + m["mom_long_change_text"] + '</td>' +
-                    '<td class="' + short_cls + '">' + ('+' if m["mom_short"] >= 0 else '') + str(round(m["mom_short"], 2)) + '%</td>' +
-                    '<td class="' + daily_cls + '">' + ('+' if m["daily_change"] >= 0 else '') + str(round(m["daily_change"], 2)) + '%</td>' +
-                    '<td>' + str(round(m["vol"], 1)) + '%</td><td class="sc">' + str(round(m["score"], 1)) + '</td></tr>')
+                    '<td class="' + short_cls + '">' + format_metric_value(m["mom_short"], show_sign=True) + '</td>' +
+                    '<td class="' + daily_cls + '">' + format_metric_value(m["daily_change"], show_sign=True) + '</td>' +
+                    '<td>' + amount_text + '</td>' +
+                    '<td>' + turnover_text + '</td>' +
+                    '<td class="' + flow_cls + '">' + flow_text + '</td>' +
+                    '<td>' + vol_text + '</td><td class="sc">' + str(round(m["score"], 1)) + '</td></tr>')
         return "\n".join(out)
 
     if signal_type == 'morning':
@@ -558,14 +671,14 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 </div></div>
 
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分8个板块)</h2>
-<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>当日涨跌</th><th>波动率</th><th>得分</th></tr></thead>
+<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>当日涨跌</th><th>成交额(亿)</th><th>换手率</th><th>资金流</th><th>波动率</th><th>得分</th></tr></thead>
 <tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 <tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>
 <b>板块分组</b>:10大概念板块(宽基指数,周期商品,科技,智能制造,新能源,医药医疗,大消费,金融地产,基础设施,红利防御),共29只代表性ETF.<br>
 <b>仓位</b>:沪深300 40日动量&gt;0且5日动量&gt;0&#8594;满仓10成;40日&gt;0但5日&#8804;0&#8594;半仓5成;40日&#8804;0&#8594;空仓0成.<br>
-<b>选股</b>:40日风险调整动量前""" + str(TOP_K) + """ + 40日动量&gt;0 + 5日动量&gt;-2% + 当日跌幅&gt;""" + str(MAX_DAILY_DROP) + """% + 当日涨幅&lt;""" + str(MAX_DAILY_RISE) + """%.<br>
+<b>选股</b>:40日风险调整动量前""" + str(TOP_K) + """ + 40日动量&gt;0 + 5日动量&gt;-2% + 当日跌幅&gt;""" + str(MAX_DAILY_DROP) + """% + 当日涨幅&lt;""" + str(MAX_DAILY_RISE) + """% + 资金流评分优先.<br>
 <b>上午</b>:只风控(卖出/减仓),不买入(T+1保护).<br>
 <b>下午</b>:重新评估,给出次日目标持仓,可买可卖.<br><br>
 <b>T+1 制度说明</b><br>
@@ -594,7 +707,7 @@ def main():
     print(f"[{update_time}] 信号类型: {signal_type}")
     print(f"{'='*60}")
 
-    price_daily, etf_info = fetch_daily_data(ETF_POOL)
+    price_daily, etf_info, extra_history = fetch_daily_data(ETF_POOL)
     if price_daily is None:
         print("日K线获取失败")
         return
@@ -608,7 +721,7 @@ def main():
         print(f"\n日K线已包含今天数据,直接使用")
         price = price_daily
 
-    metrics = calc_metrics(price, etf_info, ETF_SECTOR)
+    metrics = calc_metrics(price, etf_info, ETF_SECTOR, extra_history)
     if not metrics:
         print("指标计算失败")
         return
