@@ -1,5 +1,5 @@
 {
-  "update_time": "2026-07-20 20:14:42",
+  "update_time": "2026-07-20 20:51:01",
   "asof": "2026-07-20",
   "signal_type": "close",
   "data_source": "sina",
@@ -36,10 +36,12 @@
       "mom_long_change_text": "↓4.47",
       "mom_short_change_text": "↓1.69",
       "vol": 21.8,
-      "amount": null,
+      "amount": 185.62,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 76.46,
-      "flow_signal": 2.0,
+      "flow_signal": 5.0,
       "score": 0.0,
       "flow_score_norm": 100.0
     },
@@ -57,10 +59,12 @@
       "mom_long_change_text": "↓6.88",
       "mom_short_change_text": "↓0.96",
       "vol": 30.9,
-      "amount": null,
+      "amount": 87.2,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 58.4,
-      "flow_signal": 2.0,
+      "flow_signal": 5.0,
       "score": 0.0,
       "flow_score_norm": 100.0
     },
@@ -78,12 +82,14 @@
       "mom_long_change_text": "↓6.89",
       "mom_short_change_text": "↓1.27",
       "vol": 29.4,
-      "amount": null,
+      "amount": 87.38,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 35.75,
-      "flow_signal": 1.43,
+      "flow_signal": 4.43,
       "score": 0.0,
-      "flow_score_norm": 81.0
+      "flow_score_norm": 90.2
     },
     "创业板ETF": {
       "code": "159915",
@@ -99,10 +105,12 @@
       "mom_long_change_text": "↓9.04",
       "mom_short_change_text": "↓4.08",
       "vol": 41.0,
-      "amount": null,
+      "amount": 194.57,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 74.2,
-      "flow_signal": 2.0,
+      "flow_signal": 5.0,
       "score": 0.0,
       "flow_score_norm": 100.0
     },
@@ -120,10 +128,12 @@
       "mom_long_change_text": "↓8.81",
       "mom_short_change_text": "↓2.00",
       "vol": 56.5,
-      "amount": null,
+      "amount": 234.53,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 90.69,
-      "flow_signal": 2.0,
+      "flow_signal": 5.0,
       "score": 0.0,
       "flow_score_norm": 100.0
     },
@@ -141,12 +151,14 @@
       "mom_long_change_text": "↓7.57",
       "mom_short_change_text": "↓0.80",
       "vol": 45.4,
-      "amount": null,
+      "amount": 7.64,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": -8.51,
-      "flow_signal": -0.34,
+      "flow_signal": 0.12,
       "score": 0.0,
-      "flow_score_norm": 22.0
+      "flow_score_norm": 15.7
     },
     "稀土ETF": {
       "code": "516780",
@@ -162,12 +174,14 @@
       "mom_long_change_text": "↓3.13",
       "mom_short_change_text": "↑1.99",
       "vol": 110.1,
-      "amount": null,
+      "amount": 0.75,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": -8.16,
-      "flow_signal": -0.33,
+      "flow_signal": -0.28,
       "score": 0.0,
-      "flow_score_norm": 22.3
+      "flow_score_norm": 8.8
     },
     "煤炭ETF": {
       "code": "515220",
@@ -183,12 +197,14 @@
       "mom_long_change_text": "↓0.95",
       "mom_short_change_text": "↓1.97",
       "vol": 38.5,
-      "amount": null,
+      "amount": 12.0,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": -1.57,
-      "flow_signal": -0.06,
+      "flow_signal": 0.66,
       "score": 0.0,
-      "flow_score_norm": 31.3
+      "flow_score_norm": 25.0
     },
     "黄金ETF": {
       "code": "518880",
@@ -204,12 +220,14 @@
       "mom_long_change_text": "↓0.65",
       "mom_short_change_text": "↑0.80",
       "vol": 21.5,
-      "amount": null,
+      "amount": 16.71,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": -11.17,
-      "flow_signal": -0.45,
+      "flow_signal": 0.56,
       "score": 0.0,
-      "flow_score_norm": 18.3
+      "flow_score_norm": 23.3
     },
     "芯片ETF": {
       "code": "159995",
@@ -225,12 +243,14 @@
       "mom_long_change_text": "↓5.06",
       "mom_short_change_text": "↓2.12",
       "vol": 122.8,
-      "amount": null,
+      "amount": 16.59,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 17.88,
-      "flow_signal": 0.72,
+      "flow_signal": 1.71,
       "score": 0.0,
-      "flow_score_norm": 57.3
+      "flow_score_norm": 43.2
     },
     "科技ETF": {
       "code": "515000",
@@ -246,12 +266,14 @@
       "mom_long_change_text": "↓13.15",
       "mom_short_change_text": "↓2.96",
       "vol": 52.0,
-      "amount": null,
+      "amount": 3.11,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 38.48,
-      "flow_signal": 1.54,
+      "flow_signal": 1.73,
       "score": 0.0,
-      "flow_score_norm": 84.7
+      "flow_score_norm": 43.5
     },
     "人工智能ETF": {
       "code": "159819",
@@ -267,12 +289,14 @@
       "mom_long_change_text": "↓10.63",
       "mom_short_change_text": "↓4.84",
       "vol": 49.5,
-      "amount": null,
+      "amount": 9.62,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 9.1,
-      "flow_signal": 0.36,
+      "flow_signal": 0.94,
       "score": 0.0,
-      "flow_score_norm": 45.3
+      "flow_score_norm": 29.9
     },
     "军工ETF": {
       "code": "512660",
@@ -288,12 +312,14 @@
       "mom_long_change_text": "↓5.51",
       "mom_short_change_text": "↑1.66",
       "vol": 34.6,
-      "amount": null,
+      "amount": 3.99,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 9.55,
-      "flow_signal": 0.38,
+      "flow_signal": 0.62,
       "score": 0.0,
-      "flow_score_norm": 46.0
+      "flow_score_norm": 24.4
     },
     "汽车ETF": {
       "code": "516110",
@@ -309,12 +335,14 @@
       "mom_long_change_text": "↓3.11",
       "mom_short_change_text": "↑0.21",
       "vol": 23.9,
-      "amount": null,
+      "amount": 0.42,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 14.71,
-      "flow_signal": 0.59,
+      "flow_signal": 0.61,
       "score": 0.0,
-      "flow_score_norm": 53.0
+      "flow_score_norm": 24.2
     },
     "机器人ETF": {
       "code": "159530",
@@ -330,12 +358,14 @@
       "mom_long_change_text": "↓6.96",
       "mom_short_change_text": "↓0.61",
       "vol": 50.8,
-      "amount": null,
+      "amount": 11.15,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 2.15,
-      "flow_signal": 0.09,
+      "flow_signal": 0.75,
       "score": 0.0,
-      "flow_score_norm": 36.3
+      "flow_score_norm": 26.6
     },
     "新能源车ETF": {
       "code": "515030",
@@ -351,12 +381,14 @@
       "mom_long_change_text": "↓3.45",
       "mom_short_change_text": "↑1.25",
       "vol": 34.5,
-      "amount": null,
+      "amount": 1.48,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 3.9,
-      "flow_signal": 0.16,
+      "flow_signal": 0.24,
       "score": 0.0,
-      "flow_score_norm": 38.7
+      "flow_score_norm": 17.8
     },
     "光伏ETF": {
       "code": "515790",
@@ -372,12 +404,14 @@
       "mom_long_change_text": "↓3.83",
       "mom_short_change_text": "↑1.79",
       "vol": 32.2,
-      "amount": null,
+      "amount": 3.04,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 10.71,
-      "flow_signal": 0.43,
+      "flow_signal": 0.61,
       "score": 0.0,
-      "flow_score_norm": 47.7
+      "flow_score_norm": 24.2
     },
     "医药ETF": {
       "code": "512010",
@@ -393,12 +427,14 @@
       "mom_long_change_text": "↓2.80",
       "mom_short_change_text": "↓3.02",
       "vol": 27.5,
-      "amount": null,
+      "amount": 7.48,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": -16.72,
-      "flow_signal": -0.67,
+      "flow_signal": -0.22,
       "score": 100.0,
-      "flow_score_norm": 11.0
+      "flow_score_norm": 9.8
     },
     "创新药ETF": {
       "code": "515120",
@@ -414,12 +450,14 @@
       "mom_long_change_text": "↓6.96",
       "mom_short_change_text": "↓7.03",
       "vol": 38.3,
-      "amount": null,
+      "amount": 10.91,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": -27.1,
-      "flow_signal": -1.0,
+      "flow_signal": -0.35,
       "score": 89.9,
-      "flow_score_norm": 0.0
+      "flow_score_norm": 7.6
     },
     "医疗器械ETF": {
       "code": "159898",
@@ -435,12 +473,14 @@
       "mom_long_change_text": "↓3.11",
       "mom_short_change_text": "↓2.09",
       "vol": 23.1,
-      "amount": null,
+      "amount": 0.17,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": -19.89,
-      "flow_signal": -0.8,
+      "flow_signal": -0.79,
       "score": 0.0,
-      "flow_score_norm": 6.7
+      "flow_score_norm": 0.0
     },
     "酒ETF": {
       "code": "512690",
@@ -456,12 +496,14 @@
       "mom_long_change_text": "↑0.51",
       "mom_short_change_text": "↓0.70",
       "vol": 25.2,
-      "amount": null,
+      "amount": 12.88,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 18.32,
-      "flow_signal": 0.73,
+      "flow_signal": 1.51,
       "score": 0.0,
-      "flow_score_norm": 57.7
+      "flow_score_norm": 39.7
     },
     "消费ETF": {
       "code": "159928",
@@ -477,12 +519,14 @@
       "mom_long_change_text": "↓0.63",
       "mom_short_change_text": "↓1.73",
       "vol": 20.9,
-      "amount": null,
+      "amount": 5.51,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 14.74,
-      "flow_signal": 0.59,
+      "flow_signal": 0.92,
       "score": 0.0,
-      "flow_score_norm": 53.0
+      "flow_score_norm": 29.5
     },
     "游戏ETF": {
       "code": "159869",
@@ -498,12 +542,14 @@
       "mom_long_change_text": "↓4.79",
       "mom_short_change_text": "↓0.41",
       "vol": 33.0,
-      "amount": null,
+      "amount": 7.13,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": -12.85,
-      "flow_signal": -0.51,
+      "flow_signal": -0.09,
       "score": 0.0,
-      "flow_score_norm": 16.3
+      "flow_score_norm": 12.1
     },
     "券商ETF": {
       "code": "512000",
@@ -519,12 +565,14 @@
       "mom_long_change_text": "↓0.12",
       "mom_short_change_text": "↓0.19",
       "vol": 30.6,
-      "amount": null,
+      "amount": 13.89,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": -6.36,
-      "flow_signal": -0.25,
+      "flow_signal": 0.58,
       "score": 59.6,
-      "flow_score_norm": 25.0
+      "flow_score_norm": 23.7
     },
     "银行ETF": {
       "code": "512800",
@@ -540,12 +588,14 @@
       "mom_long_change_text": "↑1.17",
       "mom_short_change_text": "↓0.67",
       "vol": 16.1,
-      "amount": null,
+      "amount": 9.91,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": -19.67,
-      "flow_signal": -0.79,
+      "flow_signal": -0.19,
       "score": 0.0,
-      "flow_score_norm": 7.0
+      "flow_score_norm": 10.4
     },
     "房地产ETF": {
       "code": "512200",
@@ -561,12 +611,14 @@
       "mom_long_change_text": "↓4.38",
       "mom_short_change_text": "↓1.29",
       "vol": 23.2,
-      "amount": null,
+      "amount": 1.48,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 2.04,
-      "flow_signal": 0.08,
+      "flow_signal": 0.17,
       "score": 0.0,
-      "flow_score_norm": 36.0
+      "flow_score_norm": 16.6
     },
     "电力ETF": {
       "code": "159611",
@@ -582,12 +634,14 @@
       "mom_long_change_text": "↑1.54",
       "mom_short_change_text": "↑3.76",
       "vol": 28.3,
-      "amount": null,
+      "amount": 13.16,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 77.88,
-      "flow_signal": 2.0,
+      "flow_signal": 2.79,
       "score": 0.0,
-      "flow_score_norm": 100.0
+      "flow_score_norm": 61.8
     },
     "通信ETF": {
       "code": "515880",
@@ -603,12 +657,14 @@
       "mom_long_change_text": "↓7.05",
       "mom_short_change_text": "↓4.67",
       "vol": 122.9,
-      "amount": null,
+      "amount": 55.58,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 1.54,
-      "flow_signal": 0.06,
+      "flow_signal": 3.06,
       "score": 0.0,
-      "flow_score_norm": 35.3
+      "flow_score_norm": 66.5
     },
     "红利ETF": {
       "code": "510880",
@@ -624,12 +680,14 @@
       "mom_long_change_text": "↑0.15",
       "mom_short_change_text": "↓1.07",
       "vol": 18.0,
-      "amount": null,
+      "amount": 17.63,
+      "amount_change": null,
       "turnover": null,
+      "turnover_change": null,
       "volume_ratio": 52.19,
-      "flow_signal": 2.0,
+      "flow_signal": 3.06,
       "score": 0.0,
-      "flow_score_norm": 100.0
+      "flow_score_norm": 66.5
     }
   }
 }

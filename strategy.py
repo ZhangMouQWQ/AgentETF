@@ -131,6 +131,79 @@ def get_etf_sina(sina_code, scale=240, datalen=DATA_LEN, retry=3):
     return None
 
 
+def get_etf_extra_sina(sina_code):
+    """从新浪实时行情补充成交额（新浪K线无此字段，实时接口有）"""
+    url = f'http://hq.sinajs.cn/list={sina_code}'
+    headers = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://finance.sina.com.cn/'}
+    try:
+        r = requests.get(url, timeout=10, headers=headers)
+        text = r.text
+        if '=' not in text:
+            return None
+        # 格式: var hq_str_sh510300="名称,今开,昨收,当前,最高,最低,...,成交量,成交额,..."
+        data = text.split('"')[1] if '"' in text else text.split('=')[1]
+        parts = data.split(',')
+        if len(parts) < 10:
+            return None
+        result = {}
+        # 第8字段(0-indexed) = 成交量(股,需/100转为手), 第9字段 = 成交额(元)
+        vol_str = parts[8] if len(parts) > 8 else ''
+        amt_str = parts[9] if len(parts) > 9 else ''
+        if vol_str and vol_str != '0.000' and vol_str != '':
+            result['volume'] = float(vol_str) / 100.0  # 股→手
+        if amt_str and amt_str != '0.000' and amt_str != '':
+            result['amount'] = float(amt_str)  # 已是元,直接使用
+        return result if result else None
+    except Exception as e:
+        print(f"  [提示] 新浪实时行情补充 {sina_code} 失败: {e}")
+    return None
+
+
+def get_etf_history_eastmoney(code, datalen=DATA_LEN):
+    """直接从东方财富K线接口获取历史数据（含成交额/换手率），替代不稳定的akshare"""
+    if code.startswith('5') or code.startswith('6'):
+        secid = f'1.{code}'
+    else:
+        secid = f'0.{code}'
+    url = (f'https://push2his.eastmoney.com/api/qt/stock/kline/get'
+           f'?secid={secid}&fields1=f1,f2,f3,f4,f5,f6'
+           f'&fields2=f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61'
+           f'&klt=101&fqt=1&end=20500101&lmt={datalen + 20}')
+    headers = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://quote.eastmoney.com/',
+               'Connection': 'close'}
+    try:
+        r = requests.get(url, timeout=15, headers=headers)
+        data = r.json()
+        if not data or not data.get('data') or not data['data'].get('klines'):
+            return None
+        klines = data['data']['klines']
+        if len(klines) < MOM_LONG + 5:
+            return None
+        rows = []
+        for k in klines:
+            # 格式: 日期,开盘,收盘,最高,最低,成交量,成交额,振幅,涨跌幅,涨跌额,换手率
+            parts = k.split(',')
+            if len(parts) >= 11:
+                rows.append({
+                    'day': parts[0],
+                    'open': float(parts[1]) if parts[1] and parts[1] != '-' else None,
+                    'close': float(parts[2]) if parts[2] and parts[2] != '-' else None,
+                    'high': float(parts[3]) if parts[3] and parts[3] != '-' else None,
+                    'low': float(parts[4]) if parts[4] and parts[4] != '-' else None,
+                    'volume': float(parts[5]) if parts[5] and parts[5] != '-' else None,
+                    'amount': float(parts[6]) if parts[6] and parts[6] != '-' else None,
+                    'turnover': float(parts[10]) if parts[10] and parts[10] != '-' else None,
+                })
+        df = pd.DataFrame(rows).dropna(subset=['close'])
+        if len(df) < MOM_LONG + 5:
+            return None
+        available = [c for c in ['day', 'open', 'high', 'low', 'close', 'volume', 'amount', 'turnover'] if c in df.columns]
+        return df[available]
+    except Exception as e:
+        print(f"  [警告] 东方财富K线 {code} 失败: {e}")
+        return None
+
+
 def get_etf_history_akshare(code, datalen=DATA_LEN):
     if ak is None:
         print(f"  [提示] akshare 未安装或不可用, {code} 将回退到新浪数据")
@@ -173,8 +246,12 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
     data_sources = set()
     print("拉取历史日K线...")
     for code, (sina, name) in pool.items():
-        df = get_etf_history_akshare(code, datalen=datalen)
-        source = 'akshare'
+        # 优先级: 东方财富直连 > akshare > 新浪兜底
+        df = get_etf_history_eastmoney(code, datalen=datalen)
+        source = 'eastmoney'
+        if df is None:
+            df = get_etf_history_akshare(code, datalen=datalen)
+            source = 'akshare'
         if df is None:
             df = get_etf_sina(sina, scale=240, datalen=datalen)
             source = 'sina'
@@ -194,12 +271,40 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
             print(f"  ok {name}({code}): {len(df)} 条, 最新 {df['day'].iloc[-1]} {details}")
         else:
             print(f"  fail {name}({code}): 数据不足")
-        time.sleep(0.15)
+        time.sleep(0.5)
     if not all_close:
         return None, {}, {}, data_sources
     price = pd.DataFrame(all_close).sort_index()
     price = price.ffill().dropna(how='any', axis=1).dropna(how='all')
     print(f"日K线维度: {price.shape}, 最新日期: {price.index[-1]}")
+
+    # 新浪K线源缺少成交额/换手率时，用新浪实时行情补充成交额
+    print("\n补充成交额(新浪实时行情)...")
+    latest_day = price.index[-1]
+    for code, (sina, name) in pool.items():
+        if name not in etf_info:
+            continue
+        existing = extra_history.get(name)
+        has_amount = existing is not None and 'amount' in existing.columns and not existing['amount'].dropna().empty
+        if has_amount:
+            continue
+        extra = get_etf_extra_sina(sina)
+        if extra:
+            row = {}
+            if 'amount' in extra:
+                row['amount'] = extra['amount']
+            if 'volume' in extra and (existing is None or 'volume' not in existing.columns):
+                row['volume'] = extra['volume']
+            if row:
+                supp_df = pd.DataFrame(row, index=[latest_day])
+                supp_df.index.name = 'day'
+                if existing is not None:
+                    extra_history[name] = pd.concat([existing, supp_df])
+                else:
+                    extra_history[name] = supp_df
+                print(f"  ok {name}({code}): 已补充 {list(row.keys())}")
+        time.sleep(0.15)
+
     return price, etf_info, extra_history, data_sources
 
 
@@ -274,14 +379,16 @@ def format_metric_value(value, show_sign=False):
 
 def calc_flow_signal(extra_metrics):
     turnover = extra_metrics.get('turnover')
-    amount = extra_metrics.get('amount')
+    amount = extra_metrics.get('amount')      # 单位: 元
     volume_ratio = extra_metrics.get('volume_ratio')
 
     score = 0.0
     if turnover is not None:
         score += min(turnover, 10.0) * 0.5
     if amount is not None:
-        score += min(amount / 10.0, 10.0) * 0.3
+        # amount 为元, 除以 1e8 转为亿后归一化
+        amount_yi = amount / 1e8
+        score += min(amount_yi / 5.0, 10.0) * 0.3
     if volume_ratio is not None:
         score += max(min(volume_ratio / 5.0, 10.0), -5.0) * 0.2
     return round(score, 2)
@@ -321,10 +428,21 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
         amount = None
         turnover = None
         volume_ratio = None
+        amount_change = None
+        turnover_change = None
         if extra is not None and not extra.empty:
             last_row = extra.iloc[-1]
             amount = last_row.get('amount')
             turnover = last_row.get('turnover')
+            # 较昨日变化：取倒数第二行比对
+            if len(extra) >= 2:
+                prev_row = extra.iloc[-2]
+                prev_amount = prev_row.get('amount')
+                prev_turnover = prev_row.get('turnover')
+                if amount is not None and prev_amount is not None and not (isinstance(prev_amount, float) and np.isnan(prev_amount)):
+                    amount_change = round((amount - prev_amount) / 1e8, 2)
+                if turnover is not None and prev_turnover is not None and not (isinstance(prev_turnover, float) and np.isnan(prev_turnover)):
+                    turnover_change = round(turnover - prev_turnover, 2)
             recent_volumes = extra['volume'].dropna().tail(5)
             if len(recent_volumes) >= 2:
                 avg_vol = recent_volumes.mean()
@@ -352,7 +470,9 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
             'mom_short_change_text': (("↑" if mom_short_change and mom_short_change > 0 else "↓" if mom_short_change and mom_short_change < 0 else "→") + format_metric_value(abs(mom_short_change), show_sign=False)) if mom_short_change is not None else '→0.00',
             'vol': round(vol, 1),
             'amount': round(amount / 1e8, 2) if amount is not None else None,
+            'amount_change': amount_change,
             'turnover': round(turnover, 2) if turnover is not None else None,
+            'turnover_change': turnover_change,
             'volume_ratio': round(volume_ratio, 2) if volume_ratio is not None else None,
             'flow_signal': flow_signal,
             'score': raw_score,
@@ -553,7 +673,7 @@ def build_html(actions, current, target, position_text, position_reason, market_
         for sector in sector_order:
             items = sorted(sector_groups[sector], key=lambda x: x[1]['score'], reverse=True)
             out.append(
-                '<tr style="background:#f0f7ff"><td colspan="10" style="font-weight:700;color:#2c5364;padding:8px 10px">&#128193; ' + sector + '</td></tr>')
+                '<tr style="background:#f0f7ff"><td colspan="12" style="font-weight:700;color:#2c5364;padding:8px 10px">&#128193; ' + sector + '</td></tr>')
             for name, m in items:
                 mom_cls = 'pos' if m['mom_long'] > 0 else 'neg'
                 short_cls = 'pos' if m['mom_short'] > 0 else 'neg'
@@ -561,7 +681,13 @@ def build_html(actions, current, target, position_text, position_reason, market_
                 daily_cls = 'pos' if m['daily_change'] > 0 else 'neg'
                 change_cls = 'pos' if m['mom_long_change'] > 0 else 'neg' if m['mom_long_change'] < 0 else ''
                 amount_text = '-' if m.get('amount') is None else format_metric_value(m['amount'])
+                amount_change_val = m.get('amount_change')
+                amount_change_text = '-' if amount_change_val is None else format_metric_value(amount_change_val, show_sign=True)
+                amount_change_cls = 'pos' if amount_change_val and amount_change_val > 0 else 'neg' if amount_change_val and amount_change_val < 0 else ''
                 turnover_text = '-' if m.get('turnover') is None else format_metric_value(m['turnover'])
+                turnover_change_val = m.get('turnover_change')
+                turnover_change_text = '-' if turnover_change_val is None else format_metric_value(turnover_change_val, show_sign=True)
+                turnover_change_cls = 'pos' if turnover_change_val and turnover_change_val > 0 else 'neg' if turnover_change_val and turnover_change_val < 0 else ''
                 vol_text = '-' if m.get('vol') is None else str(round(m['vol'], 1))
                 flow_value = m.get('flow_signal', 0)
                 flow_cls = 'pos' if flow_value >= 5 else 'neg' if flow_value <= 0 else ''
@@ -574,7 +700,9 @@ def build_html(actions, current, target, position_text, position_reason, market_
                     '<td class="' + short_change_cls + '">' + m["mom_short_change_text"] + '</td>' +
                     '<td class="' + daily_cls + '">' + format_metric_value(m["daily_change"], show_sign=True) + '</td>' +
                     '<td>' + amount_text + '</td>' +
+                    '<td class="' + amount_change_cls + '">' + amount_change_text + '</td>' +
                     '<td>' + turnover_text + '</td>' +
+                    '<td class="' + turnover_change_cls + '">' + turnover_change_text + '</td>' +
                     '<td class="' + flow_cls + '">' + flow_text + '</td>' +
                     '<td>' + vol_text + '</td></tr>')
         return "\n".join(out)
@@ -610,7 +738,7 @@ background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);min-height:100vh;padd
 .card{background:#fff;border-radius:16px;padding:22px;margin-bottom:18px;
 box-shadow:0 10px 30px rgba(0,0,0,.25)}
 .card h2{font-size:17px;color:#2c5364;border-left:4px solid #2c5364;padding-left:10px;margin-bottom:14px}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:960px}
 th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #f0f0f0;vertical-align:top}
 th{background:#f7f9fb;color:#666;font-weight:600}
 td.nm{min-width:140px;font-weight:600}
@@ -684,7 +812,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 </div></div>
 
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分8个板块)</h2>
-<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>5日较昨日</th><th>当日涨跌</th><th>成交额(亿)</th><th>换手率</th><th>资金流</th><th>波动率</th></tr></thead>
+<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>5日较昨日</th><th>当日涨跌</th><th>成交额(亿)</th><th>成交额较昨日</th><th>换手率</th><th>换手率较昨日</th><th>资金流</th><th>波动率</th></tr></thead>
 <tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>
