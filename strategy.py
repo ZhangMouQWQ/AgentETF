@@ -542,7 +542,7 @@ def build_html(actions, current, target, position_text, position_reason, market_
         for sector in sector_order:
             items = sorted(sector_groups[sector], key=lambda x: x[1]['score'], reverse=True)
             out.append(
-                '<tr style="background:#f0f7ff"><td colspan="8" style="font-weight:700;color:#2c5364;padding:8px 10px">&#128193; ' + sector + '</td></tr>')
+                '<tr style="background:#f0f7ff"><td colspan="9" style="font-weight:700;color:#2c5364;padding:8px 10px">&#128193; ' + sector + '</td></tr>')
             for name, m in items:
                 mom_cls = 'pos' if m['mom_long'] > 0 else 'neg'
                 short_cls = 'pos' if m['mom_short'] > 0 else 'neg'
@@ -563,7 +563,7 @@ def build_html(actions, current, target, position_text, position_reason, market_
                     '<td>' + amount_text + '</td>' +
                     '<td>' + turnover_text + '</td>' +
                     '<td class="' + flow_cls + '">' + flow_text + '</td>' +
-                    '<td>' + vol_text + '</td><td class="sc">' + str(round(m["score"], 1)) + '</td></tr>')
+                    '<td>' + vol_text + '</td></tr>')
         return "\n".join(out)
 
     if signal_type == 'morning':
@@ -671,8 +671,7 @@ padding:24px;text-align:center;margin-bottom:18px;box-shadow:0 8px 24px rgba(215
 </div></div>
 
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分8个板块)</h2>
-<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>当日涨跌</th><th>成交额(亿)</th><th>换手率</th><th>资金流</th><th>波动率</th><th>得分</th></tr></thead>
-<tbody>""" + monitor_rows_html + """</tbody></table></div></div>
+<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量</th><th>较昨日</th><th>5日动量</th><th>当日涨跌</th><th>成交额(亿)</th><th>换手率</th><th>资金流</th><th>波动率</th></tr></thead>
 <tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>

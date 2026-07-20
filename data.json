@@ -1,5 +1,5 @@
 {
-  "update_time": "2026-07-20 19:37:52",
+  "update_time": "2026-07-20 19:56:43",
   "asof": "2026-07-20",
   "signal_type": "close",
   "market": {
@@ -119,7 +119,6 @@
     "有色金属ETF": {
       "code": "512400",
       "sector": "周期商品",
-      "sector": "周期商品",
       "latest": 1.625,
       "prev": 1.636,
       "daily_change": -0.67,
@@ -138,7 +137,6 @@
     },
     "稀土ETF": {
       "code": "516780",
-      "sector": "周期商品",
       "sector": "周期商品",
       "latest": 0.754,
       "prev": 0.774,
@@ -159,7 +157,6 @@
     "煤炭ETF": {
       "code": "515220",
       "sector": "周期商品",
-      "sector": "周期商品",
       "latest": 1.213,
       "prev": 1.138,
       "daily_change": 6.59,
@@ -178,7 +175,6 @@
     },
     "黄金ETF": {
       "code": "518880",
-      "sector": "周期商品",
       "sector": "周期商品",
       "latest": 8.318,
       "prev": 8.311,
@@ -199,7 +195,6 @@
     "芯片ETF": {
       "code": "159995",
       "sector": "科技",
-      "sector": "科技",
       "latest": 1.197,
       "prev": 1.22,
       "daily_change": -1.89,
@@ -218,7 +213,6 @@
     },
     "科技ETF": {
       "code": "515000",
-      "sector": "科技",
       "sector": "科技",
       "latest": 1.275,
       "prev": 1.286,
@@ -502,15 +496,6 @@
       "score": 0.0,
       "flow_score_norm": 7.0
     },
-    "房地产ETF": {
-      "code": "512200",
-      "sector": "金融地产",
-      "latest": 1.146,
-      "prev": 1.157,
-      "daily_change": -0.95,
-      "mom_long": -15.67,
-      "mom_short": -1.78,
-      "mom_long_change": -4.38,
     "房地产ETF": {
       "code": "512200",
       "sector": "金融地产",
