@@ -42,6 +42,10 @@ jobs:
         # 策略失败不阻断，但标记状态供后续步骤判断
         continue-on-error: true
 
+      - name: Collect API diagnostics (fixtures for local analysis)
+        run: python data_collector.py
+        continue-on-error: true
+
       - name: Verify output files exist
         run: |
           for f in index.html data.json portfolio.json; do
@@ -56,5 +60,5 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add index.html data.json portfolio.json
+          git add index.html data.json portfolio.json diagnostic.json _fixtures/collector_output.json
           git diff --staged --quiet || (git commit -m "📊 $(TZ='Asia/Shanghai' date +'%Y-%m-%d %H:%M') 自动更新" && git push)

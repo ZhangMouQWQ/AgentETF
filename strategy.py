@@ -191,7 +191,7 @@ def get_etf_sina(sina_code, scale=240, datalen=DATA_LEN, retry=3):
 
 
 def get_etf_extra_sina(sina_code):
-    """从新浪实时行情补充成交额（新浪K线无此字段，实时接口有）"""
+    """从新浪实时行情获取当日累计数据（价格/成交量/成交额），比60分钟K线更可靠"""
     url = f'http://hq.sinajs.cn/list={sina_code}'
     headers = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://finance.sina.com.cn/'}
     try:
@@ -199,13 +199,17 @@ def get_etf_extra_sina(sina_code):
         text = r.text
         if '=' not in text:
             return None
-        # 格式: var hq_str_sh510300="名称,今开,昨收,当前,最高,最低,...,成交量,成交额,..."
+        # 格式: var hq_str_sh510300="名称,今开,昨收,当前,最高,最低,买一,卖一,...,成交量(股),成交额(元),..."
         data = text.split('"')[1] if '"' in text else text.split('=')[1]
         parts = data.split(',')
         if len(parts) < 10:
             return None
         result = {}
-        # 第8字段(0-indexed) = 成交量(股,需/100转为手), 第9字段 = 成交额(元)
+        # parts[1]=今开, parts[2]=昨收, parts[3]=当前价, parts[4]=最高, parts[5]=最低
+        close_str = parts[3] if len(parts) > 3 else ''
+        if close_str and close_str != '0.000' and close_str != '':
+            result['close'] = float(close_str)
+        # parts[8]=成交量(股,需/100转为手), parts[9]=成交额(元)
         vol_str = parts[8] if len(parts) > 8 else ''
         amt_str = parts[9] if len(parts) > 9 else ''
         if vol_str and vol_str != '0.000' and vol_str != '':
@@ -214,24 +218,77 @@ def get_etf_extra_sina(sina_code):
             result['amount'] = float(amt_str)  # 已是元,直接使用
         return result if result else None
     except Exception as e:
-        print(f"  [提示] 新浪实时行情补充 {sina_code} 失败: {e}")
+        print(f"  [提示] 新浪实时行情 {sina_code} 失败: {e}")
     return None
 
 
-def get_etf_history_eastmoney(code, datalen=DATA_LEN):
-    """直接从东方财富K线接口获取历史数据（含成交额/换手率），替代不稳定的akshare"""
+def get_etf_realtime_eastmoney(code):
+    """从东方财富实时行情获取当日数据（含换手率），作为新浪的补充"""
     if code.startswith('5') or code.startswith('6'):
         secid = f'1.{code}'
     else:
         secid = f'0.{code}'
-    url = (f'https://push2his.eastmoney.com/api/qt/stock/kline/get'
-           f'?secid={secid}&fields1=f1,f2,f3,f4,f5,f6'
-           f'&fields2=f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61'
-           f'&klt=101&fqt=1&end=20500101&lmt={datalen + 20}')
-    headers = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://quote.eastmoney.com/',
-               'Connection': 'close'}
+    # f43=最新价(/1000), f47=成交量(股), f48=成交额(元), f168=换手率(%/100), f50=量比
+    params = {'secid': secid, 'fields': 'f43,f47,f48,f50,f168,f170',
+              'ut': 'fa5fd1943c7b386f172d6893dbfba10b'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Referer': 'https://quote.eastmoney.com/',
+        'Accept': '*/*',
+        'Connection': 'keep-alive',
+    }
     try:
-        r = requests.get(url, timeout=15, headers=headers)
+        session = requests.Session()
+        r = session.get('https://push2.eastmoney.com/api/qt/stock/get',
+                        params=params, headers=headers,
+                        proxies={'http': None, 'https': None}, timeout=10)
+        session.close()
+        data = r.json()
+        if data.get('rc') != 0:
+            return None
+        d = data.get('data', {})
+        if not d:
+            return None
+        result = {}
+        if d.get('f43') is not None and d['f43'] != '-':
+            result['close'] = float(d['f43']) / 1000.0
+        if d.get('f47') is not None and d['f47'] != '-':
+            result['volume'] = float(d['f47']) / 100.0  # 股→手
+        if d.get('f48') is not None and d['f48'] != '-':
+            result['amount'] = float(d['f48'])
+        if d.get('f168') is not None and d['f168'] != '-':
+            result['turnover'] = float(d['f168']) / 100.0  # /100 → %
+        return result if result else None
+    except Exception as e:
+        print(f"  [提示] 东方财富实时行情 {code} 失败: {e}")
+    return None
+
+
+def get_etf_history_eastmoney(code, datalen=DATA_LEN):
+    """直接从东方财富K线接口获取历史数据（含成交额/换手率）"""
+    if code.startswith('5') or code.startswith('6'):
+        secid = f'1.{code}'
+    else:
+        secid = f'0.{code}'
+    params = {
+        'secid': secid,
+        'ut': 'fa5fd1943c7b386f172d6893dbfba10b',
+        'fields1': 'f1,f2,f3,f4,f5,f6',
+        'fields2': 'f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61',
+        'klt': '101', 'fqt': '1', 'end': '20500101', 'lmt': str(datalen + 20),
+    }
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Referer': 'https://quote.eastmoney.com/',
+        'Accept': '*/*',
+        'Connection': 'keep-alive',
+    }
+    try:
+        session = requests.Session()
+        r = session.get('https://push2his.eastmoney.com/api/qt/stock/kline/get',
+                        params=params, headers=headers,
+                        proxies={'http': None, 'https': None}, timeout=15)
+        session.close()
         data = r.json()
         if not data or not data.get('data') or not data['data'].get('klines'):
             return None
@@ -381,37 +438,63 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
 
 
 def fetch_intraday_snapshot(pool):
+    """使用实时行情API获取当日盘中数据（价格+成交量+成交额+换手率）
+    数据源优先级: 新浪实时行情 → 东方财富实时行情（补充换手率）
+    不再依赖60分钟K线（盘后不可用，且ETF支持差）"""
     today = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
     snapshot = {}
-    print(f"\n拉取60分钟K线合成当日数据 (今日 {today})...")
+    print(f"\n拉取实时行情合成当日数据 (今日 {today})...")
     for code, (sina, name) in pool.items():
-        df = get_etf_sina(sina, scale=60, datalen=20)
-        if df is None or len(df) < 1:
-            print(f"  fail {name}: 无分钟K线")
-            continue
-        df['date'] = df['day'].str[:10]
-        df_today = df[df['date'] == today].sort_values('day')
-        if len(df_today) < 1:
-            print(f"  warn {name}: 今日无60分钟K线")
-            continue
-        last = df_today.iloc[-1]
-        snapshot[name] = {
-            'code': code,
-            'close': float(last['close']),
-        }
-        print(f"  ok {name}: 最新 {snapshot[name]['close']:.3f} (基于 {df_today['day'].iloc[-1]})")
+        snap = {'code': code}
+        # 1) 新浪实时行情: 价格 + 成交量 + 成交额（可靠，200ms级）
+        sina_data = get_etf_extra_sina(sina)
+        if sina_data:
+            for k in ['close', 'volume', 'amount']:
+                if k in sina_data:
+                    snap[k] = sina_data[k]
+        # 2) 东方财富实时行情: 补充换手率 + 量比（新浪不提供换手率）
+        em_data = get_etf_realtime_eastmoney(code)
+        if em_data:
+            if 'close' not in snap and 'close' in em_data:
+                snap['close'] = em_data['close']
+            if 'volume' not in snap and 'volume' in em_data:
+                snap['volume'] = em_data['volume']
+            if 'amount' not in snap and 'amount' in em_data:
+                snap['amount'] = em_data['amount']
+            if 'turnover' in em_data:
+                snap['turnover'] = em_data['turnover']
+        # 3) 兜底: 60分钟K线（仅当以上两者都失败时）
+        if 'close' not in snap:
+            df = get_etf_sina(sina, scale=60, datalen=20)
+            if df is not None and len(df) >= 1:
+                df['date'] = df['day'].str[:10]
+                df_today = df[df['date'] == today].sort_values('day')
+                if len(df_today) >= 1:
+                    last = df_today.iloc[-1]
+                    snap['close'] = float(last['close'])
+                    if 'volume' in df_today.columns:
+                        snap['volume'] = float(df_today['volume'].sum())
+                    if 'amount' in df.columns and pd.notna(last.get('amount')):
+                        snap['amount'] = float(last['amount'])
+
+        if 'close' in snap:
+            snapshot[name] = snap
+            fields = ','.join(k for k in ['close', 'volume', 'amount', 'turnover'] if k in snap)
+            print(f"  ok {name}: {snap['close']:.3f} ({fields})")
+        else:
+            print(f"  fail {name}: 无可用实时数据")
         time.sleep(0.15)
     return snapshot
 
 
-def merge_intraday_price(price_daily, intraday_snapshot, etf_info):
+def merge_intraday_price(price_daily, intraday_snapshot, etf_info, extra_history=None):
     if not intraday_snapshot or price_daily is None:
-        return price_daily
+        return price_daily, extra_history
     today_str = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
     print(f"\n合并盘中数据到日K线...")
 
     if price_daily.index[-1] == today_str:
-        print(f"日K最新日期已是 {today_str}, 用60分钟数据覆盖")
+        print(f"日K最新日期已是 {today_str}, 用实时行情覆盖当日数据")
         for name, snap in intraday_snapshot.items():
             if name in price_daily.columns:
                 price_daily.loc[today_str, name] = snap['close']
@@ -425,9 +508,32 @@ def merge_intraday_price(price_daily, intraday_snapshot, etf_info):
                 new_row[name] = price_daily[name].iloc[-1]
         price_daily = pd.concat([price_daily, new_row.to_frame().T])
 
+    # 同步更新 extra_history：将盘中量/额/换手率追加到今日日期
+    if extra_history is not None:
+        for name, snap in intraday_snapshot.items():
+            extra_cols = {k: snap[k] for k in ['volume', 'amount', 'turnover'] if k in snap}
+            if not extra_cols:
+                continue
+            row = pd.DataFrame(extra_cols, index=[today_str])
+            row.index.name = 'day'
+            existing = extra_history.get(name)
+            if existing is not None:
+                # 若今日已存在则覆盖，否则追加
+                if today_str in existing.index:
+                    for col, val in extra_cols.items():
+                        existing.loc[today_str, col] = val
+                else:
+                    extra_history[name] = pd.concat([existing, row])
+            else:
+                extra_history[name] = row
+
     price_daily = price_daily.dropna(how='all')
     print(f"合并后维度: {price_daily.shape}, 最新日期: {price_daily.index[-1]}")
-    return price_daily.sort_index()
+    if extra_history is not None:
+        updated = sum(1 for snap in intraday_snapshot.values() if any(k in snap for k in ['volume', 'amount', 'turnover']))
+        if updated:
+            print(f"盘中量价数据已同步: {updated} 只 ETF 的 extra_history 已更新至 {today_str}")
+    return price_daily.sort_index(), extra_history
 
 
 def calc_momentum_change(series, lookback=MOM_LONG):
@@ -688,7 +794,7 @@ def build_html(target, position_text, position_reason, market_cls,
                asof, update_time, signal_type, metrics, data_source_label):
 
     def buy_picks():
-        """买入推荐：截面 z-score 质量评分 + 板块分组"""
+        """潜力推荐：截面 z-score 质量评分 + 板块分组"""
         if not target:
             return ('<div class="action-card hold">'
                     '<div class="action-row"><span class="action-label">建议</span>'
@@ -989,7 +1095,7 @@ padding:2px 8px;border-radius:4px;margin-right:6px}
 """ + market_summary + """
 </div>
 
-<div class="card"><h2>&#127919; 买入推荐</h2>
+<div class="card"><h2>&#127919; 潜力推荐</h2>
 <div class="action-list">
 """ + buy_picks_html + """
 </div></div>
@@ -1042,10 +1148,18 @@ def main():
     trade_date = price_daily.index[-1]
     # 盘中时间(9:30-15:00)且日K最新不是今天，才尝试用60分钟K线合成当日数据
     is_market_hours = 9 <= now.hour < 15 or (now.hour == 9 and now.minute >= 30)
+    # 快照合并前的 extra_history 状态（仅记录每个 ETF 的最新日期和 amount，用于诊断对比）
+    extra_before = {}
+    for name, df in extra_history.items():
+        extra_before[name] = {
+            'latest_date': str(df.index[-1]),
+            'has_today': today_str in df.index,
+            'amount_latest': float(df['amount'].iloc[-1]) if 'amount' in df.columns and len(df) > 0 else None,
+        }
     if trade_date != today_str and is_market_hours:
         print(f"\n日K最新 {trade_date}，盘中时段，尝试用60分钟K线合成今日数据...")
         intraday_snapshot = fetch_intraday_snapshot(ETF_POOL)
-        price = merge_intraday_price(price_daily, intraday_snapshot, etf_info)
+        price, extra_history = merge_intraday_price(price_daily, intraday_snapshot, etf_info, extra_history)
     else:
         if trade_date != today_str:
             print(f"\n日K最新 {trade_date}（非盘中时段），直接使用")
@@ -1057,6 +1171,30 @@ def main():
     if not metrics:
         print("指标计算失败")
         return
+
+    # ── 诊断：记录盘中数据管道状态，用于验证时间轴修复 ──
+    diagnostic = {
+        'run_time': update_time,
+        'signal_type': signal_type,
+        'data_sources': sorted(data_sources),
+        'intraday_triggered': (trade_date != today_str and is_market_hours),
+        'price_latest_date': str(price.index[-1]),
+        'price_has_today': str(price.index[-1]) == today_str,
+        'extra_before_merge': extra_before,
+        'extra_after_merge': {},
+        'fix_verdict': 'PASS' if str(price.index[-1]) == today_str else 'PENDING',
+    }
+    for name in sorted(extra_history.keys())[:8]:
+        df = extra_history[name]
+        after_date = str(df.index[-1])
+        before_date = extra_before.get(name, {}).get('latest_date', '?')
+        diagnostic['extra_after_merge'][name] = {
+            'latest_date': after_date,
+            'has_today': today_str in df.index,
+            'date_advanced': after_date != before_date,
+        }
+    with open('diagnostic.json', 'w', encoding='utf-8') as f:
+        json.dump(diagnostic, f, ensure_ascii=False, indent=2)
 
     asof = price.index[-1]
     print(f"\n统一数据基准日期: {asof}")
