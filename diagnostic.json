@@ -1,5 +1,5 @@
 {
-  "run_time": "2026-07-23 00:07:35",
+  "run_time": "2026-07-23 07:58:31",
   "signal_type": "close",
   "data_sources": [
     "tencent"
@@ -8,30 +8,30 @@
   "price_latest_date": "2026-07-22",
   "price_has_today": false,
   "extra_before_merge": {
-    "中证500ETF": {
+    "科创50ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
-      "amount_latest": 5831660000.0
-    },
-    "创业板ETF": {
-      "latest_date": "2026-07-22",
-      "has_today": false,
-      "amount_latest": 9480430000.0
-    },
-    "沪深300ETF": {
-      "latest_date": "2026-07-22",
-      "has_today": false,
-      "amount_latest": 6059310000.0
+      "amount_latest": 13736180000.0
     },
     "中证1000ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
       "amount_latest": 8180950000.0
     },
-    "科创50ETF": {
+    "创业板ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
-      "amount_latest": 13736180000.0
+      "amount_latest": 9480430000.0
+    },
+    "中证500ETF": {
+      "latest_date": "2026-07-22",
+      "has_today": false,
+      "amount_latest": 5831660000.0
+    },
+    "沪深300ETF": {
+      "latest_date": "2026-07-22",
+      "has_today": false,
+      "amount_latest": 6059310000.0
     },
     "银行ETF": {
       "latest_date": "2026-07-22",
@@ -48,45 +48,40 @@
       "has_today": false,
       "amount_latest": 1166550000.0
     },
-    "食品饮料ETF": {
-      "latest_date": "2026-07-22",
-      "has_today": false,
-      "amount_latest": 107310000.0
-    },
     "房地产ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
       "amount_latest": 111710000.0
     },
-    "养殖ETF": {
+    "食品饮料ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
-      "amount_latest": 187900000.0
-    },
-    "家电ETF": {
-      "latest_date": "2026-07-22",
-      "has_today": false,
-      "amount_latest": 38920000.0
-    },
-    "创新药ETF": {
-      "latest_date": "2026-07-22",
-      "has_today": false,
-      "amount_latest": 1069030000.0
+      "amount_latest": 107310000.0
     },
     "医药ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
       "amount_latest": 608980000.0
     },
+    "家电ETF": {
+      "latest_date": "2026-07-22",
+      "has_today": false,
+      "amount_latest": 38920000.0
+    },
     "医疗ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
       "amount_latest": 573750000.0
     },
-    "人工智能ETF": {
+    "养殖ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
-      "amount_latest": 878360000.0
+      "amount_latest": 187900000.0
+    },
+    "创新药ETF": {
+      "latest_date": "2026-07-22",
+      "has_today": false,
+      "amount_latest": 1069030000.0
     },
     "半导体ETF": {
       "latest_date": "2026-07-22",
@@ -108,15 +103,10 @@
       "has_today": false,
       "amount_latest": 140530000.0
     },
-    "军工ETF": {
+    "人工智能ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
-      "amount_latest": 383060000.0
-    },
-    "电力ETF": {
-      "latest_date": "2026-07-22",
-      "has_today": false,
-      "amount_latest": 1661780000.0
+      "amount_latest": 878360000.0
     },
     "光伏ETF": {
       "latest_date": "2026-07-22",
@@ -128,10 +118,20 @@
       "has_today": false,
       "amount_latest": 54780000.0
     },
+    "电力ETF": {
+      "latest_date": "2026-07-22",
+      "has_today": false,
+      "amount_latest": 1661780000.0
+    },
     "有色金属ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
       "amount_latest": 1255310000.0
+    },
+    "军工ETF": {
+      "latest_date": "2026-07-22",
+      "has_today": false,
+      "amount_latest": 383060000.0
     },
     "稀土ETF": {
       "latest_date": "2026-07-22",
@@ -143,11 +143,6 @@
       "has_today": false,
       "amount_latest": 5570740000.0
     },
-    "化工ETF": {
-      "latest_date": "2026-07-22",
-      "has_today": false,
-      "amount_latest": 546570000.0
-    },
     "煤炭ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
@@ -157,6 +152,11 @@
       "latest_date": "2026-07-22",
       "has_today": false,
       "amount_latest": 54320000.0
+    },
+    "化工ETF": {
+      "latest_date": "2026-07-22",
+      "has_today": false,
+      "amount_latest": 546570000.0
     },
     "钢铁ETF": {
       "latest_date": "2026-07-22",
@@ -168,40 +168,40 @@
       "has_today": false,
       "amount_latest": 6014620000.0
     },
-    "游戏ETF": {
-      "latest_date": "2026-07-22",
-      "has_today": false,
-      "amount_latest": 742460000.0
-    },
     "传媒ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
       "amount_latest": 200250000.0
     },
-    "基建ETF": {
+    "游戏ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
-      "amount_latest": 64470000.0
+      "amount_latest": 742460000.0
+    },
+    "汽车ETF": {
+      "latest_date": "2026-07-22",
+      "has_today": false,
+      "amount_latest": 23410000.0
     },
     "机器人ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
       "amount_latest": 914700000.0
     },
-    "中证红利ETF": {
+    "基建ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
-      "amount_latest": 451710000.0
+      "amount_latest": 64470000.0
     },
     "红利ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
       "amount_latest": 1005970000.0
     },
-    "汽车ETF": {
+    "中证红利ETF": {
       "latest_date": "2026-07-22",
       "has_today": false,
-      "amount_latest": 23410000.0
+      "amount_latest": 451710000.0
     }
   },
   "extra_after_merge": {
