@@ -18,6 +18,7 @@ import time
 import json
 import os
 from datetime import datetime, timezone, timedelta
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 try:
     import akshare as ak
@@ -166,9 +167,11 @@ def get_etf_sina(sina_code, scale=240, datalen=DATA_LEN, retry=3):
             if len(df) < 10:
                 raise ValueError(f"有效K线不足: {len(df)}条")
 
-            # 从 qt 字段提取当日成交额(万元→元)和换手率(%)，仅填充最新一行
+            # 从 qt 字段提取实时成交额/换手率,覆盖最后一行
+            # ≤ today_str: 允许凌晨/盘前填充昨日数据(此时qt来自上个交易日)
+            today_str = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
             qt_list = stock_data.get('qt', {}).get(sina_code, [])
-            if len(qt_list) > 38:
+            if len(qt_list) > 38 and df['day'].iloc[-1] <= today_str:
                 try:
                     amt_wan = float(qt_list[37]) if qt_list[37] else None  # 万元
                     turnover_pct = float(qt_list[38]) if qt_list[38] else None  # %
@@ -238,11 +241,9 @@ def get_etf_realtime_eastmoney(code):
         'Connection': 'keep-alive',
     }
     try:
-        session = requests.Session()
-        r = session.get('https://push2.eastmoney.com/api/qt/stock/get',
+        r = requests.get('https://push2.eastmoney.com/api/qt/stock/get',
                         params=params, headers=headers,
                         proxies={'http': None, 'https': None}, timeout=10)
-        session.close()
         data = r.json()
         if data.get('rc') != 0:
             return None
@@ -355,7 +356,7 @@ def get_etf_history_akshare(code, datalen=DATA_LEN):
         return None
 
 
-def fetch_daily_data(pool, datalen=DATA_LEN):
+def fetch_daily_data(pool, datalen=DATA_LEN, max_workers=5):
     all_close = {}
     etf_info = {}
     extra_history = {}
@@ -363,36 +364,41 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
     fail_count = 0
     success_count = 0
     total = len(pool)
-    print(f"拉取历史日K线 (共{total}只)...")
-    for i, (code, (sina, name)) in enumerate(pool.items()):
-        # 优先级: 东方财富直连 > akshare > 腾讯财经兜底
-        df = get_etf_history_eastmoney(code, datalen=datalen)
-        source = 'eastmoney'
+
+    def _fetch_one(item):
+        """单只 ETF 数据拉取（线程安全）"""
+        code, (sina, name) = item
+        df = get_etf_sina(sina, scale=240, datalen=datalen)
+        source = 'tencent'
         if df is None:
-            df = get_etf_history_akshare(code, datalen=datalen)
-            source = 'akshare'
-        if df is None:
-            df = get_etf_sina(sina, scale=240, datalen=datalen)
-            source = 'tencent'
-        data_sources.add(source)
-        if df is not None and len(df) >= MOM_LONG + 5:
-            all_close[name] = df.set_index('day')['close']
-            etf_info[name] = code
-            available_extra = [c for c in ['volume', 'amount', 'turnover'] if c in df.columns]
-            if available_extra:
-                extra_df = df[['day'] + available_extra].copy()
-                extra_df = extra_df.dropna(how='all')
-                extra_df = extra_df.set_index('day')
-                extra_history[name] = extra_df
-            extra_info = ''
-            if source == 'tencent':
-                extra_info += ' (腾讯源无成交额/换手率)'
-            print(f"  [{i+1}/{total}] ok {name}({code}): {len(df)} 条, 最新 {df['day'].iloc[-1]} 来源={source}{extra_info}")
-            success_count += 1
-        else:
-            print(f"  [{i+1}/{total}] FAIL {name}({code}): 数据不足 (已尝试eastmoney→akshare→tencent)")
-            fail_count += 1
-        time.sleep(0.8)  # 增加间隔，避免被限流（腾讯API对频率敏感）
+            df = get_etf_history_eastmoney(code, datalen=datalen)
+            source = 'eastmoney'
+        return name, code, source, df
+
+    print(f"拉取历史日K线 (共{total}只, {max_workers}线程并行)...")
+    items = list(pool.items())
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_fetch_one, item): item for item in items}
+        for i, future in enumerate(as_completed(futures), 1):
+            name, code, source, df = future.result()
+            data_sources.add(source)
+            if df is not None and len(df) >= MOM_LONG + 5:
+                all_close[name] = df.set_index('day')['close']
+                etf_info[name] = code
+                available_extra = [c for c in ['volume', 'amount', 'turnover', 'high', 'low'] if c in df.columns]
+                if available_extra:
+                    extra_df = df[['day'] + available_extra].copy()
+                    extra_df = extra_df.dropna(how='all')
+                    extra_df = extra_df.set_index('day')
+                    extra_history[name] = extra_df
+                extra_info = ''
+                if source == 'tencent' and not available_extra:
+                    extra_info += ' (无成交额/换手率)'
+                print(f"  [{i}/{total}] ok {name}({code}): {len(df)} 条, 最新 {df['day'].iloc[-1]} 来源={source}{extra_info}")
+                success_count += 1
+            else:
+                print(f"  [{i}/{total}] FAIL {name}({code}): 数据不足")
+                fail_count += 1
     print(f"\n数据拉取完成: 成功={success_count}/{total}, 失败={fail_count}/{total}")
     if not all_close:
         return None, {}, {}, data_sources
@@ -407,44 +413,96 @@ def fetch_daily_data(pool, datalen=DATA_LEN):
     price = price[valid_cols]
     print(f"日K线维度: {price.shape}, 最新日期: {price.index[-1]}")
 
-    # 新浪K线源缺少成交额/换手率时，用新浪实时行情补充成交额
+    # 补充成交额: 腾讯API仅最后一行有amount(历史行为NaN)
+    # 检查今日行是否缺amount,若缺则用新浪实时补全
     print("\n补充成交额(新浪实时行情)...")
     latest_day = price.index[-1]
+    needs_supp = {}
     for code, (sina, name) in pool.items():
         if name not in etf_info:
             continue
         existing = extra_history.get(name)
-        has_amount = existing is not None and 'amount' in existing.columns and not existing['amount'].dropna().empty
-        if has_amount:
-            continue
-        extra = get_etf_extra_sina(sina)
-        if extra:
-            row = {}
-            if 'amount' in extra:
-                row['amount'] = extra['amount']
-            if 'volume' in extra and (existing is None or 'volume' not in existing.columns):
-                row['volume'] = extra['volume']
-            if row:
-                supp_df = pd.DataFrame(row, index=[latest_day])
-                supp_df.index.name = 'day'
-                if existing is not None:
-                    extra_history[name] = pd.concat([existing, supp_df])
-                else:
-                    extra_history[name] = supp_df
-                print(f"  ok {name}({code}): 已补充 {list(row.keys())}")
-        time.sleep(0.15)
+        # 仅检查今日行(iloc[-1])是否缺amount,新浪只能补今日
+        missing_today = (existing is not None and 'amount' in existing.columns
+                         and len(existing) >= 1
+                         and pd.isna(existing['amount'].iloc[-1]))
+        if missing_today or (existing is None or 'amount' not in existing.columns):
+            needs_supp[sina] = (code, name, existing)
+
+    if needs_supp:
+        # 批量请求: 新浪支持逗号分隔多个代码
+        batch_codes = ','.join(needs_supp.keys())
+        url = f'http://hq.sinajs.cn/list={batch_codes}'
+        headers = {'User-Agent': 'Mozilla/5.0', 'Referer': 'https://finance.sina.com.cn/'}
+        try:
+            r = requests.get(url, timeout=15, headers=headers)
+            lines = r.text.strip().split('\n')
+            for line in lines:
+                if '=' not in line:
+                    continue
+                parts = line.split('"')
+                if len(parts) < 2:
+                    continue
+                var_part = parts[0]
+                sina_code = var_part.split('_str_')[1] if '_str_' in var_part else ''
+                if sina_code not in needs_supp:
+                    continue
+                data = parts[1].split(',')
+                if len(data) < 10:
+                    continue
+                code, name, existing = needs_supp[sina_code]
+                row = {}
+                amt_str = data[9] if len(data) > 9 else ''
+                if amt_str and amt_str != '0.000':
+                    row['amount'] = float(amt_str)
+                vol_str = data[8] if len(data) > 8 else ''
+                if vol_str and vol_str != '0.000' and (existing is None or 'volume' not in existing.columns):
+                    row['volume'] = float(vol_str) / 100.0
+                if row:
+                    supp_df = pd.DataFrame(row, index=[latest_day])
+                    supp_df.index.name = 'day'
+                    if existing is not None:
+                        if latest_day in existing.index:
+                            for col, val in row.items():
+                                existing.loc[latest_day, col] = val
+                        else:
+                            extra_history[name] = pd.concat([existing, supp_df])
+                    else:
+                        extra_history[name] = supp_df
+                    print(f"  ok {name}({code}): 已补充 {list(row.keys())}")
+        except Exception as e:
+            print(f"  [警告] 新浪批量补充失败: {e}，回退串行")
+            for sina_code, (code, name, existing) in needs_supp.items():
+                extra = get_etf_extra_sina(sina_code)
+                if extra:
+                    row = {}
+                    if 'amount' in extra: row['amount'] = extra['amount']
+                    if 'volume' in extra and (existing is None or 'volume' not in existing.columns):
+                        row['volume'] = extra['volume']
+                    if row:
+                        supp_df = pd.DataFrame(row, index=[latest_day])
+                        supp_df.index.name = 'day'
+                        if existing is not None:
+                            if latest_day in existing.index:
+                                for col, val in row.items():
+                                    existing.loc[latest_day, col] = val
+                            else:
+                                extra_history[name] = pd.concat([existing, supp_df])
+                        else:
+                            extra_history[name] = supp_df
+                        print(f"  ok {name}({code}): 已补充 {list(row.keys())}")
+                time.sleep(0.15)
 
     return price, etf_info, extra_history, data_sources
 
 
-def fetch_intraday_snapshot(pool):
+def fetch_intraday_snapshot(pool, max_workers=5):
     """使用实时行情API获取当日盘中数据（价格+成交量+成交额+换手率）
-    数据源优先级: 新浪实时行情 → 东方财富实时行情（补充换手率）
-    不再依赖60分钟K线（盘后不可用，且ETF支持差）"""
+    数据源优先级: 新浪实时行情(可靠,5/5) → 东方财富实时行情(补充换手率,不稳定) → 60分钟K线兜底"""
     today = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
     snapshot = {}
-    print(f"\n拉取实时行情合成当日数据 (今日 {today})...")
-    for code, (sina, name) in pool.items():
+
+    def _fetch_one(code, sina, name):
         snap = {'code': code}
         # 1) 新浪实时行情: 价格 + 成交量 + 成交额（可靠，200ms级）
         sina_data = get_etf_extra_sina(sina)
@@ -452,7 +510,7 @@ def fetch_intraday_snapshot(pool):
             for k in ['close', 'volume', 'amount']:
                 if k in sina_data:
                     snap[k] = sina_data[k]
-        # 2) 东方财富实时行情: 补充换手率 + 量比（新浪不提供换手率）
+        # 2) 东方财富实时行情: 补充换手率 + 量比
         em_data = get_etf_realtime_eastmoney(code)
         if em_data:
             if 'close' not in snap and 'close' in em_data:
@@ -463,7 +521,7 @@ def fetch_intraday_snapshot(pool):
                 snap['amount'] = em_data['amount']
             if 'turnover' in em_data:
                 snap['turnover'] = em_data['turnover']
-        # 3) 兜底: 60分钟K线（仅当以上两者都失败时）
+        # 3) 兜底: 60分钟K线
         if 'close' not in snap:
             df = get_etf_sina(sina, scale=60, datalen=20)
             if df is not None and len(df) >= 1:
@@ -476,14 +534,20 @@ def fetch_intraday_snapshot(pool):
                         snap['volume'] = float(df_today['volume'].sum())
                     if 'amount' in df.columns and pd.notna(last.get('amount')):
                         snap['amount'] = float(last['amount'])
+        return name, snap
 
-        if 'close' in snap:
-            snapshot[name] = snap
-            fields = ','.join(k for k in ['close', 'volume', 'amount', 'turnover'] if k in snap)
-            print(f"  ok {name}: {snap['close']:.3f} ({fields})")
-        else:
-            print(f"  fail {name}: 无可用实时数据")
-        time.sleep(0.15)
+    print(f"\n拉取实时行情合成当日数据 (今日 {today}, {max_workers}线程并行)...")
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_fetch_one, code, sina, name): name
+                   for code, (sina, name) in pool.items()}
+        for future in as_completed(futures):
+            name, snap = future.result()
+            if 'close' in snap:
+                snapshot[name] = snap
+                fields = ','.join(k for k in ['close', 'volume', 'amount', 'turnover'] if k in snap)
+                print(f"  ok {name}: {snap['close']:.3f} ({fields})")
+            else:
+                print(f"  fail {name}: 无可用实时数据")
     return snapshot
 
 
@@ -536,13 +600,16 @@ def merge_intraday_price(price_daily, intraday_snapshot, etf_info, extra_history
     return price_daily.sort_index(), extra_history
 
 
-def calc_momentum_change(series, lookback=MOM_LONG):
-    if len(series) < lookback + 3:
+def calc_momentum_change(series, lookback=MOM_LONG, is_stale=False, is_intraday=False):
+    """动量变化: 今日vs昨日。intraday时用昨日vs前日(匹配mom_ref基准)"""
+    offset = 1 if is_stale else 0
+    intra = 1 if is_intraday and not is_stale else 0  # 盘中: 跳过今日未完成数据
+    if len(series) < lookback + 3 + offset + intra:
         return None, None, None
-    prev_day = series.iloc[-2]
-    prev_prev_day = series.iloc[-3]
-    current_mom = (prev_day / series.iloc[-lookback-1] - 1) * 100
-    previous_mom = (prev_prev_day / series.iloc[-lookback-2] - 1) * 100
+    curr_day = series.iloc[-1 - intra]
+    prev_day = series.iloc[-2 - intra]
+    current_mom = (curr_day / series.iloc[-lookback - 1 - offset - intra] - 1) * 100
+    previous_mom = (prev_day / series.iloc[-lookback - 2 - offset - intra] - 1) * 100
     change = current_mom - previous_mom
     return current_mom, previous_mom, change
 
@@ -555,24 +622,28 @@ def format_metric_value(value, show_sign=False):
     return f"{value:.2f}"
 
 
-def calc_flow_signal(extra_metrics):
-    turnover = extra_metrics.get('turnover')
-    amount = extra_metrics.get('amount')      # 单位: 元
-    volume_ratio = extra_metrics.get('volume_ratio')
+def calc_session_progress(now):
+    """计算A股交易时段进度(0.0~1.0)。非交易日/非交易时段返回1.0(全日)"""
+    if now.weekday() >= 5:  # 周末
+        return 1.0
+    minutes = now.hour * 60 + now.minute
+    open_min = 9 * 60 + 30    # 570  (9:30)
+    morning_end = 11 * 60 + 30  # 690  (11:30)
+    afternoon_start = 13 * 60   # 780  (13:00)
+    close_min = 15 * 60         # 900  (15:00)
+    if minutes < open_min or minutes >= close_min:
+        return 1.0
+    if minutes <= morning_end:
+        elapsed = minutes - open_min
+    elif minutes < afternoon_start:
+        elapsed = morning_end - open_min   # 午休
+    else:
+        elapsed = (morning_end - open_min) + (minutes - afternoon_start)
+    return min(elapsed / 240.0, 1.0)
 
-    score = 0.0
-    if turnover is not None:
-        score += min(turnover, 10.0) * 0.5
-    if amount is not None:
-        # amount 为元, 除以 1e8 转为亿后归一化
-        amount_yi = amount / 1e8
-        score += min(amount_yi / 5.0, 10.0) * 0.3
-    if volume_ratio is not None:
-        score += max(min(volume_ratio / 5.0, 10.0), -5.0) * 0.2
-    return round(score, 2)
 
-
-def calc_metrics(price, etf_info, etf_sector, extra_history=None):
+def calc_metrics(price, etf_info, etf_sector, extra_history=None, session_progress=None,
+                 data_date=None, is_intraday=False):
     metrics = {}
     if price is None or len(price) < MOM_LONG + 2:
         return metrics
@@ -581,19 +652,41 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
         if len(s) < MOM_LONG + 2:
             continue
 
+        # 动量基准: 盘中用昨日(数据不完整), 盘前/假日用最新, 正常收盘用今日
+        stale = (data_date is not None and str(s.index[-1]) != data_date)
+
+        if is_intraday and not stale:
+            mom_ref = s.iloc[-2]; mom_lag = 2
+        elif stale:
+            mom_ref = s.iloc[-1]; mom_lag = 2
+        else:
+            mom_ref = s.iloc[-1]; mom_lag = 1
+
         latest = s.iloc[-1]
         prev = s.iloc[-2]
 
-        mom_long = (prev / s.iloc[-MOM_LONG-1] - 1) * 100
-        _, _, mom_long_change = calc_momentum_change(s, lookback=MOM_LONG)
-        _, _, mom_short_change = calc_momentum_change(s, lookback=MOM_SHORT)
-        rets = s.iloc[:-1].pct_change().dropna().iloc[-VOL_WINDOW:]
-        vol = rets.std() * np.sqrt(252) * 100 if len(rets) >= VOL_WINDOW // 2 else 999.0
+        mom_long = (mom_ref / s.iloc[-MOM_LONG - mom_lag] - 1) * 100
+        mom_short = (mom_ref / s.iloc[-MOM_SHORT - mom_lag] - 1) * 100
+        _, _, mom_long_change = calc_momentum_change(s, lookback=MOM_LONG, is_stale=stale, is_intraday=is_intraday)
+        _, _, mom_short_change = calc_momentum_change(s, lookback=MOM_SHORT, is_stale=stale, is_intraday=is_intraday)
+        # Parkinson波动率: 利用High/Low捕捉日内振幅,统一截面无偏置
+        extra = extra_history.get(name) if extra_history else None
+        if extra is not None and 'high' in extra.columns and 'low' in extra.columns and len(extra) >= VOL_WINDOW // 2:
+            hl = extra[['high', 'low']].dropna().tail(VOL_WINDOW)
+            if len(hl) >= VOL_WINDOW // 2:
+                hl_ratio = np.log(hl['high'] / hl['low'])
+                parkinson_daily = np.sqrt(1 / (4 * np.log(2)) * (hl_ratio ** 2).mean())
+                vol = parkinson_daily * np.sqrt(252) * 100
+            else:
+                vol = 999.0
+        else:
+            # 回退: 收盘价标准差(统一截面,保留此能力)
+            rets = s.iloc[:-1].pct_change().dropna().iloc[-VOL_WINDOW:]
+            vol = rets.std() * np.sqrt(252) * 100 if len(rets) >= VOL_WINDOW // 2 else 999.0
         vol = max(vol, MIN_VOL)
         raw_score = (mom_long / vol) if mom_long > 0 else None
 
         daily_change = (latest / prev - 1) * 100
-        mom_short = (prev / s.iloc[-MOM_SHORT-1] - 1) * 100
 
         direction = '持平'
         if mom_long_change is not None:
@@ -602,11 +695,11 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
             elif mom_long_change < 0:
                 direction = '下降'
 
-        extra = extra_history.get(name) if extra_history else None
         amount = None
         turnover = None
         volume_ratio = None
         amount_change = None
+        amount_chg_pct = None
         turnover_change = None
         if extra is not None and not extra.empty:
             last_row = extra.iloc[-1]
@@ -619,12 +712,14 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
                 prev_turnover = prev_row.get('turnover')
                 if amount is not None and prev_amount is not None and not (isinstance(prev_amount, float) and np.isnan(prev_amount)):
                     amount_change = round((amount - prev_amount) / 1e8, 2)
+                    if prev_amount > 0:
+                        amount_chg_pct = round((amount / prev_amount - 1) * 100, 2)
                 elif amount is not None and 'volume' in extra.columns:
-                    # 仅当日有成交额时，用成交量变化估算成交额较昨日
                     today_vol = last_row.get('volume')
                     prev_vol = prev_row.get('volume')
                     if today_vol and prev_vol and today_vol > 0:
                         amount_change = round((amount / 1e8) * (1 - prev_vol / today_vol), 2)
+                        amount_chg_pct = round((today_vol / prev_vol - 1) * 100, 2)
                 if turnover is not None and prev_turnover is not None and not (isinstance(prev_turnover, float) and np.isnan(prev_turnover)):
                     turnover_change = round(turnover - prev_turnover, 2)
                 elif turnover is not None and 'volume' in extra.columns:
@@ -633,18 +728,33 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
                     prev_vol = prev_row.get('volume')
                     if today_vol and prev_vol and today_vol > 0:
                         turnover_change = round(turnover * (1 - prev_vol / today_vol), 2)
-            recent_volumes = extra['volume'].dropna().tail(5)
-            if len(recent_volumes) >= 2:
-                avg_vol = recent_volumes.mean()
+            recent_volumes = extra['volume'].dropna()
+            # Bug2修复: 用今天之前的5个完整交易日做均量基准,避免盘中量拉低分母
+            if len(recent_volumes) >= 6:
+                avg_vol = recent_volumes.iloc[-6:-1].mean()
                 latest_vol = recent_volumes.iloc[-1]
-                if avg_vol and avg_vol > 0:
+            elif len(recent_volumes) >= 2:
+                avg_vol = recent_volumes.iloc[:-1].mean()
+                latest_vol = recent_volumes.iloc[-1]
+            else:
+                avg_vol = None
+                latest_vol = None
+            if avg_vol and avg_vol > 0 and latest_vol:
+                latest_date = str(extra.index[-1])
+                if session_progress and 0.05 < session_progress < 1.0 and latest_date == data_date:
+                    projected_vol = min(latest_vol / session_progress, avg_vol * 5)
+                    volume_ratio = ((projected_vol / avg_vol) - 1) * 100
+                elif session_progress and session_progress <= 0.05:
+                    volume_ratio = None  # 开盘5分钟内数据量不足,不计算量比
+                else:
                     volume_ratio = ((latest_vol / avg_vol) - 1) * 100
 
-        flow_signal = calc_flow_signal({
+        # 暂存原始资金流指标,稍后统一做截面Z-score
+        flow_raw = {
             'turnover': turnover,
-            'amount': amount,
             'volume_ratio': volume_ratio,
-        })
+            'amount_chg_pct': amount_chg_pct,
+        }
         metrics[name] = {
             'code': etf_info.get(name, ''),
             'sector': etf_sector.get(name, '其他'),
@@ -661,12 +771,38 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
             'vol': round(vol, 1),
             'amount': round(amount / 1e8, 2) if amount is not None else None,
             'amount_change': amount_change,
+            'amount_chg_pct': amount_chg_pct,
             'turnover': round(turnover, 2) if turnover is not None else None,
             'turnover_change': turnover_change,
             'volume_ratio': round(volume_ratio, 2) if volume_ratio is not None else None,
-            'flow_signal': flow_signal,
+            '_flow_raw': flow_raw,
             'score': raw_score,
         }
+
+    # ── 截面Z-score: 资金流用全市场相对排名替代硬编码阈值 ──
+    def _valid(v):
+        return v is not None and not (isinstance(v, float) and np.isnan(v))
+
+    to_vals = np.array([m['_flow_raw']['turnover'] for m in metrics.values()
+                        if _valid(m['_flow_raw']['turnover'])])
+    vr_vals = np.array([m['_flow_raw']['volume_ratio'] for m in metrics.values()
+                        if _valid(m['_flow_raw']['volume_ratio'])])
+    ac_vals = np.array([m['_flow_raw']['amount_chg_pct'] for m in metrics.values()
+                        if _valid(m['_flow_raw']['amount_chg_pct'])])
+
+    def _z(arr, val):
+        if not _valid(val) or len(arr) < 3:
+            return 0.0
+        std = np.std(arr) or 1.0
+        return (val - np.mean(arr)) / std
+
+    for m in metrics.values():
+        r = m['_flow_raw']
+        z_to = _z(to_vals, r['turnover'])
+        z_vr = _z(vr_vals, r['volume_ratio'])
+        z_ac = _z(ac_vals, r['amount_chg_pct'])
+        m['flow_signal'] = round(z_to * 0.5 + z_vr * 0.3 + z_ac * 0.2, 2)
+        del m['_flow_raw']  # 清理临时字段
 
     positives = [m['score'] for m in metrics.values() if m['score'] is not None]
     flow_values = [m['flow_signal'] for m in metrics.values()]
@@ -684,133 +820,214 @@ def calc_metrics(price, etf_info, etf_sector, extra_history=None):
                 m['flow_score_norm'] = round((m['flow_signal'] - flow_lo) / (flow_hi - flow_lo) * 100, 1)
         else:
             m['flow_score_norm'] = 0.0
+
+    # ── 统一质量评分: 截面Z-score加权,排序与前端展示使用同一公式 ──
+    non_broad_mom = np.array([m['mom_long'] for m in metrics.values()
+                              if m.get('sector') != '宽基指数'])
+    non_broad_score = np.array([m['score'] for m in metrics.values()
+                                if m.get('sector') != '宽基指数'])
+    non_broad_flow = np.array([m['flow_signal'] for m in metrics.values()
+                               if m.get('sector') != '宽基指数'])
+
+    def _safe_z(arr, val):
+        std = np.std(arr) or 1.0
+        return (val - np.mean(arr)) / std
+
+    for m in metrics.values():
+        if m.get('sector') == '宽基指数':
+            m['quality_score'] = 0.0
+            m['rec_score'] = 5.0
+            continue
+        z_mom = _safe_z(non_broad_mom, m['mom_long'])
+        z_score = _safe_z(non_broad_score, m['score'])
+        z_flow = _safe_z(non_broad_flow, m['flow_signal'])
+        m['quality_score'] = round(z_mom * 0.4 + z_score * 0.35 + z_flow * 0.25, 2)
+        # 推荐值: quality_score 映射到 [0,10], 5=中性, >5=偏多, <5=偏空
+        raw = (m['quality_score'] + 2.5) / 5.0 * 10
+        m['rec_score'] = round(max(0.0, min(raw, 10.0)), 1)
+
     return metrics
 
 
 def market_timing(metrics):
+    """双层仓位判定: 沪深300动量(主) + 板块宽度(防单点失效)
+    
+    避免结构性行情中大盘指数走弱但题材板块暴涨时被强行空仓。
+    """
     m = metrics.get('沪深300ETF')
+
+    # ── 板块宽度: 板块内超半数ETF动量为正则算该板块为正 ──
+    sectors = {}
+    for name, mt in metrics.items():
+        s = mt.get('sector', '')
+        if s == '宽基指数':
+            continue
+        sectors.setdefault(s, []).append(mt['mom_long'] > 0)
+
+    breadth_ratio = 0.0
+    if sectors:
+        positive_sectors = sum(1 for etfs in sectors.values() if sum(etfs) > len(etfs) / 2)
+        breadth_ratio = positive_sectors / len(sectors)
+
     if m is None:
         return 0.0, "0成(空仓)", "沪深300数据缺失,保守观望", "danger"
-    if m['mom_long'] > 2:
+
+    hs300_mom = m['mom_long']
+
+    # 沪深300强势 → 正常满仓
+    if hs300_mom > 2:
         return 1.0, "10成(满仓)", "大盘强势,积极参与", "ok"
-    elif m['mom_long'] > 0:
+
+    # 沪深300震荡偏多 → 半仓
+    if hs300_mom > 0:
         return 0.5, "5成(半仓)", "大盘震荡,控制仓位", "warn"
-    else:
-        return 0.0, "0成(空仓)", "大盘弱势,观望为主", "danger"
+
+    # 沪深300走弱 → 不强行空仓，看板块宽度
+    if breadth_ratio >= 0.5:
+        return 0.5, "5成(半仓)", f"大盘弱势但{positive_sectors}/{len(sectors)}板块强势,结构性行情参与", "warn"
+    if breadth_ratio >= 0.3:
+        return 0.3, "3成(轻仓)", f"大盘弱势,仅{positive_sectors}/{len(sectors)}板块活跃,轻仓试探", "warn"
+
+    return 0.0, "0成(空仓)", "大盘弱势且板块全线走弱,观望为主", "danger"
 
 
-def build_target(metrics, position_ratio, signal_type='close'):
-    """V2 相对动量选股: 不设绝对值门槛，按排名取前N只"""
-    if position_ratio <= 0:
-        return []
+def calc_adaptive_params(metrics):
+    """根据市场近期波动率动态调整阈值,避免单边行情中被固定参数误判
+    
+    核心思路: 所有百分比阈值用"市场波动率的倍数"表达
+    - 高波动市场 → 放宽止损/涨幅上限(不容易被震出去)
+    - 低波动市场 → 收紧阈值(更敏感地捕捉异常)
+    """
+    hs300 = metrics.get('沪深300ETF', {})
+    market_vol = hs300.get('vol', 20.0)
+    # 防御: vol=999 表示数据异常(calc_metrics中的兜底值),用全市场中位数替代
+    if market_vol > 100:
+        all_vols = [m.get('vol', 20.0) for m in metrics.values() if m.get('vol', 0) < 100]
+        market_vol = np.median(all_vols) if all_vols else 20.0  # 沪深300年化波动率(%)
+    # 相对基准 20% 年化波动的缩放因子,限制在 0.5~2.0
+    vol_factor = max(0.5, min(market_vol / 20.0, 2.0))
+
+    # 板块宽度: 调整 Top-K
+    sectors = {}
+    for m in metrics.values():
+        s = m.get('sector', '')
+        if s == '宽基指数':
+            continue
+        sectors.setdefault(s, []).append(m['mom_long'] > 0)
+    positive_sectors = sum(1 for etfs in sectors.values() if sum(etfs) > len(etfs) / 2)
+    breadth_ratio = positive_sectors / len(sectors) if sectors else 0
+
+    # 连续函数替代离散阈值,避免边界震荡导致回撤放大
+    # top_k ≈ 1 + breadth × 4, 平滑过渡: 0%→1只, 25%→2只, 50%→3只, 75%→4只, 100%→5只
+    top_k = max(1, min(round(1 + breadth_ratio * 4), 5))
+
+    return {
+        'stop_loss': round(STOP_LOSS * vol_factor, 1),
+        'max_daily_drop': round(MAX_DAILY_DROP * vol_factor, 1),
+        'max_daily_rise': round(MAX_DAILY_RISE * vol_factor, 1),
+        'top_k': top_k,
+        'market_vol': market_vol,
+        'vol_factor': round(vol_factor, 2),
+    }
+
+
+def build_target(metrics, position_ratio=0, adaptive=None):
+    """纯选股推荐器: 以40日动量+截面资金流综合排序,不因择时空仓而隐藏推荐"""
+    ad = adaptive or {}
+    max_rise = ad.get('max_daily_rise', MAX_DAILY_RISE)
+    max_drop = ad.get('max_daily_drop', -3.0)
+    k = ad.get('top_k', TOP_K)
+
+    # 基础门槛: 40日动量为正、5日动量不过度恶化、当日未爆拉(防追高)、排除宽基指数
     candidates = [
         (n, m) for n, m in metrics.items()
-        if m['mom_short'] > -3
-        and m['daily_change'] > MAX_DAILY_DROP
-        and m['daily_change'] < MAX_DAILY_RISE
+        if m['mom_long'] > 0
+        and m['mom_short'] > max_drop
+        and m['daily_change'] < max_rise
+        and m.get('sector', '') != '宽基指数'
     ]
-    if signal_type == 'close':
-        candidates = [(n, m) for n, m in candidates if m['daily_change'] > 0]
-    candidates.sort(key=lambda x: (x[1]['score'] + x[1].get('flow_score_norm', 0) * 0.3), reverse=True)
-    selected = candidates[:TOP_K]
+
+    if not candidates:
+        return [], position_ratio
+
+    # 统一使用 quality_score 排序(与前端展示一致)
+    candidates.sort(key=lambda x: x[1].get('quality_score', 0), reverse=True)
+
+    # 板块集中度风控: 同板块最多2只
+    sector_counts = {}
+    selected = []
+    for n, m in candidates:
+        s = m['sector']
+        if sector_counts.get(s, 0) >= 2:
+            continue
+        selected.append((n, m))
+        sector_counts[s] = sector_counts.get(s, 0) + 1
+        if len(selected) >= k:
+            break
     if not selected:
-        return []
-    weight = round(position_ratio / len(selected), 2)
-    weights = [weight] * len(selected)
-    weights[-1] = round(position_ratio - sum(weights[:-1]), 2)
+        selected = candidates[:k]
+
+    # 按仓位比例分配权重 (0仓位时权重为0,仅展示)
+    if position_ratio > 0:
+        w = round(position_ratio / len(selected), 2)
+        weights = [w] * len(selected)
+        weights[-1] = round(position_ratio - sum(weights[:-1]), 2)
+    else:
+        weights = [0.0] * len(selected)
+
     return [
-        {"name": n, "code": m['code'], "weight": w, "mom_long": m['mom_long'], "score": m['score'], "sector": m['sector']}
+        {"name": n, "code": m['code'], "weight": w, "mom_long": m['mom_long'],
+         "score": m['score'], "sector": m['sector'], "quality_score": m.get('quality_score', 0)}
         for (n, m), w in zip(selected, weights)
-    ]
+    ], position_ratio
 
-def generate_actions(current, target, signal_type, metrics):
-    actions = []
-    current_dict = {h['name']: h for h in current}
-    target_dict = {h['name']: h for h in target}
+def generate_recommendations(target, position_ratio, signal_type, position_reason):
+    """纯推荐器: 将选股结果转化为可读推荐列表"""
+    recs = []
+    if not target:
+        recs.append({"type": "WAIT", "name": "空仓", "code": "", "weight": 0,
+                     "msg": "【观望】当前无符合条件的标的",
+                     "urgency": "low", "reason": "无40日动量为正且满足过滤条件的ETF"})
+        return recs
 
-    for name, h in current_dict.items():
-        m = metrics.get(name, {})
-        risk_reasons = []
-        if m.get('daily_change', 0) <= STOP_LOSS:
-            risk_reasons.append(f"当日止损({m['daily_change']:+.2f}%)")
-        if m.get('mom_short', 0) <= -2:
-            risk_reasons.append(f"短期走弱({m['mom_short']:+.2f}%)")
-        if name not in target_dict:
-            risk_reasons.append("掉出排名")
-
-        if risk_reasons:
-            urgency = "high" if m.get('daily_change', 0) <= STOP_LOSS else "medium"
-            window = "下午" if signal_type == 'morning' else "次日"
-            actions.append({
-                "type": "SELL", "name": name, "code": h['code'], "weight": h['weight'],
-                "msg": f"【{window}清仓】{name}({h['code']}) {h['weight']*10:.0f}成,原因:{'、'.join(risk_reasons)}",
-                "urgency": urgency, "reason": "、".join(risk_reasons)
-            })
-        elif name in target_dict and target_dict[name]['weight'] < h['weight'] - 0.03:
-            tw = target_dict[name]['weight']
-            window = "下午" if signal_type == 'morning' else "次日"
-            actions.append({
-                "type": "REDUCE", "name": name, "code": h['code'], "weight": h['weight'] - tw,
-                "msg": f"【{window}减仓】{name}({h['code']}) 从{h['weight']*10:.0f}成减至{tw*10:.0f}成",
-                "urgency": "medium", "reason": "大盘降仓或排名下降"
-            })
-
-    if signal_type == 'close':
-        for name, h in target_dict.items():
-            if name not in current_dict:
-                actions.append({
-                    "type": "BUY", "name": name, "code": h['code'], "weight": h['weight'],
-                    "msg": f"【次日买入】{name}({h['code']}) {h['weight']*10:.0f}成",
-                    "urgency": "normal", "reason": f"40日动量{h['mom_long']:+.2f}%,资金流{metrics.get(name, {}).get('flow_signal', 0):.2f},排名进入前{TOP_K}"
-                })
-            elif h['weight'] > current_dict[name].get('weight', 0) + 0.03:
-                diff = round(h['weight'] - current_dict[name]['weight'], 2)
-                actions.append({
-                    "type": "ADD", "name": name, "code": h['code'], "weight": diff,
-                    "msg": f"【次日加仓】{name}({h['code']}) 加{diff*10:.0f}成至{h['weight']*10:.0f}成",
-                    "urgency": "normal", "reason": f"大盘加仓或排名上升,资金流{metrics.get(name, {}).get('flow_signal', 0):.2f}"
-                })
-
-    for name, h in target_dict.items():
-        if name in current_dict and abs(h['weight'] - current_dict[name].get('weight', 0)) <= 0.03:
-            actions.append({
-                "type": "HOLD", "name": name, "code": h['code'], "weight": h['weight'],
-                "msg": f"【持有】{name}({h['code']}) {h['weight']*10:.0f}成",
-                "urgency": "low", "reason": "状态良好,无需操作"
-            })
-
-    if not target and not current:
-        actions.append({
-            "type": "WAIT", "name": "空仓", "code": "", "weight": 0,
-            "msg": "【观望】空仓等待,无符合条件的标的",
-            "urgency": "low", "reason": "大盘弱势或板块无机会"
+    label = "下午关注" if signal_type == 'morning' else "推荐"
+    for h in target:
+        recs.append({
+            "type": "PICK", "name": h['name'], "code": h['code'],
+            "weight": h['weight'],
+            "msg": f"【{label}】{h['name']}({h['code']}) "
+                   f"质量{h.get('quality_score',0):+.2f} | 40日动量{h['mom_long']:+.2f}%",
+            "urgency": "normal",
+            "reason": f"质量分{h.get('quality_score',0):+.2f}, "
+                      f"40日动量{h['mom_long']:+.2f}%"
         })
 
-    urgency_order = {"high": 0, "medium": 1, "normal": 2, "low": 3}
-    actions.sort(key=lambda x: urgency_order.get(x['urgency'], 99))
-    return actions
+    if position_ratio <= 0:
+        recs.insert(0, {"type": "NOTE", "name": "", "code": "", "weight": 0,
+                        "msg": f"⚠️ 大盘择时建议空仓({position_reason}),以下推荐仅作逆势板块观察",
+                        "urgency": "low", "reason": "择时空仓"})
+    return recs
 
 def build_html(target, position_text, position_reason, market_cls,
                asof, update_time, signal_type, metrics, data_source_label):
 
     def buy_picks():
-        """潜力推荐：截面 z-score 质量评分 + 板块分组"""
+        """潜力推荐：使用统一 quality_score，与排序逻辑一致"""
+        out = []
+        # 空仓警示
+        if not target or all(h.get('weight', 0) == 0 for h in target):
+            out.append('<div class="action-card warn-text">'
+                       '<div class="action-row"><span class="action-label">⚠️</span>'
+                       '<span class="action-value"><b>大盘择时建议空仓'
+                       f'({position_reason})</b>，以下推荐仅作逆势板块观察参考</span></div>'
+                       '</div>')
         if not target:
-            return ('<div class="action-card hold">'
-                    '<div class="action-row"><span class="action-label">建议</span>'
-                    '<span class="action-value">【观望】暂不推荐，大盘弱势或板块无机会</span></div>'
-                    '</div>')
+            out.append('<div class="action-card hold">'
+                       '<div class="action-row"><span class="action-label">建议</span>'
+                       '<span class="action-value">【观望】暂无符合40日动量条件的标的</span></div>'
+                       '</div>')
+            return "\n".join(out)
 
-        # 计算全市场截面 z-score 用于展示相对优势
-        items = [(n, m) for n, m in metrics.items() if m.get('sector') != '宽基指数']
-        vals_mom    = np.array([m.get('mom_long', 0) for _, m in items])
-        vals_score  = np.array([m.get('score', 0) for _, m in items])
-        vals_flow   = np.array([m.get('flow_signal', 0) for _, m in items])
-
-        def safe_z(arr, val):
-            return (val - np.mean(arr)) / (np.std(arr) or 1.0)
-
-        # 按板块分组
         sector_items = {}
         for i, h in enumerate(target):
             s = h.get('sector', '')
@@ -821,11 +1038,7 @@ def build_html(target, position_text, position_reason, market_cls,
             out.append('<div style="font-size:12px;font-weight:700;color:#2c5364;padding:8px 0 4px 0;border-bottom:1px solid #e8ecf0;margin-top:4px">&#128193; ' + sector + '</div>')
             for rank, h in items_in_sector:
                 m = metrics.get(h['name'], {})
-                z_mom   = safe_z(vals_mom,   h.get('mom_long', 0))
-                z_score = safe_z(vals_score, h.get('score', 0))
-                z_flow  = safe_z(vals_flow,  m.get('flow_signal', 0))
-                quality = z_mom * 0.4 + z_score * 0.35 + z_flow * 0.25
-
+                quality = h.get('quality_score', m.get('quality_score', 0))
                 mom_str   = f"{h['mom_long']:+.2f}%" if h.get('mom_long') is not None else '-'
                 short_str = (format_metric_value(m.get('mom_short', 0), show_sign=True) + '%') if m.get('mom_short') is not None else '-'
                 daily_str = (format_metric_value(m.get('daily_change', 0), show_sign=True) + '%') if m.get('daily_change') is not None else '-'
@@ -838,22 +1051,20 @@ def build_html(target, position_text, position_reason, market_cls,
                     '<div class="action-card pos">'
                     '<div class="action-row"><span class="action-label">#' + str(rank + 1) + '</span>'
                     '<span class="action-value"><b>' + h['name'] + '(' + h['code'] + ')</b>'
-                    ' | 权重 <b>' + str(int(h['weight'] * 10)) + '成</b>'
-                    ' <span style="font-size:11px">' + q_label + ' 质量 ' + f'{quality:+.1f}' + '</span></span></div>'
+                    ' <span style="font-size:11px">' + q_label + ' 质量 ' + f'{quality:+.2f}' + '</span></span></div>'
                     '<div class="action-row"><span class="action-label">动量</span>'
-                    '<span class="action-value">40日 ' + mom_str + ' (z=' + f'{z_mom:+.1f}' + ')'
+                    '<span class="action-value">40日 ' + mom_str
                     + ' | 5日 ' + short_str
                     + ' | 当日 ' + daily_str + '</span></div>'
                     '<div class="action-row"><span class="action-label">评分</span>'
-                    '<span class="action-value">得分 ' + score_str + ' (z=' + f'{z_score:+.1f}' + ')'
-                    + ' | 资金流 ' + flow_str + ' (z=' + f'{z_flow:+.1f}' + ')'
+                    '<span class="action-value">得分 ' + score_str
+                    + ' | 资金流 ' + flow_str
                     + ' | 波动率 ' + vol_str + '</span></div>'
                     '</div>')
         return "\n".join(out)
 
     def risk_warnings():
-        """风险警示：截面 z-score 法，自适应市场环境"""
-        # 收集非宽基 ETF 的三项指标
+        """风险警示：截面Z-score + 自适应绝对阈值双重验证"""
         items = [(n, m) for n, m in metrics.items() if m.get('sector') != '宽基指数']
         n_all = len(items)
         if n_all < 5:
@@ -862,38 +1073,41 @@ def build_html(target, position_text, position_reason, market_cls,
                     '<span class="action-value">样本不足，无法评估风险</span></div>'
                     '</div>')
 
-        # 提取三个维度的原始值
+        # 自适应阈值: 基于市场波动率动态调节
+        hs300_vol = metrics.get('沪深300ETF', {}).get('vol', 20.0)
+        if hs300_vol > 100: hs300_vol = 20.0
+        vf = max(0.5, min(hs300_vol / 20.0, 2.0))
+        abs_daily = round(-2.0 * vf, 1)   # 当日跌幅阈值(高波动放宽)
+        abs_short = round(-3.0 * vf, 1)   # 5日动量阈值
+        abs_long  = round(-5.0 * vf, 1)   # 40日动量破位阈值
+
         vals_daily   = np.array([m.get('daily_change', 0) for _, m in items])
         vals_short   = np.array([m.get('mom_short', 0) for _, m in items])
         vals_long_chg = np.array([m.get('mom_long_change', 0) for _, m in items])
 
-        # 计算 z-score: (值 - 均值) / 标准差。负值 = 低于平均 = 危险
         def safe_z(arr, val):
-            std = np.std(arr) or 1.0
-            return (val - np.mean(arr)) / std
+            return (val - np.mean(arr)) / (np.std(arr) or 1.0)
 
         raw = []
         for name, m in items:
             z_daily   = safe_z(vals_daily,   m.get('daily_change', 0))
             z_short   = safe_z(vals_short,   m.get('mom_short', 0))
             z_long    = safe_z(vals_long_chg, m.get('mom_long_change', 0))
-
-            # 综合风险分：三个 z 加权（负分越多越危险）
             risk = z_daily * 0.3 + z_short * 0.4 + z_long * 0.3
 
-            # 只报告 risk < -1.0 (低于均值1个标准差以上)
-            if risk < -1.0:
+            has_absolute = (m.get('daily_change', 0) < abs_daily or
+                            m.get('mom_short', 0) < abs_short or
+                            m.get('mom_long', 0) < abs_long)
+            if risk < -1.0 and has_absolute:
                 signals = []
-                if z_daily < -1.5:
-                    signals.append(('stop', f'当日跌幅 z={z_daily:.1f}σ（{m["daily_change"]:+.1f}%），截面显著弱于同行'))
-                if z_long < -1.5:
-                    signals.append(('top', f'40日动量变化 z={z_long:.1f}σ（{m["mom_long_change"]:+.1f}pp），长期趋势崩坏'))
-                if z_short < -1.5:
-                    signals.append(('deteriorate', f'5日动量 z={z_short:.1f}σ（{m["mom_short"]:+.1f}%），短线严重落后'))
-                # 放低门槛兜底：至少有一条显著落后就收录
-                if not signals and risk < -1.0:
-                    worst = min([(z_daily, 'stop', '当日跌幅'), (z_short, 'deteriorate', '5日动量'), (z_long, 'top', '40日动量变化')], key=lambda x: x[0])
-                    signals.append((worst[1], f'{worst[2]} z={worst[0]:.1f}σ，综合风险分 {risk:.1f}'))
+                if m.get('daily_change', 0) < abs_daily:
+                    signals.append(('stop', f'当日跌幅 {m["daily_change"]:+.1f}%(阈值{abs_daily}%,z={z_daily:.1f}σ)'))
+                if m.get('mom_short', 0) < abs_short:
+                    signals.append(('deteriorate', f'5日动量 {m["mom_short"]:+.1f}%(阈值{abs_short}%,z={z_short:.1f}σ)'))
+                if m.get('mom_long', 0) < abs_long:
+                    signals.append(('top', f'40日动量 {m["mom_long"]:+.1f}%(阈值{abs_long}%),趋势破位'))
+                if not signals:
+                    signals.append(('warn', f'综合风险分 {risk:.1f}σ'))
                 raw.append((m['sector'], name, m['code'], signals, -risk))
 
         if not raw:
@@ -906,7 +1120,7 @@ def build_html(target, position_text, position_reason, market_cls,
         sector_order = sorted(set(r[0] for r in raw),
             key=lambda s: sum(r[4] for r in raw if r[0] == s), reverse=True)
 
-        type_label = {'stop': '跌幅', 'top': '到顶', 'deteriorate': '恶化'}
+        type_label = {'stop': '跌幅', 'top': '破位', 'deteriorate': '恶化', 'warn': '预警'}
         out = []
         last_sector = None
         for sector, name, code, signals, risk_score in sorted(raw,
@@ -951,7 +1165,7 @@ def build_html(target, position_text, position_reason, market_cls,
             out.append(
                 '<tr style="background:#f0f7ff">' +
                 '<td style="font-weight:700;color:#2c5364;padding:8px 10px;position:sticky;left:0;z-index:1;background:#f0f7ff;min-width:140px">&#128193; ' + sector + '</td>' +
-                '<td colspan="11" style="background:#f0f7ff;padding:8px 10px"></td>' +
+                '<td colspan="12" style="background:#f0f7ff;padding:8px 10px"></td>' +
                 '</tr>')
             for name, m in items:
                 mom_cls = 'pos' if m['mom_long'] > 0 else 'neg'
@@ -971,6 +1185,9 @@ def build_html(target, position_text, position_reason, market_cls,
                 flow_value = m.get('flow_signal', 0)
                 flow_cls = 'pos' if flow_value >= 5 else 'neg' if flow_value <= 0 else ''
                 flow_text = '-' if flow_value is None else format_metric_value(flow_value)
+                rec_val = m.get('rec_score', 5.0)
+                rec_cls = 'pos' if rec_val > 5.0 else 'neg'
+                rec_text = f"{rec_val:.1f}"
                 out.append(
                     '<tr><td class="nm" style="padding-left:24px">' + name + '(' + m["code"] + ')</td>' +
                     '<td class="' + mom_cls + '">' + format_metric_value(m["mom_long"], show_sign=True) + '%</td>' +
@@ -983,7 +1200,8 @@ def build_html(target, position_text, position_reason, market_cls,
                     '<td>' + (turnover_text if turnover_text == '-' else turnover_text + '%') + '</td>' +
                     '<td class="' + turnover_change_cls + '">' + turnover_change_text + '</td>' +
                     '<td class="' + flow_cls + '">' + flow_text + '</td>' +
-                    '<td>' + (vol_text if vol_text == '-' else vol_text + '%') + '</td></tr>')
+                    '<td>' + (vol_text if vol_text == '-' else vol_text + '%') + '</td>' +
+                    '<td class="' + rec_cls + '">' + rec_text + '</td></tr>')
         return "\n".join(out)
 
     if signal_type == 'morning':
@@ -1106,11 +1324,11 @@ padding:2px 8px;border-radius:4px;margin-right:6px}
 </div></div>
 
 <div class="card"><h2>&#128202; 板块与标的监控(共 """ + str(len(metrics)) + """ 只,分""" + str(len(set(m['sector'] for m in metrics.values()))) + """个板块)</h2>
-<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量(%)</th><th>较昨日</th><th>5日动量(%)</th><th>5日较昨日</th><th>当日涨跌(%)</th><th>成交额(亿)</th><th>成交额较昨日</th><th>换手率(%)</th><th>换手率较昨日</th><th>资金流评分</th><th>波动率(%)</th></tr></thead>
+<div class="table-wrap"><table><thead><tr><th class="nm">ETF</th><th>40日动量(%)</th><th>较昨日</th><th>5日动量(%)</th><th>5日较昨日</th><th>当日涨跌(%)</th><th>成交额(亿)</th><th>成交额较昨日</th><th>换手率(%)</th><th>换手率较昨日</th><th>资金流评分</th><th>波动率(%)</th><th>推荐值</th></tr></thead>
 <tbody>""" + monitor_rows_html + """</tbody></table></div></div>
 
 <div class="note"><b>策略逻辑</b><br>
-<b>仓位</b>:沪深300 40日动量&gt;0且5日动量&gt;0&#8594;满仓10成;40日&gt;0但5日&#8804;0&#8594;半仓5成;40日&#8804;0&#8594;空仓0成.<br>
+<b>仓位</b>:沪深300 40日动量&gt;2%&#8594;满仓10成;0~2%&#8594;半仓5成;&#8804;0%时看板块宽度(&#8805;50%板块动量正→半仓5成,&#8805;30%→3成轻仓,否则空仓).<br>
 <b>选股</b>:40日风险调整动量排名前""" + str(TOP_K) + """(不设绝对值门槛) + 5日动量&gt;-3% + 当日跌幅&gt;""" + str(MAX_DAILY_DROP) + """% + 当日涨幅&lt;""" + str(MAX_DAILY_RISE) + """% + 资金流评分优先.<br>
 <b>上午</b>:只风控(卖出/减仓),不买入(T+1保护).<br><br>
 <b>T+1 制度说明</b><br>
@@ -1124,19 +1342,10 @@ def main():
     bj = timezone(timedelta(hours=8))
     now = datetime.now(bj)
     update_time = now.strftime('%Y-%m-%d %H:%M:%S')
-
-    if 11 <= now.hour < 13:
-        signal_type = 'morning'
-        print("时段: 上午风控 (11:30 盘中,负责下午操作)")
-    elif now.hour >= 15:
-        signal_type = 'close'
-        print("时段: 收盘决策 (15:00 后,负责次日/尾盘操作)")
-    else:
-        signal_type = 'close'
-        print(f"时段: 下午盘中 ({now.hour}:{now.minute:02d} 手动触发,按收盘逻辑处理)")
+    today_str = now.strftime('%Y-%m-%d')
 
     print(f"\n{'='*60}")
-    print(f"[{update_time}] 信号类型: {signal_type}")
+    print(f"[{update_time}] 策略启动")
     print(f"{'='*60}")
 
     price_daily, etf_info, extra_history, data_sources = fetch_daily_data(ETF_POOL)
@@ -1144,11 +1353,35 @@ def main():
         print("日K线获取失败")
         return
 
-    today_str = datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d')
-    trade_date = price_daily.index[-1]
-    # 盘中时间(9:30-15:00)且日K最新不是今天，才尝试用60分钟K线合成当日数据
-    is_market_hours = 9 <= now.hour < 15 or (now.hour == 9 and now.minute >= 30)
-    # 快照合并前的 extra_history 状态（仅记录每个 ETF 的最新日期和 amount，用于诊断对比）
+    trade_date = str(price_daily.index[-1])
+    days_behind = (now.date() - datetime.strptime(trade_date, '%Y-%m-%d').date()).days
+    is_weekday = now.weekday() < 5  # 周一=0, 周日=6
+
+    # ── 鲁棒信号判定: 以数据状态为准,而非时钟时间 ──
+    # 盘中合成条件: 工作日 + 盘中时段 + 数据日期≠今日 + 间隔≤4天(覆盖周末和短假)
+    morning = ((now.hour == 9 and now.minute >= 30) or now.hour == 10 or
+               (now.hour == 11 and now.minute <= 30))
+    afternoon = (now.hour == 13 or now.hour == 14)
+    actual_trading = (morning or afternoon) and is_weekday
+
+    intraday_trigger = False
+    if trade_date != today_str and actual_trading and days_behind <= 4:
+        signal_type = 'morning' if morning else 'afternoon'
+        intraday_trigger = True
+        label = "上午风控" if morning else "下午盘中"
+        print(f"时段: {label} (盘中合成今日数据, 最新交易日={trade_date})")
+    else:
+        signal_type = 'close'
+        if days_behind > 1:
+            print(f"时段: 收盘决策 (休市/假日,最新交易日={trade_date},距今日{days_behind}天)")
+        elif trade_date == today_str:
+            print(f"时段: 收盘决策 (日K已含今日数据)")
+        else:
+            print(f"时段: 收盘决策 (非盘中,最新交易日={trade_date})")
+
+    print(f"信号类型: {signal_type} | 盘中触发: {intraday_trigger}")
+
+    # 快照合并前状态
     extra_before = {}
     for name, df in extra_history.items():
         extra_before[name] = {
@@ -1156,18 +1389,34 @@ def main():
             'has_today': today_str in df.index,
             'amount_latest': float(df['amount'].iloc[-1]) if 'amount' in df.columns and len(df) > 0 else None,
         }
-    if trade_date != today_str and is_market_hours:
-        print(f"\n日K最新 {trade_date}，盘中时段，尝试用60分钟K线合成今日数据...")
+
+    if intraday_trigger:
+        print(f"\n日K最新 {trade_date}，盘中时段，拉取实时行情合成今日数据...")
         intraday_snapshot = fetch_intraday_snapshot(ETF_POOL)
-        price, extra_history = merge_intraday_price(price_daily, intraday_snapshot, etf_info, extra_history)
+        # 假日防御: 若实时行情中成交量全为0或极低,说明今日休市
+        valid_count = sum(1 for s in intraday_snapshot.values()
+                          if s.get('volume', 0) > 0 and s.get('close', 0) > 0.01)
+        if valid_count < len(ETF_POOL) * 0.3:
+            print(f"  假日检测: 有效快照仅{valid_count}/{len(ETF_POOL)}只(阈值30%),判定休市→退回收盘模式")
+            intraday_trigger = False
+            signal_type = 'close'
+            price = price_daily
+        else:
+            price, extra_history = merge_intraday_price(price_daily, intraday_snapshot, etf_info, extra_history)
     else:
         if trade_date != today_str:
-            print(f"\n日K最新 {trade_date}（非盘中时段），直接使用")
+            print(f"\n日K最新 {trade_date}（非盘中或假日），直接使用")
         else:
             print(f"\n日K已包含今天数据，直接使用")
         price = price_daily
 
-    metrics = calc_metrics(price, etf_info, ETF_SECTOR, extra_history)
+    session_progress = calc_session_progress(now)
+    if session_progress < 1.0:
+        print(f"盘中交易进度: {session_progress*100:.0f}%")
+    if str(price.index[-1]) != today_str:
+        print(f"数据偏移检测: 最新日期={price.index[-1]} ≠ 今日={today_str}, 动量窗口已自动对齐")
+    metrics = calc_metrics(price, etf_info, ETF_SECTOR, extra_history, session_progress,
+                           today_str, intraday_trigger)
     if not metrics:
         print("指标计算失败")
         return
@@ -1177,7 +1426,7 @@ def main():
         'run_time': update_time,
         'signal_type': signal_type,
         'data_sources': sorted(data_sources),
-        'intraday_triggered': (trade_date != today_str and is_market_hours),
+        'intraday_triggered': intraday_trigger,
         'price_latest_date': str(price.index[-1]),
         'price_has_today': str(price.index[-1]) == today_str,
         'extra_before_merge': extra_before,
@@ -1202,8 +1451,12 @@ def main():
     position_ratio, position_text, position_reason, market_cls = market_timing(metrics)
     print(f"大盘: {position_text} ({position_reason})")
 
-    target = build_target(metrics, position_ratio, signal_type)
-    actions = generate_actions([], target, signal_type, metrics)
+    adaptive = calc_adaptive_params(metrics)
+    print(f"自适应: vol_factor={adaptive['vol_factor']} stop_loss={adaptive['stop_loss']}% "
+          f"max_rise={adaptive['max_daily_rise']}% top_k={adaptive['top_k']}")
+
+    target, _ = build_target(metrics, position_ratio, adaptive)
+    actions = generate_recommendations(target, position_ratio, signal_type, position_reason)
     for a in actions:
         print(f"  {a['type']}: {a['msg']}")
 

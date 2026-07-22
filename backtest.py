@@ -15,7 +15,7 @@ from datetime import datetime, timezone, timedelta
 from strategy import (
     SECTOR_ETF_POOL, ETF_POOL, ETF_SECTOR,
     get_etf_sina, get_etf_history_eastmoney, get_etf_history_akshare,
-    fetch_daily_data, calc_metrics, calc_flow_signal,
+    fetch_daily_data, calc_metrics,
     DATA_LEN, MOM_LONG, MOM_SHORT, VOL_WINDOW, MIN_VOL,
     MAX_DAILY_DROP, MAX_DAILY_RISE, TOP_K
 )
@@ -87,14 +87,15 @@ def build_target_absolute(metrics, position_ratio):
 
 
 def build_target_relative(metrics, position_ratio, diversify=False):
-    """V2/V3/V4: 相对动量选股 (不设绝对值门槛)
+    """V2/V3/V4: 相对动量选股 (40日动量必须为正)
     diversify=True: 同一板块最多选1只
     """
     if position_ratio <= 0:
         return []
     candidates = [
         (n, m) for n, m in metrics.items()
-        if m['mom_short'] > -3
+        if m['mom_long'] > 0
+        and m['mom_short'] > -3
         and m['daily_change'] > MAX_DAILY_DROP
         and m['daily_change'] < MAX_DAILY_RISE
         and m['daily_change'] > 0

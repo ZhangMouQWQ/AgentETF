@@ -1,5 +1,5 @@
 {
-  "run_time": "2026-07-22 21:25:31",
+  "run_time": "2026-07-22 21:56:30",
   "today": "2026-07-22",
   "signal_type": "close",
   "test_pool": {
@@ -15,12 +15,12 @@
       "eastmoney_kline": {
         "ok": false,
         "rows": 0,
-        "time_s": 1.09
+        "time_s": 0.05
       },
       "tencent_kline": {
         "ok": true,
         "rows": 11,
-        "time_s": 1.01
+        "time_s": 0.17
       },
       "sina_realtime": {
         "ok": true,
@@ -29,17 +29,12 @@
           "volume",
           "amount"
         ],
-        "time_s": 0.75
+        "time_s": 0.12
       },
       "eastmoney_realtime": {
-        "ok": true,
-        "keys": [
-          "close",
-          "volume",
-          "amount",
-          "turnover"
-        ],
-        "time_s": 2.06
+        "ok": false,
+        "keys": [],
+        "time_s": 0.06
       }
     },
     "512480": {
@@ -47,12 +42,12 @@
       "eastmoney_kline": {
         "ok": false,
         "rows": 0,
-        "time_s": 0.72
+        "time_s": 0.06
       },
       "tencent_kline": {
         "ok": true,
         "rows": 11,
-        "time_s": 1.05
+        "time_s": 0.14
       },
       "sina_realtime": {
         "ok": true,
@@ -61,12 +56,12 @@
           "volume",
           "amount"
         ],
-        "time_s": 0.32
+        "time_s": 0.09
       },
       "eastmoney_realtime": {
         "ok": false,
         "keys": [],
-        "time_s": 1.09
+        "time_s": 1.08
       }
     },
     "515030": {
@@ -74,12 +69,12 @@
       "eastmoney_kline": {
         "ok": false,
         "rows": 0,
-        "time_s": 0.49
+        "time_s": 0.04
       },
       "tencent_kline": {
         "ok": true,
         "rows": 10,
-        "time_s": 1.0
+        "time_s": 0.17
       },
       "sina_realtime": {
         "ok": true,
@@ -88,12 +83,12 @@
           "volume",
           "amount"
         ],
-        "time_s": 0.33
+        "time_s": 0.08
       },
       "eastmoney_realtime": {
         "ok": false,
         "keys": [],
-        "time_s": 1.2
+        "time_s": 0.07
       }
     },
     "159915": {
@@ -101,12 +96,12 @@
       "eastmoney_kline": {
         "ok": false,
         "rows": 0,
-        "time_s": 0.49
+        "time_s": 0.06
       },
       "tencent_kline": {
         "ok": true,
         "rows": 11,
-        "time_s": 1.07
+        "time_s": 0.15
       },
       "sina_realtime": {
         "ok": true,
@@ -115,12 +110,12 @@
           "volume",
           "amount"
         ],
-        "time_s": 0.32
+        "time_s": 0.09
       },
       "eastmoney_realtime": {
         "ok": false,
         "keys": [],
-        "time_s": 1.2
+        "time_s": 0.28
       }
     },
     "512010": {
@@ -128,12 +123,12 @@
       "eastmoney_kline": {
         "ok": false,
         "rows": 0,
-        "time_s": 0.49
+        "time_s": 0.05
       },
       "tencent_kline": {
         "ok": true,
         "rows": 11,
-        "time_s": 1.01
+        "time_s": 0.16
       },
       "sina_realtime": {
         "ok": true,
@@ -142,12 +137,12 @@
           "volume",
           "amount"
         ],
-        "time_s": 0.33
+        "time_s": 0.09
       },
       "eastmoney_realtime": {
         "ok": false,
         "keys": [],
-        "time_s": 1.16
+        "time_s": 0.05
       }
     }
   },
