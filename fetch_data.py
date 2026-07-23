@@ -236,7 +236,7 @@ def save_history_json(history_results, price, etf_info, extra_history):
             etf_data = {
                 'code': etf_info.get(name, ''),
                 'sector': ETF_SECTOR.get(name, '其他'),
-                'close': [round(float(v), 3) if not (isinstance(v, float) and np.isnan(v)) else None
+                'close': [round(float(v), 3) if not pd.isna(v) else None
                          for v in price[name].values],
             }
             # 附加 extra 数据 (open/high/low/volume/amount/turnover)
@@ -248,7 +248,7 @@ def save_history_json(history_results, price, etf_info, extra_history):
                         for d in price.index:
                             if d in edf.index:
                                 v = edf.loc[d, col]
-                                vals.append(round(float(v), 2) if not (isinstance(v, float) and np.isnan(v)) else None)
+                                vals.append(round(float(v), 2) if not pd.isna(v) else None)
                             else:
                                 vals.append(None)
                         etf_data[col] = vals
