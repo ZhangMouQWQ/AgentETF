@@ -1,0 +1,76 @@
+name: ETF 数据抓取
+
+on:
+  schedule:
+    # 北京时间 15:45 (UTC 7:45) — 收盘后拉取
+    - cron: '45 7 * * 1-5'
+    # 北京时间 8:00 (UTC 0:00) — 盘前补充拉取
+    - cron: '0 0 * * 1-5'
+  workflow_dispatch:  # 手动触发
+    inputs:
+      datalen:
+        description: '历史数据长度'
+        required: false
+        default: '260'
+        type: string
+
+# 并发控制: 同一时间只运行一个
+concurrency:
+  group: fetch-data
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: write  # 允许推送 data/ 到仓库
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安装依赖
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 抓取数据
+        run: |
+          python fetch_data.py --workers 3 ${{ github.event.inputs.datalen && format('--datalen {0}', github.event.inputs.datalen) || '' }}
+
+      - name: 生成持仓信号
+        if: success()
+        run: |
+          python portfolio_signal.py
+
+      - name: 提交数据到仓库
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 仅当 data/ 有变更时才提交
+          if git diff --quiet data/; then
+            echo "数据无变化, 跳过提交"
+          else
+            git add data/
+            git commit -m "📊 自动更新数据 [$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M')]"
+            git push
+            echo "✅ 数据已推送"
+          fi
+
+      - name: 上传构建产物 (备用)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: etf-data-${{ github.run_id }}
+          path: data/
+          retention-days: 7

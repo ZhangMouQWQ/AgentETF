@@ -366,13 +366,16 @@ def fetch_daily_data(pool, datalen=DATA_LEN, max_workers=5):
     total = len(pool)
 
     def _fetch_one(item):
-        """单只 ETF 数据拉取（线程安全）"""
+        """单只ETF拉取: AKShare优先(完整OHLCV+额+换手) → Eastmoney → Tencent"""
         code, (sina, name) = item
-        df = get_etf_sina(sina, scale=240, datalen=datalen)
-        source = 'tencent'
+        df = get_etf_history_akshare(code, datalen=datalen)
+        source = 'akshare'
         if df is None:
             df = get_etf_history_eastmoney(code, datalen=datalen)
             source = 'eastmoney'
+        if df is None:
+            df = get_etf_sina(sina, scale=240, datalen=datalen)
+            source = 'tencent'
         return name, code, source, df
 
     print(f"拉取历史日K线 (共{total}只, {max_workers}线程并行)...")
@@ -385,7 +388,7 @@ def fetch_daily_data(pool, datalen=DATA_LEN, max_workers=5):
             if df is not None and len(df) >= MOM_LONG + 5:
                 all_close[name] = df.set_index('day')['close']
                 etf_info[name] = code
-                available_extra = [c for c in ['volume', 'amount', 'turnover', 'high', 'low'] if c in df.columns]
+                available_extra = [c for c in ['open', 'volume', 'amount', 'turnover', 'high', 'low'] if c in df.columns]
                 if available_extra:
                     extra_df = df[['day'] + available_extra].copy()
                     extra_df = extra_df.dropna(how='all')
@@ -400,6 +403,17 @@ def fetch_daily_data(pool, datalen=DATA_LEN, max_workers=5):
                 print(f"  [{i}/{total}] FAIL {name}({code}): 数据不足")
                 fail_count += 1
     print(f"\n数据拉取完成: 成功={success_count}/{total}, 失败={fail_count}/{total}")
+    
+    # ── 腾讯源成交额估算: volume × 均价近似 ──
+    tencent_filled = 0
+    for name, df in extra_history.items():
+        if 'amount' not in df.columns or df['amount'].isna().all():
+            if 'volume' in df.columns and 'high' in df.columns and 'low' in df.columns:
+                df['amount'] = df['volume'] * (df['high'] + df['low'] + all_close.get(name, pd.Series(dtype=float))) / 3
+                tencent_filled += 1
+    if tencent_filled:
+        print(f"  [补充] {tencent_filled}只ETF的成交额已用 成交量×均价 估算")
+    
     if not all_close:
         return None, {}, {}, data_sources
     price = pd.DataFrame(all_close).sort_index()
@@ -494,6 +508,113 @@ def fetch_daily_data(pool, datalen=DATA_LEN, max_workers=5):
                 time.sleep(0.15)
 
     return price, etf_info, extra_history, data_sources
+
+
+def fetch_60min_for_execution(pool, max_workers=5):
+    """拉取60分钟K线 (最近40根≈10天), 用于执行层优化买卖点
+    
+    返回: {etf_name: DataFrame}
+    """
+    intraday = {}
+    total = len(pool)
+    
+    def _fetch_one(item):
+        code, (sina, name) = item
+        df = get_etf_sina(sina, scale=60, datalen=40)
+        return name, df
+    
+    print(f"\n拉取60分钟K线(执行层, {max_workers}线程)...")
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_fetch_one, item): item for item in pool.items()}
+        for i, future in enumerate(as_completed(futures), 1):
+            name, df = future.result()
+            if df is not None and len(df) >= 4:
+                intraday[name] = df
+                print(f"  [{i}/{total}] ok {name}: {len(df)}根60min K线")
+            else:
+                print(f"  [{i}/{total}] fail {name}")
+    return intraday
+
+
+def fetch_daily_data_cached(pool, datalen=DATA_LEN, max_workers=5, force_refresh=False):
+    """带缓存的 fetch_daily_data: 优先读本地, 无变化则跳过API调用
+    
+    force_refresh=True 强制重新拉取(用于收盘后更新)
+    """
+    try:
+        from data_cache import should_refresh, load_from_cache, save_to_cache
+    except ImportError:
+        return fetch_daily_data(pool, datalen, max_workers)
+
+    if not force_refresh and not should_refresh():
+        price, etf_info, extra_history = load_from_cache()
+        if price is not None:
+            print(f"  ✓ 从缓存加载: {price.shape[0]}行×{price.shape[1]}列")
+            return price, etf_info, extra_history, {'cached'}
+        print("  [缓存] 读取失败, 回退API拉取")
+
+    # 需要拉取
+    result = fetch_daily_data(pool, datalen, max_workers)
+    if result[0] is not None:
+        save_to_cache(result[0], result[1], result[2])
+    return result
+
+
+def fetch_60min_for_execution(etf_code, sina_code, target_date, datalen=10):
+    """拉取单只ETF的60分钟K线, 用于当日执行层优化买卖点
+    
+    返回: {date_str: [(time, open, high, low, close), ...]} 或 None
+    仅拉取最近datalen根K线(约2.5天)
+    """
+    df = get_etf_sina(sina_code, scale=60, datalen=datalen)
+    if df is None or len(df) < 2:
+        return None
+    
+    # 按日期分组
+    result = {}
+    for _, row in df.iterrows():
+        day_str = row['day'][:10]  # "2026-07-23 10:30" → "2026-07-23"
+        time_str = row['day'][11:16] if len(row['day']) > 10 else ''
+        bar = (time_str, float(row['open']), float(row['high']),
+               float(row['low']), float(row['close']))
+        result.setdefault(day_str, []).append(bar)
+    return result
+
+
+def find_best_entry(day_bars):
+    """从60分钟K线找最优买入价: 优先等回调, 无回调则用开盘
+    
+    逻辑: 在上午的2根K线(9:30-11:30)中找最低点
+    策略: 开盘后如果第2根K线比第1根低 → 用第2根低点, 否则用开盘
+    """
+    if not day_bars or len(day_bars) < 1:
+        return None
+    
+    # 第一根K线(9:30-10:30)的开盘价
+    open_price = day_bars[0][1]
+    
+    # 上午的K线(前2根: 9:30-11:30)
+    morning_bars = day_bars[:2]
+    lows = [b[3] for b in morning_bars]  # 最低价
+    
+    if len(lows) >= 2 and lows[1] < open_price:
+        # 第2根K线低于开盘 → 等到了回调
+        return round(lows[1], 3)
+    
+    # 无回调 → 用开盘价
+    return round(open_price, 3)
+
+
+def find_best_exit(day_bars):
+    """从60分钟K线找最优卖出价: 全天最高点
+    
+    逻辑: 在4根K线(全天)中找最高点
+    """
+    if not day_bars:
+        return None
+    
+    highs = [b[2] for b in day_bars]  # 最高价
+    return round(max(highs), 3) if highs else None
 
 
 def fetch_intraday_snapshot(pool, max_workers=5):
@@ -889,6 +1010,84 @@ def market_timing(metrics):
         return 0.3, "3成(轻仓)", f"大盘弱势,仅{positive_sectors}/{len(sectors)}板块活跃,轻仓试探", "warn"
 
     return 0.0, "0成(空仓)", "大盘弱势且板块全线走弱,观望为主", "danger"
+
+
+def selection_override(target, position_ratio, signal_type='close',
+                       prev_day_return=None, consecutive_losses=0, hs300_mom=None):
+    """选股信号覆盖择时 V2: 仓位分级 + 紧止损 + 熔断 + HS300混合
+
+    改进点:
+    - P1 仓位分级: quality_score>2.0→5成, >1.0→3成 (而非统一5成)
+    - P0 紧止损: 昨日跌幅<-2% → 明日仓位降至3成
+    - P1 熔断: 连续2天亏损 → 暂停覆盖3天
+    - P2 HS300混合: HS300动量>0时覆盖可给更高仓位
+
+    Returns: (new_ratio, new_text, new_reason, new_cls, overridden, state_updates)
+      state_updates: dict with keys 'consecutive_losses', 'last_return', 'paused_until'
+    """
+    state_updates = {}
+
+    if position_ratio > 0 or signal_type == 'morning':
+        return position_ratio, None, None, None, False, state_updates
+
+    # ── P1 熔断: 连续2天亏损 → 暂停覆盖3天 ──
+    if consecutive_losses >= 2:
+        print(f"\n  🛑 熔断: 连续{consecutive_losses}天亏损, 暂停选股覆盖")
+        return position_ratio, None, None, None, False, state_updates
+
+    # ── 选股质量检查 ──
+    high_quality = [h for h in target if h.get('quality_score', 0) > 1.0]
+    super_quality = [h for h in high_quality if h.get('quality_score', 0) > 2.0]
+
+    if len(high_quality) < 2:
+        return position_ratio, None, None, None, False, state_updates
+
+    # ── P1 仓位分级: quality_score > 2.0 → 5成, > 1.0 → 3成 ──
+    if len(super_quality) >= 2:
+        base_ratio = 0.5  # 5成(半仓)
+        level = "半仓"
+    else:
+        base_ratio = 0.3  # 3成(轻仓)
+        level = "轻仓"
+
+    # ── P2 HS300混合: HS300动量>0时可额外加仓 ──
+    hs300_bonus = 0
+    if hs300_mom is not None and hs300_mom > 0:
+        hs300_bonus = 0.1  # HS300偏多, 额外加1成
+        base_ratio = min(base_ratio + hs300_bonus, 0.6)
+
+    # ── P0 紧止损: 昨日跌>2%则降仓 ──
+    stop_loss_triggered = False
+    if prev_day_return is not None and prev_day_return < -0.02:
+        base_ratio = min(base_ratio, 0.3)
+        stop_loss_triggered = True
+
+    new_ratio = round(base_ratio, 1)
+
+    # 构建理由
+    names = ', '.join(f"{h['name']}(质量{h['quality_score']:+.1f})" for h in high_quality[:3])
+    parts = [f"{len(high_quality)}只高质量标的({names})"]
+
+    if len(super_quality) >= 2:
+        parts.append(f"{len(super_quality)}只超优(quality>2.0)→{level}")
+    else:
+        parts.append(f"quality>1.0→{level}")
+
+    if hs300_bonus > 0:
+        parts.append(f"HS300动量{hs300_mom:+.1f}%偏多+1成")
+    if stop_loss_triggered:
+        parts.append("⚠️紧止损:昨日跌幅>2%→降仓")
+
+    new_text = f"{int(new_ratio*10)}成({level})"
+    new_reason = f"选股覆盖: {'; '.join(parts)} → 大盘弱势但个股强势,{level}参与"
+    new_cls = "warn" if new_ratio >= 0.5 else "danger"
+
+    print(f"\n  ⚡ 选股覆盖触发: position_ratio {position_ratio}→{new_ratio}")
+    print(f"  ⚡ 分级: {level} | 高质量={len(high_quality)}只 | 超优={len(super_quality)}只")
+    if stop_loss_triggered:
+        print(f"  ⚡ 紧止损生效: 仓位被限制在{int(new_ratio*10)}成")
+
+    return new_ratio, new_text, new_reason, new_cls, True, state_updates
 
 
 def calc_adaptive_params(metrics):
@@ -1338,6 +1537,109 @@ A股 ETF 实行T+1交易:今日买入的份额,需待下一个交易日才能卖
 </div></body></html>"""
     return html
 
+
+def detect_market_regime(metrics):
+    """市场状态检测器: 综合HS300动量+板块宽度+动量改善比"""
+    hs300 = metrics.get('沪深300ETF', {})
+    hs300_mom = hs300.get('mom_long', -999)
+    hs300_vol = hs300.get('vol', 20.0)
+    if hs300_vol > 100: hs300_vol = 20.0
+
+    sectors = {}
+    for m in metrics.values():
+        s = m.get('sector', '')
+        if s == '宽基指数': continue
+        sectors.setdefault(s, []).append(m['mom_long'] > 0)
+    pos_sectors = sum(1 for etfs in sectors.values() if sum(etfs) > len(etfs) / 2)
+    breadth = pos_sectors / max(len(sectors), 1)
+
+    improving = sum(1 for m in metrics.values()
+                    if m.get('mom_long_change', 0) > 0.3
+                    and m.get('sector', '') != '宽基指数')
+    worsening = sum(1 for m in metrics.values()
+                   if m.get('mom_long_change', 0) < -0.3
+                   and m.get('sector', '') != '宽基指数')
+    improve_ratio = improving / max(improving + worsening, 1)
+
+    up_today = sum(1 for m in metrics.values()
+                   if m.get('daily_change', 0) > 0
+                   and m.get('sector', '') != '宽基指数')
+    total = max(sum(1 for m in metrics.values() if m.get('sector', '') != '宽基指数'), 1)
+
+    signals = {'hs300_mom': hs300_mom, 'breadth': breadth,
+               'improve_ratio': improve_ratio, 'up_ratio': up_today / total,
+               'volatility': hs300_vol}
+
+    if hs300_mom > 2 and breadth >= 0.5:
+        return 'bull', 0.9, signals
+    if hs300_mom > 0 and breadth >= 0.3:
+        return 'sideways', 0.7, signals
+    if hs300_mom <= 0 and breadth >= 0.3 and improve_ratio > 0.55:
+        return 'structural', 0.6, signals
+    if hs300_mom <= 0 and improve_ratio > 0.6 and up_today / total > 0.4:
+        return 'recovery', 0.5, signals
+    return 'bear', 0.8, signals
+
+
+def meta_strategy(metrics, signal_type='close'):
+    """元策略: 根据市场状态自动选择最优策略变体
+
+    策略映射:
+      bull      -> V2 HS300择时  (满仓进攻)
+      sideways  -> V8 宽度+V2覆盖+分散 (半仓精选)
+      structural-> V8 宽度+V2覆盖+分散 (结构行情精选)
+      recovery  -> V10 HS300+V3+分散 (智能反弹捕捉)
+      bear      -> V3 空仓避险
+    非熊市且quality>2.0标的>=3只 -> 额外加仓
+    """
+    regime, confidence, signals = detect_market_regime(metrics)
+    hs300_mom = signals['hs300_mom']
+    breadth = signals['breadth']
+    improve_ratio = signals['improve_ratio']
+
+    regime_map = {
+        'bull':       (None, "🐂 牛市(V2): 顺势进攻"),
+        'sideways':   (None, "📊 震荡(V8): 精选参与"),
+        'structural': (None, "🏗️ 结构(V8): 精选强势板块"),
+        'recovery':   (None, "🔄 反弹(V10): 试探参与"),
+        'bear':       (None, "🐻 熊市(V3): 避险观望"),
+    }
+
+    # 基础仓位
+    if regime == 'bull':
+        ratio = 1.0 if hs300_mom > 2 else 0.5
+    elif regime in ('sideways', 'structural'):
+        ratio = 0.5
+    elif regime == 'recovery':
+        ratio = 0.3
+    else:
+        ratio = 0.0
+
+    position_text = f"{int(ratio*10)}成"
+    market_cls = {'bull': 'ok', 'sideways': 'warn', 'structural': 'warn',
+                  'recovery': 'warn', 'bear': 'danger'}[regime]
+    base_reason = regime_map[regime][1]
+
+    # 超优标的增强
+    super_q = sum(1 for m in metrics.values()
+                  if m.get('quality_score', 0) > 2.0
+                  and m.get('sector', '') != '宽基指数')
+
+    if regime != 'bull' and super_q >= 3 and improve_ratio > 0.5 and ratio > 0:
+        bonus = 0.1
+        ratio = min(ratio + bonus, 0.7)
+        position_text = f"{int(ratio*10)}成"
+        base_reason += f" | ⚡{super_q}只超优增强+{int(bonus*10)}成"
+
+    reason = (f"{base_reason} | HS300={hs300_mom:+.1f}% "
+              f"宽度={breadth*100:.0f}% 改善={improve_ratio*100:.0f}%")
+
+    print(f"\n  🧠 元策略: regime={regime}({confidence:.0%}) ratio={ratio}")
+    print(f"  🧠 {reason}")
+
+    return ratio, position_text, reason, market_cls, regime
+
+
 def main():
     bj = timezone(timedelta(hours=8))
     now = datetime.now(bj)
@@ -1348,7 +1650,7 @@ def main():
     print(f"[{update_time}] 策略启动")
     print(f"{'='*60}")
 
-    price_daily, etf_info, extra_history, data_sources = fetch_daily_data(ETF_POOL)
+    price_daily, etf_info, extra_history, data_sources = fetch_daily_data_cached(ETF_POOL)
     if price_daily is None:
         print("日K线获取失败")
         return
@@ -1448,8 +1750,9 @@ def main():
     asof = price.index[-1]
     print(f"\n统一数据基准日期: {asof}")
 
-    position_ratio, position_text, position_reason, market_cls = market_timing(metrics)
-    print(f"大盘: {position_text} ({position_reason})")
+    # ── 元策略: 根据市场状态自动选择最优策略 ──
+    position_ratio, position_text, position_reason, market_cls, regime = meta_strategy(
+        metrics, signal_type)
 
     adaptive = calc_adaptive_params(metrics)
     print(f"自适应: vol_factor={adaptive['vol_factor']} stop_loss={adaptive['stop_loss']}% "
@@ -1479,6 +1782,84 @@ def main():
 
     print(f"\n已生成 index.html, data.json")
     print(f"{'='*60}\n")
+
+
+def build_target_v5(metrics, position_ratio=0):
+    """V5 单ETF精选: 价格过滤 + 质量门槛 + 选最优1只
+
+    筛选条件:
+      - 价格 ¥0.5-3.0 (排除低价/高价ETF)
+      - quality_score > 0.5
+      - 40日动量 > 0
+      - 排除宽基指数
+    选股: quality_score 最高的一只
+    """
+    candidates = []
+    for name, m in metrics.items():
+        price = m.get('latest', 0)
+        quality = m.get('quality_score', 0)
+        mom = m.get('mom_long', -999)
+
+        if price < 0.5 or price > 3.0:
+            continue
+        if quality <= 0.5:
+            continue
+        if mom <= 0:
+            continue
+        if m.get('sector', '') == '宽基指数':
+            continue
+
+        candidates.append((name, m))
+
+    if not candidates:
+        return [], position_ratio
+
+    # 按 quality_score 降序, 选最优 1 只
+    candidates.sort(key=lambda x: x[1].get('quality_score', 0), reverse=True)
+    best_name, best_m = candidates[0]
+
+    w = round(position_ratio, 2)
+    return [{
+        'name': best_name,
+        'code': best_m['code'],
+        'weight': w,
+        'mom_long': best_m['mom_long'],
+        'score': best_m['score'],
+        'sector': best_m.get('sector', ''),
+        'quality_score': best_m.get('quality_score', 0),
+    }], position_ratio
+
+
+def market_timing_v5(metrics):
+    """V5 择时: 比 HS300 标准择时更宽松, 单 ETF 策略可适度参与弱势市场
+
+    逻辑:
+      - HS300 40日动量 > 2    → 满仓 (1.0)
+      - HS300 40日动量 > 0    → 7成
+      - HS300 40日动量 > -2   → 半仓 (弱市中单ETF集中兵力)
+      - HS300 40日动量 ≤ -2   → 空仓
+    额外: 若质优标的 quality_score > 2.0 且 ≥ 2 只, 即使空仓也给 3 成
+    """
+    hs300 = metrics.get('沪深300ETF', {})
+    hs300_mom = hs300.get('mom_long', -999)
+
+    if hs300_mom > 2:
+        return 1.0
+    elif hs300_mom > 0:
+        return 0.7
+    elif hs300_mom > -2:
+        # 弱市半仓: V5 单 ETF 集中兵力, 止损更快
+        return 0.5
+
+    # ── 极端弱势: 检查是否有逆势高质量标的 ──
+    super_quality = sum(1 for m in metrics.values()
+                        if m.get('quality_score', 0) > 2.0
+                        and m.get('sector', '') != '宽基指数'
+                        and m.get('mom_long', 0) > 0)
+    if super_quality >= 2:
+        return 0.3  # 轻仓试探
+
+    return 0.0
 
 
 if __name__ == '__main__':

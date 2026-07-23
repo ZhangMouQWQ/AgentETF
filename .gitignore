@@ -14,3 +14,10 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Local cache (not committed)
+_cache/
+
+# Sensitive
+*.env
+.env.*
