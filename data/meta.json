@@ -1,1 +1,1 @@
-{"generated_at": "2026-07-23 22:52:48", "elapsed_seconds": 4.9, "history": {"success": 0, "total": 39, "rate": "0/39", "sources": {}}, "realtime": {"fetched": false, "count": 0}}
+{"generated_at": "2026-07-23 23:24:03", "elapsed_seconds": 15.4, "history": {"success": 39, "total": 39, "rate": "39/39", "sources": {"tencent": 39}}, "realtime": {"fetched": true, "count": 39}}

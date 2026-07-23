@@ -337,15 +337,17 @@ def build_sector_report(metrics, target):
         s = m.get('sector', '其他')
         if s == '宽基指数':
             continue
-        sectors.setdefault(s, []).append(m)
+        sectors.setdefault(s, []).append((name, m))
+
+    target_names = {t['name'] for t in target}
 
     report = []
     for sname, etfs in sorted(sectors.items()):
-        avg_mom = np.mean([m['mom_long'] for m in etfs])
-        positive = sum(1 for m in etfs if m['mom_long'] > 0)
+        avg_mom = np.mean([m['mom_long'] for _, m in etfs])
+        positive = sum(1 for _, m in etfs if m['mom_long'] > 0)
         count = len(etfs)
         # 板块中是否有推荐标的
-        in_target = [m['name'] for m in etfs if m['name'] in [t['name'] for t in target]]
+        in_target = [name for name, _ in etfs if name in target_names]
 
         report.append({
             'sector': sname,

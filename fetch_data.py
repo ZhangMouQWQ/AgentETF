@@ -50,22 +50,27 @@ os.makedirs(DATA_DIR, exist_ok=True)
 # ═══════════════════════════════════════════════
 
 def fetch_history_single(code, sina, name, datalen=DATA_LEN):
-    """单只 ETF 历史日线 — 三级回退"""
+    """单只 ETF 历史日线 — 三级回退 (按数据完整性排序)
+
+    优先级: Eastmoney(8字段) → AKShare(8字段) → Tencent(6字段)
+    Eastmoney 和 AKShare 都有完整的 OHLCV+amount+turnover,
+    Tencent 仅 OHLCV, amount/turnover 需后续估算。
+    """
     result = {'code': code, 'sina': sina, 'name': name, 'success': False, 'source': None, 'rows': 0}
 
-    # 1. AKShare
-    df = get_etf_history_akshare(code, datalen=datalen)
-    if df is not None and len(df) >= MOM_LONG + 5:
-        result.update({'success': True, 'source': 'akshare', 'rows': len(df), 'data': df})
-        return result
-
-    # 2. Eastmoney K-line
+    # 1. Eastmoney K-line (字段最全: OHLCV + amount + turnover)
     df = get_etf_history_eastmoney(code, datalen=datalen)
     if df is not None and len(df) >= MOM_LONG + 5:
         result.update({'success': True, 'source': 'eastmoney', 'rows': len(df), 'data': df})
         return result
 
-    # 3. Tencent K-line
+    # 2. AKShare (同样完整, 但更重的包装层)
+    df = get_etf_history_akshare(code, datalen=datalen)
+    if df is not None and len(df) >= MOM_LONG + 5:
+        result.update({'success': True, 'source': 'akshare', 'rows': len(df), 'data': df})
+        return result
+
+    # 3. Tencent K-line (缺 amount/turnover, 仅 OHLCV)
     df = get_etf_sina(sina, scale=240, datalen=datalen)
     if df is not None and len(df) >= MOM_LONG + 5:
         result.update({'success': True, 'source': 'tencent', 'rows': len(df), 'data': df})

@@ -1,0 +1,5607 @@
+{
+  "result": {
+    "strategy": "V5 单ETF",
+    "initial_cash": 8000.0,
+    "final_net_worth": 32050.0,
+    "total_return_pct": 300.62,
+    "annual_return_pct": 345.76,
+    "max_drawdown_pct": 13.7,
+    "sharpe_ratio": 3.7,
+    "win_rate_pct": 52.1,
+    "total_trades": 192,
+    "total_fees": 1920.0,
+    "trading_days": 234,
+    "date_range": "2025-08-04 → 2026-07-23"
+  },
+  "daily": [
+    {
+      "decision_date": "2025-08-04",
+      "exec_date": "2025-08-05",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-05",
+      "exec_date": "2025-08-06",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-06",
+      "exec_date": "2025-08-07",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-07",
+      "exec_date": "2025-08-08",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-08",
+      "exec_date": "2025-08-11",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-11",
+      "exec_date": "2025-08-12",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-12",
+      "exec_date": "2025-08-13",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-13",
+      "exec_date": "2025-08-14",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-14",
+      "exec_date": "2025-08-15",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-15",
+      "exec_date": "2025-08-18",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-18",
+      "exec_date": "2025-08-19",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-19",
+      "exec_date": "2025-08-20",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-20",
+      "exec_date": "2025-08-21",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-21",
+      "exec_date": "2025-08-22",
+      "ratio": 0.0,
+      "net_worth": 8000.0,
+      "cash": 8000.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=+nan% ratio=0.0",
+      "trades": 0,
+      "fees": 0
+    },
+    {
+      "decision_date": "2025-08-22",
+      "exec_date": "2025-08-25",
+      "ratio": 1.0,
+      "net_worth": 7965.4,
+      "cash": 105.7,
+      "holdings": {
+        "券商ETF": {
+          "shares": 12300,
+          "value": 7859.7,
+          "locked": 12300
+        }
+      },
+      "holding_names": [
+        "券商ETF"
+      ],
+      "target": [
+        "券商ETF"
+      ],
+      "orders": [
+        "[2025-08-25] 🟢 BUY 12300股 @0.641 ¥7894 (回调)"
+      ],
+      "reason": "HS300=+13.4% ratio=1.0",
+      "trades": 1,
+      "fees": 10.0
+    },
+    {
+      "decision_date": "2025-08-25",
+      "exec_date": "2025-08-26",
+      "ratio": 1.0,
+      "net_worth": 8115.7,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 7992.4,
+          "locked": 5800
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [
+        "[2025-08-26] 🔴 SELL 12300股 @0.642 ¥7887",
+        "[2025-08-26] 🟢 BUY 5800股 @1.355 ¥7869 (回调(缩))"
+      ],
+      "reason": "HS300=+15.1% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-08-26",
+      "exec_date": "2025-08-27",
+      "ratio": 1.0,
+      "net_worth": 7976.5,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 7853.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+14.3% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-08-27",
+      "exec_date": "2025-08-28",
+      "ratio": 1.0,
+      "net_worth": 8133.1,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 8009.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+12.5% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-08-28",
+      "exec_date": "2025-08-29",
+      "ratio": 1.0,
+      "net_worth": 8695.7,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 8572.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+14.0% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-08-29",
+      "exec_date": "2025-09-01",
+      "ratio": 1.0,
+      "net_worth": 8585.5,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 8462.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+14.6% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-09-01",
+      "exec_date": "2025-09-02",
+      "ratio": 1.0,
+      "net_worth": 8811.7,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 8688.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+15.5% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-09-02",
+      "exec_date": "2025-09-03",
+      "ratio": 1.0,
+      "net_worth": 8452.1,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 8328.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+13.8% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-09-03",
+      "exec_date": "2025-09-04",
+      "ratio": 1.0,
+      "net_worth": 8423.1,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 8299.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+12.8% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-09-04",
+      "exec_date": "2025-09-05",
+      "ratio": 1.0,
+      "net_worth": 7750.3,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 7627.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.9% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-09-05",
+      "exec_date": "2025-09-08",
+      "ratio": 1.0,
+      "net_worth": 8133.1,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 8009.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+12.0% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-09-08",
+      "exec_date": "2025-09-09",
+      "ratio": 1.0,
+      "net_worth": 7988.1,
+      "cash": 123.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5800,
+          "value": 7864.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+12.1% ratio=1.0",
+      "trades": 3,
+      "fees": 30.0
+    },
+    {
+      "decision_date": "2025-09-09",
+      "exec_date": "2025-09-10",
+      "ratio": 1.0,
+      "net_worth": 8241.8,
+      "cash": 151.9,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 4900,
+          "value": 8089.9,
+          "locked": 4900
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [
+        "[2025-09-10] 🔴 SELL 5800股 @1.377 ¥7977",
+        "[2025-09-10] 🟢 BUY 4900股 @1.620 ¥7948 (回调)"
+      ],
+      "reason": "HS300=+11.4% ratio=1.0",
+      "trades": 5,
+      "fees": 50.0
+    },
+    {
+      "decision_date": "2025-09-10",
+      "exec_date": "2025-09-11",
+      "ratio": 1.0,
+      "net_worth": 8205.7,
+      "cash": 550.5,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5600,
+          "value": 7655.2,
+          "locked": 5600
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [
+        "[2025-09-11] 🔴 SELL 4900股 @1.658 ¥8114",
+        "[2025-09-11] 🟢 BUY 5600股 @1.376 ¥7716 (回调)"
+      ],
+      "reason": "HS300=+11.9% ratio=1.0",
+      "trades": 7,
+      "fees": 70.0
+    },
+    {
+      "decision_date": "2025-09-11",
+      "exec_date": "2025-09-12",
+      "ratio": 1.0,
+      "net_worth": 8737.7,
+      "cash": 550.5,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5600,
+          "value": 8187.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+14.0% ratio=1.0",
+      "trades": 7,
+      "fees": 70.0
+    },
+    {
+      "decision_date": "2025-09-12",
+      "exec_date": "2025-09-15",
+      "ratio": 1.0,
+      "net_worth": 8776.9,
+      "cash": 550.5,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5600,
+          "value": 8226.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+12.2% ratio=1.0",
+      "trades": 7,
+      "fees": 70.0
+    },
+    {
+      "decision_date": "2025-09-15",
+      "exec_date": "2025-09-16",
+      "ratio": 1.0,
+      "net_worth": 8709.7,
+      "cash": 550.5,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5600,
+          "value": 8159.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+11.7% ratio=1.0",
+      "trades": 7,
+      "fees": 70.0
+    },
+    {
+      "decision_date": "2025-09-16",
+      "exec_date": "2025-09-17",
+      "ratio": 1.0,
+      "net_worth": 8816.1,
+      "cash": 550.5,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5600,
+          "value": 8265.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+10.3% ratio=1.0",
+      "trades": 7,
+      "fees": 70.0
+    },
+    {
+      "decision_date": "2025-09-17",
+      "exec_date": "2025-09-18",
+      "ratio": 1.0,
+      "net_worth": 9088.9,
+      "cash": 160.5,
+      "holdings": {
+        "机器人ETF": {
+          "shares": 5200,
+          "value": 8928.4,
+          "locked": 5200
+        }
+      },
+      "holding_names": [
+        "机器人ETF"
+      ],
+      "target": [
+        "机器人ETF"
+      ],
+      "orders": [
+        "[2025-09-18] 🔴 SELL 5600股 @1.506 ¥8424",
+        "[2025-09-18] 🟢 BUY 5200股 @1.693 ¥8814 (回调)"
+      ],
+      "reason": "HS300=+11.1% ratio=1.0",
+      "trades": 9,
+      "fees": 90.0
+    },
+    {
+      "decision_date": "2025-09-18",
+      "exec_date": "2025-09-19",
+      "ratio": 1.0,
+      "net_worth": 8850.9,
+      "cash": 95.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5900,
+          "value": 8755.6,
+          "locked": 5900
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [
+        "[2025-09-19] 🔴 SELL 5200股 @1.666 ¥8653",
+        "[2025-09-19] 🟢 BUY 5900股 @1.476 ¥8718 (回调)"
+      ],
+      "reason": "HS300=+9.0% ratio=1.0",
+      "trades": 11,
+      "fees": 110.0
+    },
+    {
+      "decision_date": "2025-09-19",
+      "exec_date": "2025-09-22",
+      "ratio": 1.0,
+      "net_worth": 8768.3,
+      "cash": 95.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5900,
+          "value": 8673.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.8% ratio=1.0",
+      "trades": 11,
+      "fees": 110.0
+    },
+    {
+      "decision_date": "2025-09-22",
+      "exec_date": "2025-09-23",
+      "ratio": 1.0,
+      "net_worth": 8963.0,
+      "cash": 95.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5900,
+          "value": 8867.7,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.9% ratio=1.0",
+      "trades": 11,
+      "fees": 110.0
+    },
+    {
+      "decision_date": "2025-09-23",
+      "exec_date": "2025-09-24",
+      "ratio": 1.0,
+      "net_worth": 8945.3,
+      "cash": 95.3,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 5900,
+          "value": 8850.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.4% ratio=1.0",
+      "trades": 11,
+      "fees": 110.0
+    },
+    {
+      "decision_date": "2025-09-24",
+      "exec_date": "2025-09-25",
+      "ratio": 1.0,
+      "net_worth": 9449.6,
+      "cash": 189.6,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 10000,
+          "value": 9260.0,
+          "locked": 10000
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [
+        "[2025-09-25] 🔴 SELL 5900股 @1.577 ¥9294",
+        "[2025-09-25] 🟢 BUY 10000股 @0.919 ¥9200 (回调)"
+      ],
+      "reason": "HS300=+10.5% ratio=1.0",
+      "trades": 13,
+      "fees": 130.0
+    },
+    {
+      "decision_date": "2025-09-25",
+      "exec_date": "2025-09-26",
+      "ratio": 1.0,
+      "net_worth": 9687.0,
+      "cash": 122.2,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 6100,
+          "value": 9564.8,
+          "locked": 6100
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [
+        "[2025-09-26] 🔴 SELL 10000股 @0.931 ¥9300",
+        "[2025-09-26] 🟢 BUY 6100股 @1.534 ¥9367 (回调(缩))"
+      ],
+      "reason": "HS300=+13.4% ratio=1.0",
+      "trades": 15,
+      "fees": 150.0
+    },
+    {
+      "decision_date": "2025-09-26",
+      "exec_date": "2025-09-29",
+      "ratio": 1.0,
+      "net_worth": 9375.9,
+      "cash": 122.2,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 6100,
+          "value": 9253.7,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+12.9% ratio=1.0",
+      "trades": 15,
+      "fees": 150.0
+    },
+    {
+      "decision_date": "2025-09-29",
+      "exec_date": "2025-09-30",
+      "ratio": 1.0,
+      "net_worth": 9623.8,
+      "cash": 388.8,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5000,
+          "value": 9235.0,
+          "locked": 5000
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [
+        "[2025-09-30] 🔴 SELL 6100股 @1.556 ¥9482",
+        "[2025-09-30] 🟢 BUY 5000股 @1.841 ¥9215 (回调)"
+      ],
+      "reason": "HS300=+14.3% ratio=1.0",
+      "trades": 17,
+      "fees": 170.0
+    },
+    {
+      "decision_date": "2025-09-30",
+      "exec_date": "2025-10-09",
+      "ratio": 1.0,
+      "net_worth": 9898.8,
+      "cash": 388.8,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5000,
+          "value": 9510.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+13.7% ratio=1.0",
+      "trades": 17,
+      "fees": 170.0
+    },
+    {
+      "decision_date": "2025-10-09",
+      "exec_date": "2025-10-10",
+      "ratio": 1.0,
+      "net_worth": 10025.8,
+      "cash": 142.3,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 5500,
+          "value": 9883.5,
+          "locked": 5500
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [
+        "[2025-10-10] 🔴 SELL 5000股 @1.883 ¥9405",
+        "[2025-10-10] 🟢 BUY 5500股 @1.753 ¥9652 (回调(缩))"
+      ],
+      "reason": "HS300=+15.3% ratio=1.0",
+      "trades": 19,
+      "fees": 190.0
+    },
+    {
+      "decision_date": "2025-10-10",
+      "exec_date": "2025-10-13",
+      "ratio": 1.0,
+      "net_worth": 10470.7,
+      "cash": 599.5,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5400,
+          "value": 9871.2,
+          "locked": 5400
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [
+        "[2025-10-13] 🔴 SELL 5500股 @1.802 ¥9901",
+        "[2025-10-13] 🟢 BUY 5400股 @1.747 ¥9444 (回调)"
+      ],
+      "reason": "HS300=+12.9% ratio=1.0",
+      "trades": 21,
+      "fees": 210.0
+    },
+    {
+      "decision_date": "2025-10-13",
+      "exec_date": "2025-10-14",
+      "ratio": 1.0,
+      "net_worth": 10503.5,
+      "cash": 47.3,
+      "holdings": {
+        "稀土ETF": {
+          "shares": 11100,
+          "value": 10456.2,
+          "locked": 11100
+        }
+      },
+      "holding_names": [
+        "稀土ETF"
+      ],
+      "target": [
+        "稀土ETF"
+      ],
+      "orders": [
+        "[2025-10-14] 🔴 SELL 5400股 @1.809 ¥9759",
+        "[2025-10-14] 🟢 BUY 11100股 @0.928 ¥10311 (回调(缩))"
+      ],
+      "reason": "HS300=+12.5% ratio=1.0",
+      "trades": 23,
+      "fees": 230.0
+    },
+    {
+      "decision_date": "2025-10-14",
+      "exec_date": "2025-10-15",
+      "ratio": 1.0,
+      "net_worth": 10421.3,
+      "cash": 370.3,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 11500,
+          "value": 10051.0,
+          "locked": 11500
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [
+        "[2025-10-15] 🔴 SELL 11100股 @0.925 ¥10258",
+        "[2025-10-15] 🟢 BUY 11500股 @0.863 ¥9934 (回调)"
+      ],
+      "reason": "HS300=+10.9% ratio=1.0",
+      "trades": 25,
+      "fees": 250.0
+    },
+    {
+      "decision_date": "2025-10-15",
+      "exec_date": "2025-10-16",
+      "ratio": 1.0,
+      "net_worth": 10707.6,
+      "cash": 265.4,
+      "holdings": {
+        "光伏ETF": {
+          "shares": 10900,
+          "value": 10442.2,
+          "locked": 10900
+        }
+      },
+      "holding_names": [
+        "光伏ETF"
+      ],
+      "target": [
+        "光伏ETF"
+      ],
+      "orders": [
+        "[2025-10-16] 🔴 SELL 11500股 @0.894 ¥10271",
+        "[2025-10-16] 🟢 BUY 10900股 @0.951 ¥10376 (回调)"
+      ],
+      "reason": "HS300=+11.6% ratio=1.0",
+      "trades": 27,
+      "fees": 270.0
+    },
+    {
+      "decision_date": "2025-10-16",
+      "exec_date": "2025-10-17",
+      "ratio": 1.0,
+      "net_worth": 10692.9,
+      "cash": 84.7,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5900,
+          "value": 10608.2,
+          "locked": 5900
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [
+        "[2025-10-17] 🔴 SELL 10900股 @0.939 ¥10225",
+        "[2025-10-17] 🟢 BUY 5900股 @1.762 ¥10406 (回调(缩))"
+      ],
+      "reason": "HS300=+11.1% ratio=1.0",
+      "trades": 29,
+      "fees": 290.0
+    },
+    {
+      "decision_date": "2025-10-17",
+      "exec_date": "2025-10-20",
+      "ratio": 1.0,
+      "net_worth": 10285.8,
+      "cash": 84.7,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5900,
+          "value": 10201.1,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+8.9% ratio=1.0",
+      "trades": 29,
+      "fees": 290.0
+    },
+    {
+      "decision_date": "2025-10-20",
+      "exec_date": "2025-10-21",
+      "ratio": 1.0,
+      "net_worth": 10415.6,
+      "cash": 84.7,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5900,
+          "value": 10330.9,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+8.3% ratio=1.0",
+      "trades": 29,
+      "fees": 290.0
+    },
+    {
+      "decision_date": "2025-10-21",
+      "exec_date": "2025-10-22",
+      "ratio": 1.0,
+      "net_worth": 10557.2,
+      "cash": 84.7,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5900,
+          "value": 10472.5,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.1% ratio=1.0",
+      "trades": 29,
+      "fees": 290.0
+    },
+    {
+      "decision_date": "2025-10-22",
+      "exec_date": "2025-10-23",
+      "ratio": 1.0,
+      "net_worth": 10433.3,
+      "cash": 84.7,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5900,
+          "value": 10348.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.3% ratio=1.0",
+      "trades": 29,
+      "fees": 290.0
+    },
+    {
+      "decision_date": "2025-10-23",
+      "exec_date": "2025-10-24",
+      "ratio": 1.0,
+      "net_worth": 10557.2,
+      "cash": 84.7,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5900,
+          "value": 10472.5,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+8.2% ratio=1.0",
+      "trades": 29,
+      "fees": 290.0
+    },
+    {
+      "decision_date": "2025-10-24",
+      "exec_date": "2025-10-27",
+      "ratio": 1.0,
+      "net_worth": 10728.3,
+      "cash": 84.7,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5900,
+          "value": 10643.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.2% ratio=1.0",
+      "trades": 29,
+      "fees": 290.0
+    },
+    {
+      "decision_date": "2025-10-27",
+      "exec_date": "2025-10-28",
+      "ratio": 1.0,
+      "net_worth": 11070.4,
+      "cash": 102.1,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 6300,
+          "value": 10968.3,
+          "locked": 6300
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [
+        "[2025-10-28] 🔴 SELL 5900股 @1.828 ¥10775",
+        "[2025-10-28] 🟢 BUY 6300股 @1.706 ¥10758 (回调(缩))"
+      ],
+      "reason": "HS300=+8.0% ratio=1.0",
+      "trades": 31,
+      "fees": 310.0
+    },
+    {
+      "decision_date": "2025-10-28",
+      "exec_date": "2025-10-29",
+      "ratio": 1.0,
+      "net_worth": 11225.2,
+      "cash": 499.0,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 5900,
+          "value": 10726.2,
+          "locked": 5900
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [
+        "[2025-10-29] 🔴 SELL 6300股 @1.765 ¥11110",
+        "[2025-10-29] 🟢 BUY 5900股 @1.814 ¥10713 (回调)"
+      ],
+      "reason": "HS300=+5.3% ratio=1.0",
+      "trades": 33,
+      "fees": 330.0
+    },
+    {
+      "decision_date": "2025-10-29",
+      "exec_date": "2025-10-30",
+      "ratio": 1.0,
+      "net_worth": 11800.3,
+      "cash": 84.3,
+      "holdings": {
+        "光伏ETF": {
+          "shares": 11600,
+          "value": 11716.0,
+          "locked": 11600
+        }
+      },
+      "holding_names": [
+        "光伏ETF"
+      ],
+      "target": [
+        "光伏ETF"
+      ],
+      "orders": [
+        "[2025-10-30] 🔴 SELL 5900股 @1.911 ¥11265",
+        "[2025-10-30] 🟢 BUY 11600股 @1.006 ¥11680 (回调)"
+      ],
+      "reason": "HS300=+7.3% ratio=1.0",
+      "trades": 35,
+      "fees": 350.0
+    },
+    {
+      "decision_date": "2025-10-30",
+      "exec_date": "2025-10-31",
+      "ratio": 1.0,
+      "net_worth": 11822.9,
+      "cash": 73.9,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 6200,
+          "value": 11749.0,
+          "locked": 6200
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [
+        "[2025-10-31] 🔴 SELL 11600股 @1.011 ¥11718",
+        "[2025-10-31] 🟢 BUY 6200股 @1.890 ¥11728 (开盘)"
+      ],
+      "reason": "HS300=+8.0% ratio=1.0",
+      "trades": 37,
+      "fees": 370.0
+    },
+    {
+      "decision_date": "2025-10-31",
+      "exec_date": "2025-11-03",
+      "ratio": 1.0,
+      "net_worth": 11816.7,
+      "cash": 73.9,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 6200,
+          "value": 11742.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.4% ratio=1.0",
+      "trades": 37,
+      "fees": 370.0
+    },
+    {
+      "decision_date": "2025-11-03",
+      "exec_date": "2025-11-04",
+      "ratio": 1.0,
+      "net_worth": 11605.1,
+      "cash": 80.3,
+      "holdings": {
+        "光伏ETF": {
+          "shares": 11200,
+          "value": 11524.8,
+          "locked": 11200
+        }
+      },
+      "holding_names": [
+        "光伏ETF"
+      ],
+      "target": [
+        "光伏ETF"
+      ],
+      "orders": [
+        "[2025-11-04] 🔴 SELL 6200股 @1.836 ¥11373",
+        "[2025-11-04] 🟢 BUY 11200股 @1.014 ¥11367 (回调(缩))"
+      ],
+      "reason": "HS300=+3.6% ratio=1.0",
+      "trades": 39,
+      "fees": 390.0
+    },
+    {
+      "decision_date": "2025-11-04",
+      "exec_date": "2025-11-05",
+      "ratio": 1.0,
+      "net_worth": 11302.7,
+      "cash": 80.3,
+      "holdings": {
+        "光伏ETF": {
+          "shares": 11200,
+          "value": 11222.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "光伏ETF"
+      ],
+      "target": [
+        "光伏ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+2.5% ratio=1.0",
+      "trades": 39,
+      "fees": 390.0
+    },
+    {
+      "decision_date": "2025-11-05",
+      "exec_date": "2025-11-06",
+      "ratio": 1.0,
+      "net_worth": 11817.9,
+      "cash": 80.3,
+      "holdings": {
+        "光伏ETF": {
+          "shares": 11200,
+          "value": 11737.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "光伏ETF"
+      ],
+      "target": [
+        "光伏ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.2% ratio=1.0",
+      "trades": 39,
+      "fees": 390.0
+    },
+    {
+      "decision_date": "2025-11-06",
+      "exec_date": "2025-11-07",
+      "ratio": 1.0,
+      "net_worth": 11997.1,
+      "cash": 80.3,
+      "holdings": {
+        "光伏ETF": {
+          "shares": 11200,
+          "value": 11916.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "光伏ETF"
+      ],
+      "target": [
+        "光伏ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+5.8% ratio=1.0",
+      "trades": 39,
+      "fees": 390.0
+    },
+    {
+      "decision_date": "2025-11-07",
+      "exec_date": "2025-11-10",
+      "ratio": 1.0,
+      "net_worth": 12176.3,
+      "cash": 80.3,
+      "holdings": {
+        "光伏ETF": {
+          "shares": 11200,
+          "value": 12096.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "光伏ETF"
+      ],
+      "target": [
+        "光伏ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+7.8% ratio=1.0",
+      "trades": 39,
+      "fees": 390.0
+    },
+    {
+      "decision_date": "2025-11-10",
+      "exec_date": "2025-11-11",
+      "ratio": 1.0,
+      "net_worth": 12517.3,
+      "cash": 74.9,
+      "holdings": {
+        "煤炭ETF": {
+          "shares": 10300,
+          "value": 12442.4,
+          "locked": 10300
+        }
+      },
+      "holding_names": [
+        "煤炭ETF"
+      ],
+      "target": [
+        "煤炭ETF"
+      ],
+      "orders": [
+        "[2025-11-11] 🔴 SELL 11200股 @1.092 ¥12220",
+        "[2025-11-11] 🟢 BUY 10300股 @1.186 ¥12226 (回调)"
+      ],
+      "reason": "HS300=+5.7% ratio=1.0",
+      "trades": 41,
+      "fees": 410.0
+    },
+    {
+      "decision_date": "2025-11-11",
+      "exec_date": "2025-11-12",
+      "ratio": 1.0,
+      "net_worth": 12352.5,
+      "cash": 74.9,
+      "holdings": {
+        "煤炭ETF": {
+          "shares": 10300,
+          "value": 12277.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "煤炭ETF"
+      ],
+      "target": [
+        "煤炭ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.7% ratio=1.0",
+      "trades": 41,
+      "fees": 410.0
+    },
+    {
+      "decision_date": "2025-11-12",
+      "exec_date": "2025-11-13",
+      "ratio": 1.0,
+      "net_worth": 12198.0,
+      "cash": 74.9,
+      "holdings": {
+        "煤炭ETF": {
+          "shares": 10300,
+          "value": 12123.1,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "煤炭ETF"
+      ],
+      "target": [
+        "煤炭ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+5.4% ratio=1.0",
+      "trades": 41,
+      "fees": 410.0
+    },
+    {
+      "decision_date": "2025-11-13",
+      "exec_date": "2025-11-14",
+      "ratio": 1.0,
+      "net_worth": 12543.2,
+      "cash": 164.6,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 6900,
+          "value": 12378.6,
+          "locked": 6900
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [
+        "[2025-11-14] 🔴 SELL 10300股 @1.187 ¥12216",
+        "[2025-11-14] 🟢 BUY 6900股 @1.756 ¥12126 (回调)"
+      ],
+      "reason": "HS300=+6.2% ratio=1.0",
+      "trades": 43,
+      "fees": 430.0
+    },
+    {
+      "decision_date": "2025-11-14",
+      "exec_date": "2025-11-17",
+      "ratio": 0.7,
+      "net_worth": 12324.3,
+      "cash": 3864.3,
+      "holdings": {
+        "煤炭ETF": {
+          "shares": 7200,
+          "value": 8460.0,
+          "locked": 7200
+        }
+      },
+      "holding_names": [
+        "煤炭ETF"
+      ],
+      "target": [
+        "煤炭ETF"
+      ],
+      "orders": [
+        "[2025-11-17] 🔴 SELL 6900股 @1.761 ¥12141",
+        "[2025-11-17] 🟢 BUY 7200股 @1.171 ¥8441 (回调)"
+      ],
+      "reason": "HS300=+1.8% ratio=0.7",
+      "trades": 45,
+      "fees": 450.0
+    },
+    {
+      "decision_date": "2025-11-17",
+      "exec_date": "2025-11-18",
+      "ratio": 0.7,
+      "net_worth": 12475.5,
+      "cash": 3864.3,
+      "holdings": {
+        "煤炭ETF": {
+          "shares": 7200,
+          "value": 8611.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "煤炭ETF"
+      ],
+      "target": [
+        "煤炭ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+2.0% ratio=0.7",
+      "trades": 45,
+      "fees": 450.0
+    },
+    {
+      "decision_date": "2025-11-18",
+      "exec_date": "2025-11-19",
+      "ratio": 0.7,
+      "net_worth": 12165.9,
+      "cash": 3864.3,
+      "holdings": {
+        "煤炭ETF": {
+          "shares": 7200,
+          "value": 8301.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "煤炭ETF"
+      ],
+      "target": [
+        "煤炭ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+1.2% ratio=0.7",
+      "trades": 45,
+      "fees": 450.0
+    },
+    {
+      "decision_date": "2025-11-19",
+      "exec_date": "2025-11-20",
+      "ratio": 0.7,
+      "net_worth": 12138.7,
+      "cash": 3649.9,
+      "holdings": {
+        "油气ETF": {
+          "shares": 7200,
+          "value": 8488.8,
+          "locked": 7200
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [
+        "[2025-11-20] 🔴 SELL 7200股 @1.139 ¥8191",
+        "[2025-11-20] 🟢 BUY 7200股 @1.166 ¥8405 (开盘)"
+      ],
+      "reason": "HS300=+1.7% ratio=0.7",
+      "trades": 47,
+      "fees": 470.0
+    },
+    {
+      "decision_date": "2025-11-20",
+      "exec_date": "2025-11-21",
+      "ratio": 0.7,
+      "net_worth": 12059.5,
+      "cash": 3649.9,
+      "holdings": {
+        "油气ETF": {
+          "shares": 7200,
+          "value": 8409.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+0.5% ratio=0.7",
+      "trades": 47,
+      "fees": 470.0
+    },
+    {
+      "decision_date": "2025-11-21",
+      "exec_date": "2025-11-24",
+      "ratio": 0.5,
+      "net_worth": 11844.3,
+      "cash": 5964.3,
+      "holdings": {
+        "银行ETF": {
+          "shares": 7000,
+          "value": 5880.0,
+          "locked": 7000
+        }
+      },
+      "holding_names": [
+        "银行ETF"
+      ],
+      "target": [
+        "银行ETF"
+      ],
+      "orders": [
+        "[2025-11-24] 🔴 SELL 7200股 @1.137 ¥8176",
+        "[2025-11-24] 🟢 BUY 7000股 @0.836 ¥5862 (回调)"
+      ],
+      "reason": "HS300=-0.7% ratio=0.5",
+      "trades": 49,
+      "fees": 490.0
+    },
+    {
+      "decision_date": "2025-11-24",
+      "exec_date": "2025-11-25",
+      "ratio": 0.5,
+      "net_worth": 11817.3,
+      "cash": 6084.3,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 3500,
+          "value": 5733.0,
+          "locked": 3500
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [
+        "[2025-11-25] 🔴 SELL 7000股 @0.846 ¥5912",
+        "[2025-11-25] 🟢 BUY 3500股 @1.652 ¥5792 (回调)"
+      ],
+      "reason": "HS300=-1.1% ratio=0.5",
+      "trades": 51,
+      "fees": 510.0
+    },
+    {
+      "decision_date": "2025-11-25",
+      "exec_date": "2025-11-26",
+      "ratio": 0.5,
+      "net_worth": 11993.8,
+      "cash": 5987.2,
+      "holdings": {
+        "银行ETF": {
+          "shares": 7100,
+          "value": 6006.6,
+          "locked": 7100
+        }
+      },
+      "holding_names": [
+        "银行ETF"
+      ],
+      "target": [
+        "银行ETF"
+      ],
+      "orders": [
+        "[2025-11-26] 🔴 SELL 3500股 @1.684 ¥5884",
+        "[2025-11-26] 🟢 BUY 7100股 @0.841 ¥5981 (回调)"
+      ],
+      "reason": "HS300=-0.5% ratio=0.5",
+      "trades": 53,
+      "fees": 530.0
+    },
+    {
+      "decision_date": "2025-11-26",
+      "exec_date": "2025-11-27",
+      "ratio": 0.7,
+      "net_worth": 11944.1,
+      "cash": 5987.2,
+      "holdings": {
+        "银行ETF": {
+          "shares": 7100,
+          "value": 5956.9,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "银行ETF"
+      ],
+      "target": [
+        "银行ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+0.1% ratio=0.7",
+      "trades": 53,
+      "fees": 530.0
+    },
+    {
+      "decision_date": "2025-11-27",
+      "exec_date": "2025-11-28",
+      "ratio": 0.5,
+      "net_worth": 11965.4,
+      "cash": 5987.2,
+      "holdings": {
+        "银行ETF": {
+          "shares": 7100,
+          "value": 5978.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "银行ETF"
+      ],
+      "target": [
+        "银行ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=-0.9% ratio=0.5",
+      "trades": 53,
+      "fees": 530.0
+    },
+    {
+      "decision_date": "2025-11-28",
+      "exec_date": "2025-12-01",
+      "ratio": 0.5,
+      "net_worth": 11922.8,
+      "cash": 5987.2,
+      "holdings": {
+        "银行ETF": {
+          "shares": 7100,
+          "value": 5935.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "银行ETF"
+      ],
+      "target": [
+        "银行ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=-1.3% ratio=0.5",
+      "trades": 53,
+      "fees": 530.0
+    },
+    {
+      "decision_date": "2025-12-01",
+      "exec_date": "2025-12-02",
+      "ratio": 0.7,
+      "net_worth": 12067.7,
+      "cash": 3638.9,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 4800,
+          "value": 8428.8,
+          "locked": 4800
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [
+        "[2025-12-02] 🔴 SELL 7100股 @0.843 ¥5975",
+        "[2025-12-02] 🟢 BUY 4800股 @1.732 ¥8324 (回调)"
+      ],
+      "reason": "HS300=+0.8% ratio=0.7",
+      "trades": 55,
+      "fees": 550.0
+    },
+    {
+      "decision_date": "2025-12-02",
+      "exec_date": "2025-12-03",
+      "ratio": 0.5,
+      "net_worth": 12062.1,
+      "cash": 6006.9,
+      "holdings": {
+        "银行ETF": {
+          "shares": 7200,
+          "value": 6055.2,
+          "locked": 7200
+        }
+      },
+      "holding_names": [
+        "银行ETF"
+      ],
+      "target": [
+        "银行ETF"
+      ],
+      "orders": [
+        "[2025-12-03] 🔴 SELL 4800股 @1.753 ¥8404",
+        "[2025-12-03] 🟢 BUY 7200股 @0.837 ¥6036 (回调)"
+      ],
+      "reason": "HS300=-1.4% ratio=0.5",
+      "trades": 57,
+      "fees": 570.0
+    },
+    {
+      "decision_date": "2025-12-03",
+      "exec_date": "2025-12-04",
+      "ratio": 0.3,
+      "net_worth": 11998.8,
+      "cash": 8412.6,
+      "holdings": {
+        "银行ETF": {
+          "shares": 4300,
+          "value": 3586.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "银行ETF"
+      ],
+      "target": [
+        "银行ETF"
+      ],
+      "orders": [
+        "[2025-12-04] 🔴 SELL 2900股 @0.833 ¥2406"
+      ],
+      "reason": "HS300=-2.1% ratio=0.3",
+      "trades": 58,
+      "fees": 580.0
+    },
+    {
+      "decision_date": "2025-12-04",
+      "exec_date": "2025-12-05",
+      "ratio": 0.3,
+      "net_worth": 11985.9,
+      "cash": 8412.6,
+      "holdings": {
+        "银行ETF": {
+          "shares": 4300,
+          "value": 3573.3,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "银行ETF"
+      ],
+      "target": [
+        "银行ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=-3.4% ratio=0.3",
+      "trades": 58,
+      "fees": 580.0
+    },
+    {
+      "decision_date": "2025-12-05",
+      "exec_date": "2025-12-08",
+      "ratio": 0.5,
+      "net_worth": 11964.5,
+      "cash": 6010.1,
+      "holdings": {
+        "银行ETF": {
+          "shares": 7200,
+          "value": 5954.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "银行ETF"
+      ],
+      "target": [
+        "银行ETF"
+      ],
+      "orders": [
+        "[2025-12-08] 🟢 BUY 2900股 @0.825 ¥2402 (回调)"
+      ],
+      "reason": "HS300=-0.5% ratio=0.5",
+      "trades": 59,
+      "fees": 590.0
+    },
+    {
+      "decision_date": "2025-12-08",
+      "exec_date": "2025-12-09",
+      "ratio": 0.7,
+      "net_worth": 11963.2,
+      "cash": 3610.5,
+      "holdings": {
+        "银行ETF": {
+          "shares": 10100,
+          "value": 8352.7,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "银行ETF"
+      ],
+      "target": [
+        "银行ETF"
+      ],
+      "orders": [
+        "[2025-12-09] 🟢 BUY 2900股 @0.824 ¥2400 (回调)"
+      ],
+      "reason": "HS300=+0.9% ratio=0.7",
+      "trades": 60,
+      "fees": 600.0
+    },
+    {
+      "decision_date": "2025-12-09",
+      "exec_date": "2025-12-10",
+      "ratio": 0.7,
+      "net_worth": 12013.0,
+      "cash": 3781.5,
+      "holdings": {
+        "通信ETF": {
+          "shares": 16300,
+          "value": 8231.5,
+          "locked": 16300
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2025-12-10] 🔴 SELL 10100股 @0.821 ¥8282",
+        "[2025-12-10] 🟢 BUY 16300股 @0.497 ¥8111 (回调)"
+      ],
+      "reason": "HS300=+1.4% ratio=0.7",
+      "trades": 62,
+      "fees": 620.0
+    },
+    {
+      "decision_date": "2025-12-10",
+      "exec_date": "2025-12-11",
+      "ratio": 0.5,
+      "net_worth": 12041.5,
+      "cash": 5921.5,
+      "holdings": {
+        "通信ETF": {
+          "shares": 12000,
+          "value": 6120.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2025-12-11] 🔴 SELL 4300股 @0.500 ¥2140"
+      ],
+      "reason": "HS300=-0.1% ratio=0.5",
+      "trades": 63,
+      "fees": 630.0
+    },
+    {
+      "decision_date": "2025-12-11",
+      "exec_date": "2025-12-12",
+      "ratio": 0.5,
+      "net_worth": 11909.5,
+      "cash": 5973.5,
+      "holdings": {
+        "化工ETF": {
+          "shares": 8000,
+          "value": 5936.0,
+          "locked": 8000
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2025-12-12] 🔴 SELL 12000股 @0.498 ¥5966",
+        "[2025-12-12] 🟢 BUY 8000股 @0.738 ¥5914 (回调)"
+      ],
+      "reason": "HS300=-1.1% ratio=0.5",
+      "trades": 65,
+      "fees": 650.0
+    },
+    {
+      "decision_date": "2025-12-12",
+      "exec_date": "2025-12-15",
+      "ratio": 0.7,
+      "net_worth": 11873.9,
+      "cash": 3608.3,
+      "holdings": {
+        "化工ETF": {
+          "shares": 11200,
+          "value": 8265.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2025-12-15] 🟢 BUY 3200股 @0.736 ¥2365 (回调)"
+      ],
+      "reason": "HS300=+1.6% ratio=0.7",
+      "trades": 66,
+      "fees": 660.0
+    },
+    {
+      "decision_date": "2025-12-15",
+      "exec_date": "2025-12-16",
+      "ratio": 0.7,
+      "net_worth": 11907.5,
+      "cash": 3608.3,
+      "holdings": {
+        "化工ETF": {
+          "shares": 11200,
+          "value": 8299.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+0.6% ratio=0.7",
+      "trades": 66,
+      "fees": 660.0
+    },
+    {
+      "decision_date": "2025-12-16",
+      "exec_date": "2025-12-17",
+      "ratio": 0.5,
+      "net_worth": 11887.1,
+      "cash": 6096.4,
+      "holdings": {
+        "化工ETF": {
+          "shares": 7900,
+          "value": 5790.7,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2025-12-17] 🔴 SELL 3300股 @0.757 ¥2488"
+      ],
+      "reason": "HS300=-2.0% ratio=0.5",
+      "trades": 67,
+      "fees": 670.0
+    },
+    {
+      "decision_date": "2025-12-17",
+      "exec_date": "2025-12-18",
+      "ratio": 0.7,
+      "net_worth": 12063.7,
+      "cash": 3683.2,
+      "holdings": {
+        "化工ETF": {
+          "shares": 11100,
+          "value": 8380.5,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2025-12-18] 🟢 BUY 3200股 @0.751 ¥2413 (开盘)"
+      ],
+      "reason": "HS300=+0.1% ratio=0.7",
+      "trades": 68,
+      "fees": 680.0
+    },
+    {
+      "decision_date": "2025-12-18",
+      "exec_date": "2025-12-19",
+      "ratio": 0.5,
+      "net_worth": 12090.6,
+      "cash": 6134.0,
+      "holdings": {
+        "化工ETF": {
+          "shares": 7900,
+          "value": 5956.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2025-12-19] 🔴 SELL 3200股 @0.769 ¥2451"
+      ],
+      "reason": "HS300=-1.0% ratio=0.5",
+      "trades": 69,
+      "fees": 690.0
+    },
+    {
+      "decision_date": "2025-12-19",
+      "exec_date": "2025-12-22",
+      "ratio": 0.5,
+      "net_worth": 12209.1,
+      "cash": 6134.0,
+      "holdings": {
+        "化工ETF": {
+          "shares": 7900,
+          "value": 6075.1,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=-1.8% ratio=0.5",
+      "trades": 69,
+      "fees": 690.0
+    },
+    {
+      "decision_date": "2025-12-22",
+      "exec_date": "2025-12-23",
+      "ratio": 0.3,
+      "net_worth": 12305.2,
+      "cash": 8639.2,
+      "holdings": {
+        "化工ETF": {
+          "shares": 4700,
+          "value": 3666.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2025-12-23] 🔴 SELL 3200股 @0.786 ¥2505"
+      ],
+      "reason": "HS300=-2.0% ratio=0.3",
+      "trades": 70,
+      "fees": 700.0
+    },
+    {
+      "decision_date": "2025-12-23",
+      "exec_date": "2025-12-24",
+      "ratio": 0.5,
+      "net_worth": 12343.9,
+      "cash": 6209.2,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 3300,
+          "value": 6134.7,
+          "locked": 3300
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [
+        "[2025-12-24] 🔴 SELL 4700股 @0.796 ¥3731",
+        "[2025-12-24] 🟢 BUY 3300股 @1.864 ¥6161 (回调)"
+      ],
+      "reason": "HS300=-1.3% ratio=0.5",
+      "trades": 72,
+      "fees": 720.0
+    },
+    {
+      "decision_date": "2025-12-24",
+      "exec_date": "2025-12-25",
+      "ratio": 0.0,
+      "net_worth": 12307.5,
+      "cash": 12307.5,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [
+        "[2025-12-25] 🔴 SELL 3300股 @1.851 ¥6098"
+      ],
+      "reason": "HS300=-2.2% ratio=0.0",
+      "trades": 73,
+      "fees": 730.0
+    },
+    {
+      "decision_date": "2025-12-25",
+      "exec_date": "2025-12-26",
+      "ratio": 0.5,
+      "net_worth": 12306.7,
+      "cash": 6248.5,
+      "holdings": {
+        "军工ETF": {
+          "shares": 4600,
+          "value": 6058.2,
+          "locked": 4600
+        }
+      },
+      "holding_names": [
+        "军工ETF"
+      ],
+      "target": [
+        "军工ETF"
+      ],
+      "orders": [
+        "[2025-12-26] 🟢 BUY 4600股 @1.315 ¥6059 (回调)"
+      ],
+      "reason": "HS300=-1.2% ratio=0.5",
+      "trades": 74,
+      "fees": 740.0
+    },
+    {
+      "decision_date": "2025-12-26",
+      "exec_date": "2025-12-29",
+      "ratio": 0.7,
+      "net_worth": 12511.9,
+      "cash": 3737.9,
+      "holdings": {
+        "化工ETF": {
+          "shares": 10700,
+          "value": 8774.0,
+          "locked": 10700
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2025-12-29] 🔴 SELL 4600股 @1.352 ¥6209",
+        "[2025-12-29] 🟢 BUY 10700股 @0.814 ¥8720 (回调)"
+      ],
+      "reason": "HS300=+0.6% ratio=0.7",
+      "trades": 76,
+      "fees": 760.0
+    },
+    {
+      "decision_date": "2025-12-29",
+      "exec_date": "2025-12-30",
+      "ratio": 0.5,
+      "net_worth": 12639.9,
+      "cash": 6294.9,
+      "holdings": {
+        "军工ETF": {
+          "shares": 4700,
+          "value": 6345.0,
+          "locked": 4700
+        }
+      },
+      "holding_names": [
+        "军工ETF"
+      ],
+      "target": [
+        "军工ETF"
+      ],
+      "orders": [
+        "[2025-12-30] 🔴 SELL 10700股 @0.829 ¥8860",
+        "[2025-12-30] 🟢 BUY 4700股 @1.339 ¥6303 (回调)"
+      ],
+      "reason": "HS300=+0.0% ratio=0.5",
+      "trades": 78,
+      "fees": 780.0
+    },
+    {
+      "decision_date": "2025-12-30",
+      "exec_date": "2025-12-31",
+      "ratio": 0.7,
+      "net_worth": 12791.4,
+      "cash": 3870.6,
+      "holdings": {
+        "化工ETF": {
+          "shares": 10800,
+          "value": 8920.8,
+          "locked": 10800
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2025-12-31] 🔴 SELL 4700股 @1.375 ¥6452",
+        "[2025-12-31] 🟢 BUY 10800股 @0.821 ¥8877 (回调)"
+      ],
+      "reason": "HS300=+1.0% ratio=0.7",
+      "trades": 80,
+      "fees": 800.0
+    },
+    {
+      "decision_date": "2025-12-31",
+      "exec_date": "2026-01-05",
+      "ratio": 0.7,
+      "net_worth": 12819.8,
+      "cash": 4032.6,
+      "holdings": {
+        "军工ETF": {
+          "shares": 6400,
+          "value": 8787.2,
+          "locked": 6400
+        }
+      },
+      "holding_names": [
+        "军工ETF"
+      ],
+      "target": [
+        "军工ETF"
+      ],
+      "orders": [
+        "[2026-01-05] 🔴 SELL 10800股 @0.837 ¥9030",
+        "[2026-01-05] 🟢 BUY 6400股 @1.384 ¥8868 (回调)"
+      ],
+      "reason": "HS300=+0.4% ratio=0.7",
+      "trades": 82,
+      "fees": 820.0
+    },
+    {
+      "decision_date": "2026-01-05",
+      "exec_date": "2026-01-06",
+      "ratio": 0.7,
+      "net_worth": 13037.4,
+      "cash": 4032.6,
+      "holdings": {
+        "军工ETF": {
+          "shares": 6400,
+          "value": 9004.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "军工ETF"
+      ],
+      "target": [
+        "军工ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+0.8% ratio=0.7",
+      "trades": 82,
+      "fees": 820.0
+    },
+    {
+      "decision_date": "2026-01-06",
+      "exec_date": "2026-01-07",
+      "ratio": 1.0,
+      "net_worth": 13373.1,
+      "cash": 150.8,
+      "holdings": {
+        "军工ETF": {
+          "shares": 9100,
+          "value": 13222.3,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "军工ETF"
+      ],
+      "target": [
+        "军工ETF"
+      ],
+      "orders": [
+        "[2026-01-07] 🟢 BUY 2700股 @1.434 ¥3882 (回调(缩))"
+      ],
+      "reason": "HS300=+2.6% ratio=1.0",
+      "trades": 83,
+      "fees": 830.0
+    },
+    {
+      "decision_date": "2026-01-07",
+      "exec_date": "2026-01-08",
+      "ratio": 1.0,
+      "net_worth": 13932.7,
+      "cash": 755.5,
+      "holdings": {
+        "国防ETF": {
+          "shares": 13900,
+          "value": 13177.2,
+          "locked": 13900
+        }
+      },
+      "holding_names": [
+        "国防ETF"
+      ],
+      "target": [
+        "国防ETF"
+      ],
+      "orders": [
+        "[2026-01-08] 🔴 SELL 9100股 @1.506 ¥13695",
+        "[2026-01-08] 🟢 BUY 13900股 @0.941 ¥13090 (开盘)"
+      ],
+      "reason": "HS300=+2.0% ratio=1.0",
+      "trades": 85,
+      "fees": 850.0
+    },
+    {
+      "decision_date": "2026-01-08",
+      "exec_date": "2026-01-09",
+      "ratio": 1.0,
+      "net_worth": 15068.3,
+      "cash": 469.8,
+      "holdings": {
+        "军工ETF": {
+          "shares": 9700,
+          "value": 14598.5,
+          "locked": 9700
+        }
+      },
+      "holding_names": [
+        "军工ETF"
+      ],
+      "target": [
+        "军工ETF"
+      ],
+      "orders": [
+        "[2026-01-09] 🔴 SELL 13900股 @1.043 ¥14488",
+        "[2026-01-09] 🟢 BUY 9700股 @1.522 ¥14773 (回调)"
+      ],
+      "reason": "HS300=+2.2% ratio=1.0",
+      "trades": 87,
+      "fees": 870.0
+    },
+    {
+      "decision_date": "2026-01-09",
+      "exec_date": "2026-01-12",
+      "ratio": 1.0,
+      "net_worth": 15669.7,
+      "cash": 469.8,
+      "holdings": {
+        "军工ETF": {
+          "shares": 9700,
+          "value": 15199.9,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "军工ETF"
+      ],
+      "target": [
+        "军工ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+2.6% ratio=1.0",
+      "trades": 87,
+      "fees": 870.0
+    },
+    {
+      "decision_date": "2026-01-12",
+      "exec_date": "2026-01-13",
+      "ratio": 1.0,
+      "net_worth": 15681.7,
+      "cash": 29.1,
+      "holdings": {
+        "传媒ETF": {
+          "shares": 12200,
+          "value": 15652.6,
+          "locked": 12200
+        }
+      },
+      "holding_names": [
+        "传媒ETF"
+      ],
+      "target": [
+        "传媒ETF"
+      ],
+      "orders": [
+        "[2026-01-13] 🔴 SELL 9700股 @1.603 ¥15539",
+        "[2026-01-13] 🟢 BUY 12200股 @1.309 ¥15980 (回调(缩))"
+      ],
+      "reason": "HS300=+2.1% ratio=1.0",
+      "trades": 89,
+      "fees": 890.0
+    },
+    {
+      "decision_date": "2026-01-13",
+      "exec_date": "2026-01-14",
+      "ratio": 1.0,
+      "net_worth": 15754.9,
+      "cash": 29.1,
+      "holdings": {
+        "传媒ETF": {
+          "shares": 12200,
+          "value": 15725.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "传媒ETF"
+      ],
+      "target": [
+        "传媒ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.4% ratio=1.0",
+      "trades": 89,
+      "fees": 890.0
+    },
+    {
+      "decision_date": "2026-01-14",
+      "exec_date": "2026-01-15",
+      "ratio": 1.0,
+      "net_worth": 16157.5,
+      "cash": 29.1,
+      "holdings": {
+        "传媒ETF": {
+          "shares": 12200,
+          "value": 16128.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "传媒ETF"
+      ],
+      "target": [
+        "传媒ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.4% ratio=1.0",
+      "trades": 89,
+      "fees": 890.0
+    },
+    {
+      "decision_date": "2026-01-15",
+      "exec_date": "2026-01-16",
+      "ratio": 1.0,
+      "net_worth": 15003.9,
+      "cash": 223.7,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 6700,
+          "value": 14780.2,
+          "locked": 6700
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [
+        "[2026-01-16] 🔴 SELL 12200股 @1.217 ¥14837",
+        "[2026-01-16] 🟢 BUY 6700股 @2.184 ¥14643 (回调(缩))"
+      ],
+      "reason": "HS300=+4.2% ratio=1.0",
+      "trades": 91,
+      "fees": 910.0
+    },
+    {
+      "decision_date": "2026-01-16",
+      "exec_date": "2026-01-19",
+      "ratio": 1.0,
+      "net_worth": 14796.2,
+      "cash": 223.7,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 6700,
+          "value": 14572.5,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.5% ratio=1.0",
+      "trades": 91,
+      "fees": 910.0
+    },
+    {
+      "decision_date": "2026-01-19",
+      "exec_date": "2026-01-20",
+      "ratio": 1.0,
+      "net_worth": 15264.0,
+      "cash": 49.6,
+      "holdings": {
+        "国防ETF": {
+          "shares": 14800,
+          "value": 15214.4,
+          "locked": 14800
+        }
+      },
+      "holding_names": [
+        "国防ETF"
+      ],
+      "target": [
+        "国防ETF"
+      ],
+      "orders": [
+        "[2026-01-20] 🔴 SELL 6700股 @2.197 ¥14710",
+        "[2026-01-20] 🟢 BUY 14800股 @1.005 ¥14884 (回调(缩))"
+      ],
+      "reason": "HS300=+4.1% ratio=1.0",
+      "trades": 93,
+      "fees": 930.0
+    },
+    {
+      "decision_date": "2026-01-20",
+      "exec_date": "2026-01-21",
+      "ratio": 1.0,
+      "net_worth": 15002.0,
+      "cash": 242.0,
+      "holdings": {
+        "化工ETF": {
+          "shares": 16400,
+          "value": 14760.0,
+          "locked": 16400
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2026-01-21] 🔴 SELL 14800股 @1.005 ¥14864",
+        "[2026-01-21] 🟢 BUY 16400股 @0.894 ¥14672 (回调)"
+      ],
+      "reason": "HS300=+6.4% ratio=1.0",
+      "trades": 95,
+      "fees": 950.0
+    },
+    {
+      "decision_date": "2026-01-21",
+      "exec_date": "2026-01-22",
+      "ratio": 1.0,
+      "net_worth": 15582.0,
+      "cash": 261.6,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 6800,
+          "value": 15320.4,
+          "locked": 6800
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [
+        "[2026-01-22] 🔴 SELL 16400股 @0.920 ¥15078",
+        "[2026-01-22] 🟢 BUY 6800股 @2.213 ¥15058 (回调)"
+      ],
+      "reason": "HS300=+6.7% ratio=1.0",
+      "trades": 97,
+      "fees": 970.0
+    },
+    {
+      "decision_date": "2026-01-22",
+      "exec_date": "2026-01-23",
+      "ratio": 1.0,
+      "net_worth": 15864.5,
+      "cash": 166.7,
+      "holdings": {
+        "化工ETF": {
+          "shares": 17100,
+          "value": 15697.8,
+          "locked": 17100
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2026-01-23] 🔴 SELL 6800股 @2.300 ¥15630",
+        "[2026-01-23] 🟢 BUY 17100股 @0.919 ¥15725 (回调)"
+      ],
+      "reason": "HS300=+5.7% ratio=1.0",
+      "trades": 99,
+      "fees": 990.0
+    },
+    {
+      "decision_date": "2026-01-23",
+      "exec_date": "2026-01-26",
+      "ratio": 1.0,
+      "net_worth": 16451.8,
+      "cash": 66.2,
+      "holdings": {
+        "国防ETF": {
+          "shares": 15400,
+          "value": 16385.6,
+          "locked": 15400
+        }
+      },
+      "holding_names": [
+        "国防ETF"
+      ],
+      "target": [
+        "国防ETF"
+      ],
+      "orders": [
+        "[2026-01-26] 🔴 SELL 17100股 @0.931 ¥15910",
+        "[2026-01-26] 🟢 BUY 15400股 @1.039 ¥16011 (回调(缩))"
+      ],
+      "reason": "HS300=+4.5% ratio=1.0",
+      "trades": 101,
+      "fees": 1010.0
+    },
+    {
+      "decision_date": "2026-01-26",
+      "exec_date": "2026-01-27",
+      "ratio": 1.0,
+      "net_worth": 16474.2,
+      "cash": 300.4,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 6700,
+          "value": 16173.8,
+          "locked": 6700
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [
+        "[2026-01-27] 🔴 SELL 15400股 @1.045 ¥16083",
+        "[2026-01-27] 🟢 BUY 6700股 @2.364 ¥15849 (回调)"
+      ],
+      "reason": "HS300=+4.7% ratio=1.0",
+      "trades": 103,
+      "fees": 1030.0
+    },
+    {
+      "decision_date": "2026-01-27",
+      "exec_date": "2026-01-28",
+      "ratio": 1.0,
+      "net_worth": 16320.1,
+      "cash": 300.4,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 6700,
+          "value": 16019.7,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.4% ratio=1.0",
+      "trades": 103,
+      "fees": 1030.0
+    },
+    {
+      "decision_date": "2026-01-28",
+      "exec_date": "2026-01-29",
+      "ratio": 1.0,
+      "net_worth": 17378.7,
+      "cash": 300.4,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 6700,
+          "value": 17078.3,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.5% ratio=1.0",
+      "trades": 103,
+      "fees": 1030.0
+    },
+    {
+      "decision_date": "2026-01-29",
+      "exec_date": "2026-01-30",
+      "ratio": 1.0,
+      "net_worth": 17686.9,
+      "cash": 300.4,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 6700,
+          "value": 17386.5,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+5.0% ratio=1.0",
+      "trades": 103,
+      "fees": 1030.0
+    },
+    {
+      "decision_date": "2026-01-30",
+      "exec_date": "2026-02-02",
+      "ratio": 1.0,
+      "net_worth": 15971.7,
+      "cash": 300.4,
+      "holdings": {
+        "有色金属ETF": {
+          "shares": 6700,
+          "value": 15671.3,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "有色金属ETF"
+      ],
+      "target": [
+        "有色金属ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.2% ratio=1.0",
+      "trades": 103,
+      "fees": 1030.0
+    },
+    {
+      "decision_date": "2026-02-02",
+      "exec_date": "2026-02-03",
+      "ratio": 0.7,
+      "net_worth": 15284.5,
+      "cash": 4983.7,
+      "holdings": {
+        "传媒ETF": {
+          "shares": 8700,
+          "value": 10300.8,
+          "locked": 8700
+        }
+      },
+      "holding_names": [
+        "传媒ETF"
+      ],
+      "target": [
+        "传媒ETF"
+      ],
+      "orders": [
+        "[2026-02-03] 🔴 SELL 6700股 @2.255 ¥15098",
+        "[2026-02-03] 🟢 BUY 8700股 @1.196 ¥10415 (回调)"
+      ],
+      "reason": "HS300=+1.5% ratio=0.7",
+      "trades": 105,
+      "fees": 1050.0
+    },
+    {
+      "decision_date": "2026-02-03",
+      "exec_date": "2026-02-04",
+      "ratio": 0.7,
+      "net_worth": 15569.6,
+      "cash": 4816.1,
+      "holdings": {
+        "国防ETF": {
+          "shares": 10700,
+          "value": 10753.5,
+          "locked": 10700
+        }
+      },
+      "holding_names": [
+        "国防ETF"
+      ],
+      "target": [
+        "国防ETF"
+      ],
+      "orders": [
+        "[2026-02-04] 🔴 SELL 8700股 @1.208 ¥10500",
+        "[2026-02-04] 🟢 BUY 10700股 @0.996 ¥10667 (回调)"
+      ],
+      "reason": "HS300=+1.9% ratio=0.7",
+      "trades": 107,
+      "fees": 1070.0
+    },
+    {
+      "decision_date": "2026-02-04",
+      "exec_date": "2026-02-05",
+      "ratio": 1.0,
+      "net_worth": 15623.1,
+      "cash": 30.1,
+      "holdings": {
+        "国防ETF": {
+          "shares": 15500,
+          "value": 15593.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "国防ETF"
+      ],
+      "target": [
+        "国防ETF"
+      ],
+      "orders": [
+        "[2026-02-05] 🟢 BUY 4800股 @0.995 ¥4786 (回调)"
+      ],
+      "reason": "HS300=+2.1% ratio=1.0",
+      "trades": 108,
+      "fees": 1080.0
+    },
+    {
+      "decision_date": "2026-02-05",
+      "exec_date": "2026-02-06",
+      "ratio": 1.0,
+      "net_worth": 15514.6,
+      "cash": 30.1,
+      "holdings": {
+        "国防ETF": {
+          "shares": 15500,
+          "value": 15484.5,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "国防ETF"
+      ],
+      "target": [
+        "国防ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+2.0% ratio=1.0",
+      "trades": 108,
+      "fees": 1080.0
+    },
+    {
+      "decision_date": "2026-02-06",
+      "exec_date": "2026-02-09",
+      "ratio": 0.7,
+      "net_worth": 15419.6,
+      "cash": 4781.0,
+      "holdings": {
+        "化工ETF": {
+          "shares": 11900,
+          "value": 10638.6,
+          "locked": 11900
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2026-02-09] 🔴 SELL 15500股 @0.998 ¥15459",
+        "[2026-02-09] 🟢 BUY 11900股 @0.899 ¥10708 (回调)"
+      ],
+      "reason": "HS300=+1.5% ratio=0.7",
+      "trades": 110,
+      "fees": 1100.0
+    },
+    {
+      "decision_date": "2026-02-09",
+      "exec_date": "2026-02-10",
+      "ratio": 1.0,
+      "net_worth": 15407.1,
+      "cash": 536.4,
+      "holdings": {
+        "传媒ETF": {
+          "shares": 12300,
+          "value": 14870.7,
+          "locked": 12300
+        }
+      },
+      "holding_names": [
+        "传媒ETF"
+      ],
+      "target": [
+        "传媒ETF"
+      ],
+      "orders": [
+        "[2026-02-10] 🔴 SELL 11900股 @0.906 ¥10771",
+        "[2026-02-10] 🟢 BUY 12300股 @1.220 ¥15016 (回调)"
+      ],
+      "reason": "HS300=+4.0% ratio=1.0",
+      "trades": 112,
+      "fees": 1120.0
+    },
+    {
+      "decision_date": "2026-02-10",
+      "exec_date": "2026-02-11",
+      "ratio": 1.0,
+      "net_worth": 16083.6,
+      "cash": 536.4,
+      "holdings": {
+        "传媒ETF": {
+          "shares": 12300,
+          "value": 15547.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "传媒ETF"
+      ],
+      "target": [
+        "传媒ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.5% ratio=1.0",
+      "trades": 112,
+      "fees": 1120.0
+    },
+    {
+      "decision_date": "2026-02-11",
+      "exec_date": "2026-02-12",
+      "ratio": 1.0,
+      "net_worth": 15640.8,
+      "cash": 536.4,
+      "holdings": {
+        "传媒ETF": {
+          "shares": 12300,
+          "value": 15104.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "传媒ETF"
+      ],
+      "target": [
+        "传媒ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.9% ratio=1.0",
+      "trades": 112,
+      "fees": 1120.0
+    },
+    {
+      "decision_date": "2026-02-12",
+      "exec_date": "2026-02-13",
+      "ratio": 1.0,
+      "net_worth": 15949.5,
+      "cash": 15.5,
+      "holdings": {
+        "稀土ETF": {
+          "shares": 15500,
+          "value": 15934.0,
+          "locked": 15500
+        }
+      },
+      "holding_names": [
+        "稀土ETF"
+      ],
+      "target": [
+        "稀土ETF"
+      ],
+      "orders": [
+        "[2026-02-13] 🔴 SELL 12300股 @1.227 ¥15082",
+        "[2026-02-13] 🟢 BUY 15500股 @1.006 ¥15603 (回调(缩))"
+      ],
+      "reason": "HS300=+5.1% ratio=1.0",
+      "trades": 114,
+      "fees": 1140.0
+    },
+    {
+      "decision_date": "2026-02-13",
+      "exec_date": "2026-02-24",
+      "ratio": 1.0,
+      "net_worth": 16226.6,
+      "cash": 120.3,
+      "holdings": {
+        "传媒ETF": {
+          "shares": 13300,
+          "value": 16106.3,
+          "locked": 13300
+        }
+      },
+      "holding_names": [
+        "传媒ETF"
+      ],
+      "target": [
+        "传媒ETF"
+      ],
+      "orders": [
+        "[2026-02-24] 🔴 SELL 15500股 @1.024 ¥15862",
+        "[2026-02-24] 🟢 BUY 13300股 @1.184 ¥15757 (回调(缩))"
+      ],
+      "reason": "HS300=+2.1% ratio=1.0",
+      "trades": 116,
+      "fees": 1160.0
+    },
+    {
+      "decision_date": "2026-02-24",
+      "exec_date": "2026-02-25",
+      "ratio": 1.0,
+      "net_worth": 15760.5,
+      "cash": 206.2,
+      "holdings": {
+        "油气ETF": {
+          "shares": 10900,
+          "value": 15554.3,
+          "locked": 10900
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [
+        "[2026-02-25] 🔴 SELL 13300股 @1.175 ¥15618",
+        "[2026-02-25] 🟢 BUY 10900股 @1.424 ¥15532 (回调)"
+      ],
+      "reason": "HS300=+3.8% ratio=1.0",
+      "trades": 118,
+      "fees": 1180.0
+    },
+    {
+      "decision_date": "2026-02-25",
+      "exec_date": "2026-02-26",
+      "ratio": 1.0,
+      "net_worth": 15882.2,
+      "cash": 45.8,
+      "holdings": {
+        "化工ETF": {
+          "shares": 16600,
+          "value": 15836.4,
+          "locked": 16600
+        }
+      },
+      "holding_names": [
+        "化工ETF"
+      ],
+      "target": [
+        "化工ETF"
+      ],
+      "orders": [
+        "[2026-02-26] 🔴 SELL 10900股 @1.440 ¥15686",
+        "[2026-02-26] 🟢 BUY 16600股 @0.954 ¥15846 (回调)"
+      ],
+      "reason": "HS300=+4.0% ratio=1.0",
+      "trades": 120,
+      "fees": 1200.0
+    },
+    {
+      "decision_date": "2026-02-26",
+      "exec_date": "2026-02-27",
+      "ratio": 1.0,
+      "net_worth": 16061.4,
+      "cash": 639.0,
+      "holdings": {
+        "稀土ETF": {
+          "shares": 14400,
+          "value": 15422.4,
+          "locked": 14400
+        }
+      },
+      "holding_names": [
+        "稀土ETF"
+      ],
+      "target": [
+        "稀土ETF"
+      ],
+      "orders": [
+        "[2026-02-27] 🔴 SELL 16600股 @0.966 ¥16026",
+        "[2026-02-27] 🟢 BUY 14400股 @1.071 ¥15432 (回调)"
+      ],
+      "reason": "HS300=+2.8% ratio=1.0",
+      "trades": 122,
+      "fees": 1220.0
+    },
+    {
+      "decision_date": "2026-02-27",
+      "exec_date": "2026-03-02",
+      "ratio": 1.0,
+      "net_worth": 16666.2,
+      "cash": 639.0,
+      "holdings": {
+        "稀土ETF": {
+          "shares": 14400,
+          "value": 16027.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "稀土ETF"
+      ],
+      "target": [
+        "稀土ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+2.3% ratio=1.0",
+      "trades": 122,
+      "fees": 1220.0
+    },
+    {
+      "decision_date": "2026-03-02",
+      "exec_date": "2026-03-03",
+      "ratio": 1.0,
+      "net_worth": 15738.8,
+      "cash": 1106.0,
+      "holdings": {
+        "油气ETF": {
+          "shares": 9100,
+          "value": 14632.8,
+          "locked": 9100
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [
+        "[2026-03-03] 🔴 SELL 14400股 @1.074 ¥15456",
+        "[2026-03-03] 🟢 BUY 9100股 @1.646 ¥14989 (回调)"
+      ],
+      "reason": "HS300=+2.3% ratio=1.0",
+      "trades": 124,
+      "fees": 1240.0
+    },
+    {
+      "decision_date": "2026-03-03",
+      "exec_date": "2026-03-04",
+      "ratio": 0.7,
+      "net_worth": 17065.2,
+      "cash": 5042.8,
+      "holdings": {
+        "油气ETF": {
+          "shares": 6800,
+          "value": 12022.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [
+        "[2026-03-04] 🔴 SELL 2300股 @1.716 ¥3937"
+      ],
+      "reason": "HS300=+0.8% ratio=0.7",
+      "trades": 125,
+      "fees": 1250.0
+    },
+    {
+      "decision_date": "2026-03-04",
+      "exec_date": "2026-03-05",
+      "ratio": 0.5,
+      "net_worth": 16326.0,
+      "cash": 8177.3,
+      "holdings": {
+        "油气ETF": {
+          "shares": 4900,
+          "value": 8148.7,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [
+        "[2026-03-05] 🔴 SELL 1900股 @1.655 ¥3134"
+      ],
+      "reason": "HS300=-1.1% ratio=0.5",
+      "trades": 126,
+      "fees": 1260.0
+    },
+    {
+      "decision_date": "2026-03-05",
+      "exec_date": "2026-03-06",
+      "ratio": 0.7,
+      "net_worth": 16250.2,
+      "cash": 4847.2,
+      "holdings": {
+        "油气ETF": {
+          "shares": 7000,
+          "value": 11403.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [
+        "[2026-03-06] 🟢 BUY 2100股 @1.581 ¥3330 (回调)"
+      ],
+      "reason": "HS300=+0.3% ratio=0.7",
+      "trades": 127,
+      "fees": 1270.0
+    },
+    {
+      "decision_date": "2026-03-06",
+      "exec_date": "2026-03-09",
+      "ratio": 0.7,
+      "net_worth": 16019.2,
+      "cash": 4847.2,
+      "holdings": {
+        "油气ETF": {
+          "shares": 7000,
+          "value": 11172.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+0.4% ratio=0.7",
+      "trades": 127,
+      "fees": 1270.0
+    },
+    {
+      "decision_date": "2026-03-09",
+      "exec_date": "2026-03-10",
+      "ratio": 0.5,
+      "net_worth": 15985.2,
+      "cash": 7945.2,
+      "holdings": {
+        "油气ETF": {
+          "shares": 5000,
+          "value": 8040.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [
+        "[2026-03-10] 🔴 SELL 2000股 @1.554 ¥3098"
+      ],
+      "reason": "HS300=-0.0% ratio=0.5",
+      "trades": 128,
+      "fees": 1280.0
+    },
+    {
+      "decision_date": "2026-03-10",
+      "exec_date": "2026-03-11",
+      "ratio": 0.5,
+      "net_worth": 15660.2,
+      "cash": 7945.2,
+      "holdings": {
+        "油气ETF": {
+          "shares": 5000,
+          "value": 7715.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=-0.8% ratio=0.5",
+      "trades": 128,
+      "fees": 1280.0
+    },
+    {
+      "decision_date": "2026-03-11",
+      "exec_date": "2026-03-12",
+      "ratio": 0.5,
+      "net_worth": 15680.2,
+      "cash": 7945.2,
+      "holdings": {
+        "油气ETF": {
+          "shares": 5000,
+          "value": 7735.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=-1.8% ratio=0.5",
+      "trades": 128,
+      "fees": 1280.0
+    },
+    {
+      "decision_date": "2026-03-12",
+      "exec_date": "2026-03-13",
+      "ratio": 0.5,
+      "net_worth": 15752.6,
+      "cash": 7799.6,
+      "holdings": {
+        "电力ETF": {
+          "shares": 6600,
+          "value": 7953.0,
+          "locked": 6600
+        }
+      },
+      "holding_names": [
+        "电力ETF"
+      ],
+      "target": [
+        "电力ETF"
+      ],
+      "orders": [
+        "[2026-03-13] 🔴 SELL 5000股 @1.547 ¥7725",
+        "[2026-03-13] 🟢 BUY 6600股 @1.191 ¥7871 (回调)"
+      ],
+      "reason": "HS300=-1.8% ratio=0.5",
+      "trades": 130,
+      "fees": 1300.0
+    },
+    {
+      "decision_date": "2026-03-13",
+      "exec_date": "2026-03-16",
+      "ratio": 0.5,
+      "net_worth": 15581.0,
+      "cash": 7799.6,
+      "holdings": {
+        "电力ETF": {
+          "shares": 6600,
+          "value": 7781.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "电力ETF"
+      ],
+      "target": [
+        "电力ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=-1.3% ratio=0.5",
+      "trades": 130,
+      "fees": 1300.0
+    },
+    {
+      "decision_date": "2026-03-16",
+      "exec_date": "2026-03-17",
+      "ratio": 0.5,
+      "net_worth": 15519.0,
+      "cash": 7705.8,
+      "holdings": {
+        "油气ETF": {
+          "shares": 5100,
+          "value": 7813.2,
+          "locked": 5100
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [
+        "[2026-03-17] 🔴 SELL 6600股 @1.151 ¥7587",
+        "[2026-03-17] 🟢 BUY 5100股 @1.504 ¥7680 (回调)"
+      ],
+      "reason": "HS300=-1.7% ratio=0.5",
+      "trades": 132,
+      "fees": 1320.0
+    },
+    {
+      "decision_date": "2026-03-17",
+      "exec_date": "2026-03-18",
+      "ratio": 0.0,
+      "net_worth": 15345.8,
+      "cash": 15345.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [
+        "[2026-03-18] 🔴 SELL 5100股 @1.500 ¥7640"
+      ],
+      "reason": "HS300=-3.0% ratio=0.0",
+      "trades": 133,
+      "fees": 1330.0
+    },
+    {
+      "decision_date": "2026-03-18",
+      "exec_date": "2026-03-19",
+      "ratio": 0.0,
+      "net_worth": 15345.8,
+      "cash": 15345.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-2.3% ratio=0.0",
+      "trades": 133,
+      "fees": 1330.0
+    },
+    {
+      "decision_date": "2026-03-19",
+      "exec_date": "2026-03-20",
+      "ratio": 0.0,
+      "net_worth": 15345.8,
+      "cash": 15345.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-3.0% ratio=0.0",
+      "trades": 133,
+      "fees": 1330.0
+    },
+    {
+      "decision_date": "2026-03-20",
+      "exec_date": "2026-03-23",
+      "ratio": 0.0,
+      "net_worth": 15345.8,
+      "cash": 15345.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-3.7% ratio=0.0",
+      "trades": 133,
+      "fees": 1330.0
+    },
+    {
+      "decision_date": "2026-03-23",
+      "exec_date": "2026-03-24",
+      "ratio": 0.0,
+      "net_worth": 15345.8,
+      "cash": 15345.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-6.5% ratio=0.0",
+      "trades": 133,
+      "fees": 1330.0
+    },
+    {
+      "decision_date": "2026-03-24",
+      "exec_date": "2026-03-25",
+      "ratio": 0.0,
+      "net_worth": 15345.8,
+      "cash": 15345.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-5.5% ratio=0.0",
+      "trades": 133,
+      "fees": 1330.0
+    },
+    {
+      "decision_date": "2026-03-25",
+      "exec_date": "2026-03-26",
+      "ratio": 0.0,
+      "net_worth": 15345.8,
+      "cash": 15345.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-3.8% ratio=0.0",
+      "trades": 133,
+      "fees": 1330.0
+    },
+    {
+      "decision_date": "2026-03-26",
+      "exec_date": "2026-03-27",
+      "ratio": 0.3,
+      "net_worth": 15421.6,
+      "cash": 10784.5,
+      "holdings": {
+        "电力ETF": {
+          "shares": 3900,
+          "value": 4637.1,
+          "locked": 3900
+        }
+      },
+      "holding_names": [
+        "电力ETF"
+      ],
+      "target": [
+        "电力ETF"
+      ],
+      "orders": [
+        "[2026-03-27] 🟢 BUY 3900股 @1.167 ¥4561 (回调)"
+      ],
+      "reason": "HS300=-5.1% ratio=0.3",
+      "trades": 134,
+      "fees": 1340.0
+    },
+    {
+      "decision_date": "2026-03-27",
+      "exec_date": "2026-03-30",
+      "ratio": 0.0,
+      "net_worth": 15263.4,
+      "cash": 15263.4,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [
+        "[2026-03-30] 🔴 SELL 3900股 @1.151 ¥4479"
+      ],
+      "reason": "HS300=-4.6% ratio=0.0",
+      "trades": 135,
+      "fees": 1350.0
+    },
+    {
+      "decision_date": "2026-03-30",
+      "exec_date": "2026-03-31",
+      "ratio": 0.0,
+      "net_worth": 15263.4,
+      "cash": 15263.4,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-4.3% ratio=0.0",
+      "trades": 135,
+      "fees": 1350.0
+    },
+    {
+      "decision_date": "2026-03-31",
+      "exec_date": "2026-04-01",
+      "ratio": 0.3,
+      "net_worth": 15327.4,
+      "cash": 10813.4,
+      "holdings": {
+        "煤炭ETF": {
+          "shares": 3700,
+          "value": 4514.0,
+          "locked": 3700
+        }
+      },
+      "holding_names": [
+        "煤炭ETF"
+      ],
+      "target": [
+        "煤炭ETF"
+      ],
+      "orders": [
+        "[2026-04-01] 🟢 BUY 3700股 @1.200 ¥4450 (回调)"
+      ],
+      "reason": "HS300=-5.3% ratio=0.3",
+      "trades": 136,
+      "fees": 1360.0
+    },
+    {
+      "decision_date": "2026-04-01",
+      "exec_date": "2026-04-02",
+      "ratio": 0.0,
+      "net_worth": 15361.8,
+      "cash": 15361.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [
+        "[2026-04-02] 🔴 SELL 3700股 @1.232 ¥4548"
+      ],
+      "reason": "HS300=-3.7% ratio=0.0",
+      "trades": 137,
+      "fees": 1370.0
+    },
+    {
+      "decision_date": "2026-04-02",
+      "exec_date": "2026-04-03",
+      "ratio": 0.0,
+      "net_worth": 15361.8,
+      "cash": 15361.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-5.0% ratio=0.0",
+      "trades": 137,
+      "fees": 1370.0
+    },
+    {
+      "decision_date": "2026-04-03",
+      "exec_date": "2026-04-07",
+      "ratio": 0.0,
+      "net_worth": 15361.8,
+      "cash": 15361.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-6.6% ratio=0.0",
+      "trades": 137,
+      "fees": 1370.0
+    },
+    {
+      "decision_date": "2026-04-07",
+      "exec_date": "2026-04-08",
+      "ratio": 0.0,
+      "net_worth": 15361.8,
+      "cash": 15361.8,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-5.6% ratio=0.0",
+      "trades": 137,
+      "fees": 1370.0
+    },
+    {
+      "decision_date": "2026-04-08",
+      "exec_date": "2026-04-09",
+      "ratio": 0.7,
+      "net_worth": 15405.8,
+      "cash": 4587.8,
+      "holdings": {
+        "煤炭ETF": {
+          "shares": 9000,
+          "value": 10818.0,
+          "locked": 9000
+        }
+      },
+      "holding_names": [
+        "煤炭ETF"
+      ],
+      "target": [
+        "煤炭ETF"
+      ],
+      "orders": [
+        "[2026-04-09] 🟢 BUY 9000股 @1.196 ¥10774 (回调)"
+      ],
+      "reason": "HS300=+0.0% ratio=0.7",
+      "trades": 138,
+      "fees": 1380.0
+    },
+    {
+      "decision_date": "2026-04-09",
+      "exec_date": "2026-04-10",
+      "ratio": 0.5,
+      "net_worth": 15451.0,
+      "cash": 7796.6,
+      "holdings": {
+        "油气ETF": {
+          "shares": 5200,
+          "value": 7654.4,
+          "locked": 5200
+        }
+      },
+      "holding_names": [
+        "油气ETF"
+      ],
+      "target": [
+        "油气ETF"
+      ],
+      "orders": [
+        "[2026-04-10] 🔴 SELL 9000股 @1.200 ¥10790",
+        "[2026-04-10] 🟢 BUY 5200股 @1.456 ¥7581 (回调)"
+      ],
+      "reason": "HS300=-2.0% ratio=0.5",
+      "trades": 140,
+      "fees": 1400.0
+    },
+    {
+      "decision_date": "2026-04-10",
+      "exec_date": "2026-04-13",
+      "ratio": 0.5,
+      "net_worth": 15521.4,
+      "cash": 7822.8,
+      "holdings": {
+        "通信ETF": {
+          "shares": 12600,
+          "value": 7698.6,
+          "locked": 12600
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2026-04-13] 🔴 SELL 5200股 @1.470 ¥7634",
+        "[2026-04-13] 🟢 BUY 12600股 @0.603 ¥7608 (回调)"
+      ],
+      "reason": "HS300=-1.4% ratio=0.5",
+      "trades": 142,
+      "fees": 1420.0
+    },
+    {
+      "decision_date": "2026-04-13",
+      "exec_date": "2026-04-14",
+      "ratio": 0.5,
+      "net_worth": 15483.6,
+      "cash": 7822.8,
+      "holdings": {
+        "通信ETF": {
+          "shares": 12600,
+          "value": 7660.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=-0.6% ratio=0.5",
+      "trades": 142,
+      "fees": 1420.0
+    },
+    {
+      "decision_date": "2026-04-14",
+      "exec_date": "2026-04-15",
+      "ratio": 0.7,
+      "net_worth": 15660.5,
+      "cash": 4686.5,
+      "holdings": {
+        "通信ETF": {
+          "shares": 17700,
+          "value": 10974.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2026-04-15] 🟢 BUY 5100股 @0.613 ¥3136 (回调)"
+      ],
+      "reason": "HS300=+1.4% ratio=0.7",
+      "trades": 143,
+      "fees": 1430.0
+    },
+    {
+      "decision_date": "2026-04-15",
+      "exec_date": "2026-04-16",
+      "ratio": 0.5,
+      "net_worth": 15593.1,
+      "cash": 7968.1,
+      "holdings": {
+        "通信ETF": {
+          "shares": 12500,
+          "value": 7625.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2026-04-16] 🔴 SELL 5200股 @0.633 ¥3282"
+      ],
+      "reason": "HS300=-0.7% ratio=0.5",
+      "trades": 144,
+      "fees": 1440.0
+    },
+    {
+      "decision_date": "2026-04-16",
+      "exec_date": "2026-04-17",
+      "ratio": 0.7,
+      "net_worth": 15868.1,
+      "cash": 7968.1,
+      "holdings": {
+        "通信ETF": {
+          "shares": 12500,
+          "value": 7900.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+0.3% ratio=0.7",
+      "trades": 144,
+      "fees": 1440.0
+    },
+    {
+      "decision_date": "2026-04-17",
+      "exec_date": "2026-04-20",
+      "ratio": 0.7,
+      "net_worth": 16255.6,
+      "cash": 7968.1,
+      "holdings": {
+        "通信ETF": {
+          "shares": 12500,
+          "value": 8287.5,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+0.3% ratio=0.7",
+      "trades": 144,
+      "fees": 1440.0
+    },
+    {
+      "decision_date": "2026-04-20",
+      "exec_date": "2026-04-21",
+      "ratio": 0.7,
+      "net_worth": 16355.6,
+      "cash": 7968.1,
+      "holdings": {
+        "通信ETF": {
+          "shares": 12500,
+          "value": 8387.5,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+0.8% ratio=0.7",
+      "trades": 144,
+      "fees": 1440.0
+    },
+    {
+      "decision_date": "2026-04-21",
+      "exec_date": "2026-04-22",
+      "ratio": 1.0,
+      "net_worth": 16387.8,
+      "cash": 532.5,
+      "holdings": {
+        "通信ETF": {
+          "shares": 23700,
+          "value": 15855.3,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2026-04-22] 🟢 BUY 11200股 @0.663 ¥7436 (回调)"
+      ],
+      "reason": "HS300=+2.2% ratio=1.0",
+      "trades": 145,
+      "fees": 1450.0
+    },
+    {
+      "decision_date": "2026-04-22",
+      "exec_date": "2026-04-23",
+      "ratio": 1.0,
+      "net_worth": 17288.4,
+      "cash": 532.5,
+      "holdings": {
+        "通信ETF": {
+          "shares": 23700,
+          "value": 16755.9,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+2.0% ratio=1.0",
+      "trades": 145,
+      "fees": 1450.0
+    },
+    {
+      "decision_date": "2026-04-23",
+      "exec_date": "2026-04-24",
+      "ratio": 0.7,
+      "net_worth": 16946.3,
+      "cash": 5010.5,
+      "holdings": {
+        "通信ETF": {
+          "shares": 17100,
+          "value": 11935.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2026-04-24] 🔴 SELL 6600股 @0.680 ¥4478"
+      ],
+      "reason": "HS300=+1.1% ratio=0.7",
+      "trades": 146,
+      "fees": 1460.0
+    },
+    {
+      "decision_date": "2026-04-24",
+      "exec_date": "2026-04-27",
+      "ratio": 0.7,
+      "net_worth": 16467.5,
+      "cash": 5010.5,
+      "holdings": {
+        "通信ETF": {
+          "shares": 17100,
+          "value": 11457.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+1.0% ratio=0.7",
+      "trades": 146,
+      "fees": 1460.0
+    },
+    {
+      "decision_date": "2026-04-27",
+      "exec_date": "2026-04-28",
+      "ratio": 0.7,
+      "net_worth": 16604.3,
+      "cash": 5010.5,
+      "holdings": {
+        "通信ETF": {
+          "shares": 17100,
+          "value": 11593.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+1.2% ratio=0.7",
+      "trades": 146,
+      "fees": 1460.0
+    },
+    {
+      "decision_date": "2026-04-28",
+      "exec_date": "2026-04-29",
+      "ratio": 0.7,
+      "net_worth": 16364.9,
+      "cash": 5010.5,
+      "holdings": {
+        "通信ETF": {
+          "shares": 17100,
+          "value": 11354.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+0.7% ratio=0.7",
+      "trades": 146,
+      "fees": 1460.0
+    },
+    {
+      "decision_date": "2026-04-29",
+      "exec_date": "2026-04-30",
+      "ratio": 1.0,
+      "net_worth": 16487.4,
+      "cash": 261.4,
+      "holdings": {
+        "新能源车ETF": {
+          "shares": 7600,
+          "value": 16226.0,
+          "locked": 7600
+        }
+      },
+      "holding_names": [
+        "新能源车ETF"
+      ],
+      "target": [
+        "新能源车ETF"
+      ],
+      "orders": [
+        "[2026-04-30] 🔴 SELL 17100股 @0.667 ¥11396",
+        "[2026-04-30] 🟢 BUY 7600股 @2.123 ¥16145 (回调)"
+      ],
+      "reason": "HS300=+3.1% ratio=1.0",
+      "trades": 148,
+      "fees": 1480.0
+    },
+    {
+      "decision_date": "2026-04-30",
+      "exec_date": "2026-05-06",
+      "ratio": 1.0,
+      "net_worth": 16545.9,
+      "cash": 284.2,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 9100,
+          "value": 16261.7,
+          "locked": 9100
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [
+        "[2026-05-06] 🔴 SELL 7600股 @2.204 ¥16740",
+        "[2026-05-06] 🟢 BUY 9100股 @1.836 ¥16718 (回调)"
+      ],
+      "reason": "HS300=+4.6% ratio=1.0",
+      "trades": 150,
+      "fees": 1500.0
+    },
+    {
+      "decision_date": "2026-05-06",
+      "exec_date": "2026-05-07",
+      "ratio": 1.0,
+      "net_worth": 17128.3,
+      "cash": 284.2,
+      "holdings": {
+        "人工智能ETF": {
+          "shares": 9100,
+          "value": 16844.1,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "人工智能ETF"
+      ],
+      "target": [
+        "人工智能ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+5.0% ratio=1.0",
+      "trades": 150,
+      "fees": 1500.0
+    },
+    {
+      "decision_date": "2026-05-07",
+      "exec_date": "2026-05-08",
+      "ratio": 1.0,
+      "net_worth": 17807.7,
+      "cash": 556.9,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24400,
+          "value": 17250.8,
+          "locked": 24400
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2026-05-08] 🔴 SELL 9100股 @1.893 ¥17216",
+        "[2026-05-08] 🟢 BUY 24400股 @0.694 ¥16944 (回调)"
+      ],
+      "reason": "HS300=+5.2% ratio=1.0",
+      "trades": 152,
+      "fees": 1520.0
+    },
+    {
+      "decision_date": "2026-05-08",
+      "exec_date": "2026-05-11",
+      "ratio": 1.0,
+      "net_worth": 18002.9,
+      "cash": 556.9,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24400,
+          "value": 17446.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+5.5% ratio=1.0",
+      "trades": 152,
+      "fees": 1520.0
+    },
+    {
+      "decision_date": "2026-05-11",
+      "exec_date": "2026-05-12",
+      "ratio": 1.0,
+      "net_worth": 18661.7,
+      "cash": 556.9,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24400,
+          "value": 18104.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+6.0% ratio=1.0",
+      "trades": 152,
+      "fees": 1520.0
+    },
+    {
+      "decision_date": "2026-05-12",
+      "exec_date": "2026-05-13",
+      "ratio": 1.0,
+      "net_worth": 18881.3,
+      "cash": 556.9,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24400,
+          "value": 18324.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+5.3% ratio=1.0",
+      "trades": 152,
+      "fees": 1520.0
+    },
+    {
+      "decision_date": "2026-05-13",
+      "exec_date": "2026-05-14",
+      "ratio": 1.0,
+      "net_worth": 19564.5,
+      "cash": 556.9,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24400,
+          "value": 19007.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+6.9% ratio=1.0",
+      "trades": 152,
+      "fees": 1520.0
+    },
+    {
+      "decision_date": "2026-05-14",
+      "exec_date": "2026-05-15",
+      "ratio": 1.0,
+      "net_worth": 19393.7,
+      "cash": 556.9,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24400,
+          "value": 18836.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+5.6% ratio=1.0",
+      "trades": 152,
+      "fees": 1520.0
+    },
+    {
+      "decision_date": "2026-05-15",
+      "exec_date": "2026-05-18",
+      "ratio": 1.0,
+      "net_worth": 18856.9,
+      "cash": 556.9,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24400,
+          "value": 18300.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.2% ratio=1.0",
+      "trades": 152,
+      "fees": 1520.0
+    },
+    {
+      "decision_date": "2026-05-18",
+      "exec_date": "2026-05-19",
+      "ratio": 1.0,
+      "net_worth": 19076.5,
+      "cash": 556.9,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24400,
+          "value": 18519.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.4% ratio=1.0",
+      "trades": 152,
+      "fees": 1520.0
+    },
+    {
+      "decision_date": "2026-05-19",
+      "exec_date": "2026-05-20",
+      "ratio": 1.0,
+      "net_worth": 19003.3,
+      "cash": 556.9,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24400,
+          "value": 18446.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.4% ratio=1.0",
+      "trades": 152,
+      "fees": 1520.0
+    },
+    {
+      "decision_date": "2026-05-20",
+      "exec_date": "2026-05-21",
+      "ratio": 1.0,
+      "net_worth": 19003.9,
+      "cash": 65.9,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 17000,
+          "value": 18938.0,
+          "locked": 17000
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [
+        "[2026-05-21] 🔴 SELL 24400股 @0.745 ¥18168",
+        "[2026-05-21] 🟢 BUY 17000股 @1.097 ¥18659 (回调(缩))"
+      ],
+      "reason": "HS300=+5.9% ratio=1.0",
+      "trades": 154,
+      "fees": 1540.0
+    },
+    {
+      "decision_date": "2026-05-21",
+      "exec_date": "2026-05-22",
+      "ratio": 1.0,
+      "net_worth": 18722.0,
+      "cash": 508.7,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 14700,
+          "value": 18213.3,
+          "locked": 14700
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [
+        "[2026-05-22] 🔴 SELL 17000股 @1.096 ¥18622",
+        "[2026-05-22] 🟢 BUY 14700股 @1.236 ¥18179 (回调)"
+      ],
+      "reason": "HS300=+5.1% ratio=1.0",
+      "trades": 156,
+      "fees": 1560.0
+    },
+    {
+      "decision_date": "2026-05-22",
+      "exec_date": "2026-05-25",
+      "ratio": 1.0,
+      "net_worth": 19148.3,
+      "cash": 508.7,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 14700,
+          "value": 18639.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.8% ratio=1.0",
+      "trades": 156,
+      "fees": 1560.0
+    },
+    {
+      "decision_date": "2026-05-25",
+      "exec_date": "2026-05-26",
+      "ratio": 1.0,
+      "net_worth": 20559.5,
+      "cash": 508.7,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 14700,
+          "value": 20050.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+10.2% ratio=1.0",
+      "trades": 156,
+      "fees": 1560.0
+    },
+    {
+      "decision_date": "2026-05-26",
+      "exec_date": "2026-05-27",
+      "ratio": 1.0,
+      "net_worth": 20412.5,
+      "cash": 508.7,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 14700,
+          "value": 19903.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.4% ratio=1.0",
+      "trades": 156,
+      "fees": 1560.0
+    },
+    {
+      "decision_date": "2026-05-27",
+      "exec_date": "2026-05-28",
+      "ratio": 1.0,
+      "net_worth": 19853.9,
+      "cash": 508.7,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 14700,
+          "value": 19345.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.9% ratio=1.0",
+      "trades": 156,
+      "fees": 1560.0
+    },
+    {
+      "decision_date": "2026-05-28",
+      "exec_date": "2026-05-29",
+      "ratio": 1.0,
+      "net_worth": 19898.0,
+      "cash": 508.7,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 14700,
+          "value": 19389.3,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+9.4% ratio=1.0",
+      "trades": 156,
+      "fees": 1560.0
+    },
+    {
+      "decision_date": "2026-05-29",
+      "exec_date": "2026-06-01",
+      "ratio": 1.0,
+      "net_worth": 18774.0,
+      "cash": 12.0,
+      "holdings": {
+        "通信ETF": {
+          "shares": 23600,
+          "value": 18762.0,
+          "locked": 23600
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2026-06-01] 🔴 SELL 14700股 @1.215 ¥17850",
+        "[2026-06-01] 🟢 BUY 23600股 @0.777 ¥18347 (回调(缩))"
+      ],
+      "reason": "HS300=+9.4% ratio=1.0",
+      "trades": 158,
+      "fees": 1580.0
+    },
+    {
+      "decision_date": "2026-06-01",
+      "exec_date": "2026-06-02",
+      "ratio": 1.0,
+      "net_worth": 19474.2,
+      "cash": 446.4,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 18600,
+          "value": 19027.8,
+          "locked": 18600
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [
+        "[2026-06-02] 🔴 SELL 23600股 @0.820 ¥19342",
+        "[2026-06-02] 🟢 BUY 18600股 @1.016 ¥18908 (回调)"
+      ],
+      "reason": "HS300=+9.1% ratio=1.0",
+      "trades": 160,
+      "fees": 1600.0
+    },
+    {
+      "decision_date": "2026-06-02",
+      "exec_date": "2026-06-03",
+      "ratio": 1.0,
+      "net_worth": 20272.1,
+      "cash": 558.3,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24100,
+          "value": 19713.8,
+          "locked": 24100
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2026-06-03] 🔴 SELL 18600股 @1.089 ¥20245",
+        "[2026-06-03] 🟢 BUY 24100股 @0.835 ¥20134 (开盘)"
+      ],
+      "reason": "HS300=+8.9% ratio=1.0",
+      "trades": 162,
+      "fees": 1620.0
+    },
+    {
+      "decision_date": "2026-06-03",
+      "exec_date": "2026-06-04",
+      "ratio": 1.0,
+      "net_worth": 21236.1,
+      "cash": 558.3,
+      "holdings": {
+        "通信ETF": {
+          "shares": 24100,
+          "value": 20677.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+10.6% ratio=1.0",
+      "trades": 162,
+      "fees": 1620.0
+    },
+    {
+      "decision_date": "2026-06-04",
+      "exec_date": "2026-06-05",
+      "ratio": 1.0,
+      "net_worth": 22086.1,
+      "cash": 75.1,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 17400,
+          "value": 22011.0,
+          "locked": 17400
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [
+        "[2026-06-05] 🔴 SELL 24100股 @0.858 ¥20668",
+        "[2026-06-05] 🟢 BUY 17400股 @1.215 ¥21151 (回调(缩))"
+      ],
+      "reason": "HS300=+10.6% ratio=1.0",
+      "trades": 164,
+      "fees": 1640.0
+    },
+    {
+      "decision_date": "2026-06-05",
+      "exec_date": "2026-06-08",
+      "ratio": 1.0,
+      "net_worth": 21353.9,
+      "cash": 304.3,
+      "holdings": {
+        "通信ETF": {
+          "shares": 25300,
+          "value": 21049.6,
+          "locked": 25300
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [
+        "[2026-06-08] 🔴 SELL 17400股 @1.163 ¥20226",
+        "[2026-06-08] 🟢 BUY 25300股 @0.790 ¥19997 (开盘)"
+      ],
+      "reason": "HS300=+8.9% ratio=1.0",
+      "trades": 166,
+      "fees": 1660.0
+    },
+    {
+      "decision_date": "2026-06-08",
+      "exec_date": "2026-06-09",
+      "ratio": 1.0,
+      "net_worth": 20569.6,
+      "cash": 304.3,
+      "holdings": {
+        "通信ETF": {
+          "shares": 25300,
+          "value": 20265.3,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.0% ratio=1.0",
+      "trades": 166,
+      "fees": 1660.0
+    },
+    {
+      "decision_date": "2026-06-09",
+      "exec_date": "2026-06-10",
+      "ratio": 1.0,
+      "net_worth": 21758.7,
+      "cash": 304.3,
+      "holdings": {
+        "通信ETF": {
+          "shares": 25300,
+          "value": 21454.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "通信ETF"
+      ],
+      "target": [
+        "通信ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+5.6% ratio=1.0",
+      "trades": 166,
+      "fees": 1660.0
+    },
+    {
+      "decision_date": "2026-06-10",
+      "exec_date": "2026-06-11",
+      "ratio": 1.0,
+      "net_worth": 21130.8,
+      "cash": 550.8,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 19600,
+          "value": 20580.0,
+          "locked": 19600
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [
+        "[2026-06-11] 🔴 SELL 25300股 @0.817 ¥20660",
+        "[2026-06-11] 🟢 BUY 19600股 @1.041 ¥20414 (开盘)"
+      ],
+      "reason": "HS300=+3.1% ratio=1.0",
+      "trades": 168,
+      "fees": 1680.0
+    },
+    {
+      "decision_date": "2026-06-11",
+      "exec_date": "2026-06-12",
+      "ratio": 1.0,
+      "net_worth": 21424.8,
+      "cash": 550.8,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 19600,
+          "value": 20874.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+2.1% ratio=1.0",
+      "trades": 168,
+      "fees": 1680.0
+    },
+    {
+      "decision_date": "2026-06-12",
+      "exec_date": "2026-06-15",
+      "ratio": 1.0,
+      "net_worth": 21189.6,
+      "cash": 550.8,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 19600,
+          "value": 20638.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+2.2% ratio=1.0",
+      "trades": 168,
+      "fees": 1680.0
+    },
+    {
+      "decision_date": "2026-06-15",
+      "exec_date": "2026-06-16",
+      "ratio": 1.0,
+      "net_worth": 22424.4,
+      "cash": 550.8,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 19600,
+          "value": 21873.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.8% ratio=1.0",
+      "trades": 168,
+      "fees": 1680.0
+    },
+    {
+      "decision_date": "2026-06-16",
+      "exec_date": "2026-06-17",
+      "ratio": 1.0,
+      "net_worth": 22640.0,
+      "cash": 550.8,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 19600,
+          "value": 22089.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.5% ratio=1.0",
+      "trades": 168,
+      "fees": 1680.0
+    },
+    {
+      "decision_date": "2026-06-17",
+      "exec_date": "2026-06-18",
+      "ratio": 1.0,
+      "net_worth": 23953.2,
+      "cash": 550.8,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 19600,
+          "value": 23402.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.6% ratio=1.0",
+      "trades": 168,
+      "fees": 1680.0
+    },
+    {
+      "decision_date": "2026-06-18",
+      "exec_date": "2026-06-22",
+      "ratio": 1.0,
+      "net_worth": 25457.1,
+      "cash": 817.1,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 17500,
+          "value": 24640.0,
+          "locked": 17500
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [
+        "[2026-06-22] 🔴 SELL 19600股 @1.278 ¥25039",
+        "[2026-06-22] 🟢 BUY 17500股 @1.415 ¥24772 (回调)"
+      ],
+      "reason": "HS300=+4.6% ratio=1.0",
+      "trades": 170,
+      "fees": 1700.0
+    },
+    {
+      "decision_date": "2026-06-22",
+      "exec_date": "2026-06-23",
+      "ratio": 1.0,
+      "net_worth": 26367.1,
+      "cash": 817.1,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 17500,
+          "value": 25550.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+6.6% ratio=1.0",
+      "trades": 170,
+      "fees": 1700.0
+    },
+    {
+      "decision_date": "2026-06-23",
+      "exec_date": "2026-06-24",
+      "ratio": 1.0,
+      "net_worth": 27577.6,
+      "cash": 1955.2,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 20400,
+          "value": 25622.4,
+          "locked": 20400
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [
+        "[2026-06-24] 🔴 SELL 17500股 @1.507 ¥26362",
+        "[2026-06-24] 🟢 BUY 20400股 @1.236 ¥25224 (回调)"
+      ],
+      "reason": "HS300=+2.7% ratio=1.0",
+      "trades": 172,
+      "fees": 1720.0
+    },
+    {
+      "decision_date": "2026-06-24",
+      "exec_date": "2026-06-25",
+      "ratio": 1.0,
+      "net_worth": 29005.6,
+      "cash": 1955.2,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 20400,
+          "value": 27050.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.5% ratio=1.0",
+      "trades": 172,
+      "fees": 1720.0
+    },
+    {
+      "decision_date": "2026-06-25",
+      "exec_date": "2026-06-26",
+      "ratio": 1.0,
+      "net_worth": 31236.9,
+      "cash": 588.5,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 19300,
+          "value": 30648.4,
+          "locked": 19300
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [
+        "[2026-06-26] 🔴 SELL 20400股 @1.390 ¥28346",
+        "[2026-06-26] 🟢 BUY 19300股 @1.539 ¥29713 (回调)"
+      ],
+      "reason": "HS300=+5.6% ratio=1.0",
+      "trades": 174,
+      "fees": 1740.0
+    },
+    {
+      "decision_date": "2026-06-26",
+      "exec_date": "2026-06-29",
+      "ratio": 1.0,
+      "net_worth": 32594.0,
+      "cash": 2091.2,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 22200,
+          "value": 30502.8,
+          "locked": 22200
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [
+        "[2026-06-29] 🔴 SELL 19300股 @1.649 ¥31816",
+        "[2026-06-29] 🟢 BUY 22200股 @1.365 ¥30313 (回调)"
+      ],
+      "reason": "HS300=+2.6% ratio=1.0",
+      "trades": 176,
+      "fees": 1760.0
+    },
+    {
+      "decision_date": "2026-06-29",
+      "exec_date": "2026-06-30",
+      "ratio": 1.0,
+      "net_worth": 34392.2,
+      "cash": 2091.2,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 22200,
+          "value": 32301.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.0% ratio=1.0",
+      "trades": 176,
+      "fees": 1760.0
+    },
+    {
+      "decision_date": "2026-06-30",
+      "exec_date": "2026-07-01",
+      "ratio": 1.0,
+      "net_worth": 35457.8,
+      "cash": 2091.2,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 22200,
+          "value": 33366.6,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+4.1% ratio=1.0",
+      "trades": 176,
+      "fees": 1760.0
+    },
+    {
+      "decision_date": "2026-07-01",
+      "exec_date": "2026-07-02",
+      "ratio": 1.0,
+      "net_worth": 34769.6,
+      "cash": 2091.2,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 22200,
+          "value": 32678.4,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=+3.6% ratio=1.0",
+      "trades": 176,
+      "fees": 1760.0
+    },
+    {
+      "decision_date": "2026-07-02",
+      "exec_date": "2026-07-03",
+      "ratio": 0.5,
+      "net_worth": 32124.0,
+      "cash": 16194.0,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 11800,
+          "value": 15930.0,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [
+        "[2026-07-03] 🔴 SELL 10400股 @1.357 ¥14103"
+      ],
+      "reason": "HS300=-0.8% ratio=0.5",
+      "trades": 177,
+      "fees": 1770.0
+    },
+    {
+      "decision_date": "2026-07-03",
+      "exec_date": "2026-07-06",
+      "ratio": 0.5,
+      "net_worth": 31899.8,
+      "cash": 16194.0,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 11800,
+          "value": 15705.8,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=-0.7% ratio=0.5",
+      "trades": 177,
+      "fees": 1770.0
+    },
+    {
+      "decision_date": "2026-07-06",
+      "exec_date": "2026-07-07",
+      "ratio": 0.5,
+      "net_worth": 31935.2,
+      "cash": 16194.0,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 11800,
+          "value": 15741.2,
+          "locked": 0
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [],
+      "reason": "HS300=-0.2% ratio=0.5",
+      "trades": 177,
+      "fees": 1770.0
+    },
+    {
+      "decision_date": "2026-07-07",
+      "exec_date": "2026-07-08",
+      "ratio": 0.3,
+      "net_worth": 32435.6,
+      "cash": 22829.2,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 6400,
+          "value": 9606.4,
+          "locked": 6400
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [
+        "[2026-07-08] 🔴 SELL 11800股 @1.364 ¥16085",
+        "[2026-07-08] 🟢 BUY 6400股 @1.475 ¥9450 (回调)"
+      ],
+      "reason": "HS300=-2.8% ratio=0.3",
+      "trades": 179,
+      "fees": 1790.0
+    },
+    {
+      "decision_date": "2026-07-08",
+      "exec_date": "2026-07-09",
+      "ratio": 0.3,
+      "net_worth": 33217.5,
+      "cash": 24246.2,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 6700,
+          "value": 8971.3,
+          "locked": 6700
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [
+        "[2026-07-09] 🔴 SELL 6400股 @1.642 ¥10499",
+        "[2026-07-09] 🟢 BUY 6700股 @1.354 ¥9082 (回调)"
+      ],
+      "reason": "HS300=-3.3% ratio=0.3",
+      "trades": 181,
+      "fees": 1810.0
+    },
+    {
+      "decision_date": "2026-07-09",
+      "exec_date": "2026-07-10",
+      "ratio": 0.3,
+      "net_worth": 34151.5,
+      "cash": 23314.3,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 6600,
+          "value": 10837.2,
+          "locked": 6600
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [
+        "[2026-07-10] 🔴 SELL 6700股 @1.441 ¥9645",
+        "[2026-07-10] 🟢 BUY 6600股 @1.601 ¥10577 (回调)"
+      ],
+      "reason": "HS300=-2.0% ratio=0.3",
+      "trades": 183,
+      "fees": 1830.0
+    },
+    {
+      "decision_date": "2026-07-10",
+      "exec_date": "2026-07-13",
+      "ratio": 0.3,
+      "net_worth": 33700.3,
+      "cash": 23159.0,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 7700,
+          "value": 10541.3,
+          "locked": 7700
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [
+        "[2026-07-13] 🔴 SELL 6600股 @1.502 ¥9903",
+        "[2026-07-13] 🟢 BUY 7700股 @1.305 ¥10058 (回调)"
+      ],
+      "reason": "HS300=-2.3% ratio=0.3",
+      "trades": 185,
+      "fees": 1850.0
+    },
+    {
+      "decision_date": "2026-07-13",
+      "exec_date": "2026-07-14",
+      "ratio": 0.3,
+      "net_worth": 33529.5,
+      "cash": 23760.9,
+      "holdings": {
+        "芯片ETF": {
+          "shares": 6700,
+          "value": 9768.6,
+          "locked": 6700
+        }
+      },
+      "holding_names": [
+        "芯片ETF"
+      ],
+      "target": [
+        "芯片ETF"
+      ],
+      "orders": [
+        "[2026-07-14] 🔴 SELL 7700股 @1.312 ¥10092",
+        "[2026-07-14] 🟢 BUY 6700股 @1.415 ¥9490 (回调)"
+      ],
+      "reason": "HS300=-2.8% ratio=0.3",
+      "trades": 187,
+      "fees": 1870.0
+    },
+    {
+      "decision_date": "2026-07-14",
+      "exec_date": "2026-07-15",
+      "ratio": 0.5,
+      "net_worth": 33887.9,
+      "cash": 16229.9,
+      "holdings": {
+        "半导体ETF": {
+          "shares": 13500,
+          "value": 17658.0,
+          "locked": 13500
+        }
+      },
+      "holding_names": [
+        "半导体ETF"
+      ],
+      "target": [
+        "半导体ETF"
+      ],
+      "orders": [
+        "[2026-07-15] 🔴 SELL 6700股 @1.450 ¥9705",
+        "[2026-07-15] 🟢 BUY 13500股 @1.276 ¥17236 (回调)"
+      ],
+      "reason": "HS300=-0.3% ratio=0.5",
+      "trades": 189,
+      "fees": 1890.0
+    },
+    {
+      "decision_date": "2026-07-15",
+      "exec_date": "2026-07-16",
+      "ratio": 0.5,
+      "net_worth": 32821.6,
+      "cash": 16542.4,
+      "holdings": {
+        "创新药ETF": {
+          "shares": 23800,
+          "value": 16279.2,
+          "locked": 23800
+        }
+      },
+      "holding_names": [
+        "创新药ETF"
+      ],
+      "target": [
+        "创新药ETF"
+      ],
+      "orders": [
+        "[2026-07-16] 🔴 SELL 13500股 @1.197 ¥16150",
+        "[2026-07-16] 🟢 BUY 23800股 @0.665 ¥15837 (回调)"
+      ],
+      "reason": "HS300=-0.6% ratio=0.5",
+      "trades": 191,
+      "fees": 1910.0
+    },
+    {
+      "decision_date": "2026-07-16",
+      "exec_date": "2026-07-17",
+      "ratio": 0.0,
+      "net_worth": 32050.0,
+      "cash": 32050.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [
+        "[2026-07-17] 🔴 SELL 23800股 @0.652 ¥15508"
+      ],
+      "reason": "HS300=-2.4% ratio=0.0",
+      "trades": 192,
+      "fees": 1920.0
+    },
+    {
+      "decision_date": "2026-07-17",
+      "exec_date": "2026-07-20",
+      "ratio": 0.0,
+      "net_worth": 32050.0,
+      "cash": 32050.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-4.5% ratio=0.0",
+      "trades": 192,
+      "fees": 1920.0
+    },
+    {
+      "decision_date": "2026-07-20",
+      "exec_date": "2026-07-21",
+      "ratio": 0.0,
+      "net_worth": 32050.0,
+      "cash": 32050.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-4.4% ratio=0.0",
+      "trades": 192,
+      "fees": 1920.0
+    },
+    {
+      "decision_date": "2026-07-21",
+      "exec_date": "2026-07-22",
+      "ratio": 0.0,
+      "net_worth": 32050.0,
+      "cash": 32050.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-3.0% ratio=0.0",
+      "trades": 192,
+      "fees": 1920.0
+    },
+    {
+      "decision_date": "2026-07-22",
+      "exec_date": "2026-07-23",
+      "ratio": 0.0,
+      "net_worth": 32050.0,
+      "cash": 32050.0,
+      "holdings": {},
+      "holding_names": [],
+      "target": [],
+      "orders": [],
+      "reason": "HS300=-4.2% ratio=0.0",
+      "trades": 192,
+      "fees": 1920.0
+    }
+  ]
+}

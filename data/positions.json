@@ -1,0 +1,18 @@
+{
+  "cash": 8000.0,
+  "holdings": {},
+  "fees_paid": 0,
+  "trades_count": 0,
+  "history": [
+    {
+      "date": "2026-07-23",
+      "cash": 8000.0,
+      "holdings_value": 0.0,
+      "total": 8000.0,
+      "position_ratio": 0.0
+    }
+  ],
+  "last_update": "2026-07-23 23:24:57",
+  "consecutive_losses": 0,
+  "prev_day_return": null
+}
