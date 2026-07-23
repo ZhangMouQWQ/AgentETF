@@ -129,7 +129,7 @@ def fetch_all_realtime(pool, max_workers=5):
         return r
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {executor.submit(_fetch_one, item): name for item in pool.items()}
+        futures = {executor.submit(_fetch_one, item): item[1][1] for item in pool.items()}
         for i, future in enumerate(as_completed(futures), 1):
             r = future.result()
             results.append(r)
