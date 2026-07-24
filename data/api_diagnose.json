@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-24 21:57:26",
-  "etf_count": 5,
+  "generated_at": "2026-07-24 22:12:03",
+  "etf_count": 39,
   "apis_tested": [
     "eastmoney_hist",
     "akshare_hist",
@@ -12,25 +12,58 @@
     "eastmoney_hist": {
       "api": "eastmoney_hist",
       "name": "Eastmoney K-line (历史日线)",
-      "total": 5,
-      "success": 0,
-      "fail": 5,
-      "success_rate": 0.0,
-      "avg_elapsed_ms": 123,
-      "max_elapsed_ms": 381,
-      "field_coverage": {},
-      "amount_full_pct": 0.0,
-      "turnover_full_pct": 0.0
+      "total": 39,
+      "success": 5,
+      "fail": 34,
+      "success_rate": 12.8,
+      "avg_elapsed_ms": 798,
+      "max_elapsed_ms": 5433,
+      "field_coverage": {
+        "amount": {
+          "count": 5,
+          "pct": 12.8
+        },
+        "close": {
+          "count": 5,
+          "pct": 12.8
+        },
+        "day": {
+          "count": 5,
+          "pct": 12.8
+        },
+        "high": {
+          "count": 5,
+          "pct": 12.8
+        },
+        "low": {
+          "count": 5,
+          "pct": 12.8
+        },
+        "open": {
+          "count": 5,
+          "pct": 12.8
+        },
+        "turnover": {
+          "count": 5,
+          "pct": 12.8
+        },
+        "volume": {
+          "count": 5,
+          "pct": 12.8
+        }
+      },
+      "amount_full_pct": 100.0,
+      "turnover_full_pct": 100.0
     },
     "akshare_hist": {
       "api": "akshare_hist",
       "name": "AKShare (历史日线)",
-      "total": 5,
+      "total": 39,
       "success": 0,
-      "fail": 5,
+      "fail": 39,
       "success_rate": 0.0,
-      "avg_elapsed_ms": 67,
-      "max_elapsed_ms": 80,
+      "avg_elapsed_ms": 652,
+      "max_elapsed_ms": 1567,
       "field_coverage": {},
       "amount_full_pct": 0.0,
       "turnover_full_pct": 0.0
@@ -38,43 +71,43 @@
     "tencent_hist": {
       "api": "tencent_hist",
       "name": "Tencent K-line (历史日线)",
-      "total": 5,
-      "success": 5,
+      "total": 39,
+      "success": 39,
       "fail": 0,
       "success_rate": 100.0,
-      "avg_elapsed_ms": 171,
-      "max_elapsed_ms": 218,
+      "avg_elapsed_ms": 1164,
+      "max_elapsed_ms": 1825,
       "field_coverage": {
         "amount": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         },
         "close": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         },
         "day": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         },
         "high": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         },
         "low": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         },
         "open": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         },
         "turnover": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         },
         "volume": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         }
       },
@@ -84,23 +117,23 @@
     "sina_realtime": {
       "api": "sina_realtime",
       "name": "Sina 实时行情",
-      "total": 5,
-      "success": 5,
+      "total": 39,
+      "success": 39,
       "fail": 0,
       "success_rate": 100.0,
-      "avg_elapsed_ms": 75,
-      "max_elapsed_ms": 80,
+      "avg_elapsed_ms": 366,
+      "max_elapsed_ms": 842,
       "field_coverage": {
         "amount": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         },
         "close": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         },
         "volume": {
-          "count": 5,
+          "count": 39,
           "pct": 100.0
         }
       },
@@ -110,13 +143,30 @@
     "eastmoney_realtime": {
       "api": "eastmoney_realtime",
       "name": "Eastmoney 实时行情",
-      "total": 5,
-      "success": 0,
-      "fail": 5,
-      "success_rate": 0.0,
-      "avg_elapsed_ms": 62,
-      "max_elapsed_ms": 68,
-      "field_coverage": {},
+      "total": 39,
+      "success": 2,
+      "fail": 37,
+      "success_rate": 5.1,
+      "avg_elapsed_ms": 1215,
+      "max_elapsed_ms": 2207,
+      "field_coverage": {
+        "amount": {
+          "count": 2,
+          "pct": 5.1
+        },
+        "close": {
+          "count": 2,
+          "pct": 5.1
+        },
+        "turnover": {
+          "count": 2,
+          "pct": 5.1
+        },
+        "volume": {
+          "count": 2,
+          "pct": 5.1
+        }
+      },
       "amount_full_pct": 0.0,
       "turnover_full_pct": 0.0
     }
@@ -128,23 +178,41 @@
       "name": "沪深300ETF",
       "apis": {
         "eastmoney_hist": {
-          "success": false,
-          "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 52,
-          "rows": 0,
-          "fields": [],
+          "success": true,
+          "error": null,
+          "elapsed_ms": 5433,
+          "rows": 280,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
           "missing_fields": [],
           "empty_fields": [],
-          "amount_valid_rows": null,
-          "turnover_valid_rows": null,
-          "date_start": null,
-          "date_end": null,
-          "sample": null
+          "amount_valid_rows": 280,
+          "turnover_valid_rows": 280,
+          "date_start": "2025-06-03",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 4.75,
+            "high": 4.759,
+            "low": 4.699,
+            "close": 4.701,
+            "volume": 10247632.0,
+            "amount": 4844479626.0,
+            "turnover": 4.27,
+            "day": "2026-07-24"
+          }
         },
         "akshare_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 80,
+          "elapsed_ms": 672,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -158,7 +226,7 @@
         "tencent_hist": {
           "success": true,
           "error": null,
-          "elapsed_ms": 145,
+          "elapsed_ms": 1825,
           "rows": 261,
           "fields": [
             "day",
@@ -190,7 +258,7 @@
         "sina_realtime": {
           "success": true,
           "error": null,
-          "elapsed_ms": 80,
+          "elapsed_ms": 842,
           "rows": 1,
           "fields": [
             "close",
@@ -210,18 +278,28 @@
           }
         },
         "eastmoney_realtime": {
-          "success": false,
-          "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 68,
-          "rows": 0,
-          "fields": [],
+          "success": true,
+          "error": null,
+          "elapsed_ms": 2185,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
           "missing_fields": [],
           "empty_fields": [],
           "amount_valid_rows": null,
           "turnover_valid_rows": null,
           "date_start": null,
           "date_end": null,
-          "sample": null
+          "sample": {
+            "close": 4.701,
+            "volume": 102476.32,
+            "amount": 4844479626.0,
+            "turnover": 4.27
+          }
         }
       }
     },
@@ -231,23 +309,41 @@
       "name": "中证500ETF",
       "apis": {
         "eastmoney_hist": {
-          "success": false,
-          "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 56,
-          "rows": 0,
-          "fields": [],
+          "success": true,
+          "error": null,
+          "elapsed_ms": 683,
+          "rows": 280,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
           "missing_fields": [],
           "empty_fields": [],
-          "amount_valid_rows": null,
-          "turnover_valid_rows": null,
-          "date_start": null,
-          "date_end": null,
-          "sample": null
+          "amount_valid_rows": 280,
+          "turnover_valid_rows": 280,
+          "date_start": "2025-06-03",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 7.651,
+            "high": 7.712,
+            "low": 7.541,
+            "close": 7.545,
+            "volume": 3406830.0,
+            "amount": 2593796767.0,
+            "turnover": 5.94,
+            "day": "2026-07-24"
+          }
         },
         "akshare_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 80,
+          "elapsed_ms": 668,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -261,7 +357,7 @@
         "tencent_hist": {
           "success": true,
           "error": null,
-          "elapsed_ms": 218,
+          "elapsed_ms": 1161,
           "rows": 260,
           "fields": [
             "day",
@@ -293,7 +389,7 @@
         "sina_realtime": {
           "success": true,
           "error": null,
-          "elapsed_ms": 73,
+          "elapsed_ms": 354,
           "rows": 1,
           "fields": [
             "close",
@@ -313,18 +409,28 @@
           }
         },
         "eastmoney_realtime": {
-          "success": false,
-          "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 62,
-          "rows": 0,
-          "fields": [],
+          "success": true,
+          "error": null,
+          "elapsed_ms": 2207,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
           "missing_fields": [],
           "empty_fields": [],
           "amount_valid_rows": null,
           "turnover_valid_rows": null,
           "date_start": null,
           "date_end": null,
-          "sample": null
+          "sample": {
+            "close": 7.545,
+            "volume": 34068.3,
+            "amount": 2593796767.0,
+            "turnover": 5.94
+          }
         }
       }
     },
@@ -334,23 +440,41 @@
       "name": "中证1000ETF",
       "apis": {
         "eastmoney_hist": {
-          "success": false,
-          "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 381,
-          "rows": 0,
-          "fields": [],
+          "success": true,
+          "error": null,
+          "elapsed_ms": 680,
+          "rows": 280,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
           "missing_fields": [],
           "empty_fields": [],
-          "amount_valid_rows": null,
-          "turnover_valid_rows": null,
-          "date_start": null,
-          "date_end": null,
-          "sample": null
+          "amount_valid_rows": 280,
+          "turnover_valid_rows": 280,
+          "date_start": "2025-06-03",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 2.886,
+            "high": 2.904,
+            "low": 2.828,
+            "close": 2.832,
+            "volume": 12512862.0,
+            "amount": 3575677638.0,
+            "turnover": 14.51,
+            "day": "2026-07-24"
+          }
         },
         "akshare_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 58,
+          "elapsed_ms": 698,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -364,7 +488,7 @@
         "tencent_hist": {
           "success": true,
           "error": null,
-          "elapsed_ms": 166,
+          "elapsed_ms": 1218,
           "rows": 260,
           "fields": [
             "day",
@@ -396,7 +520,7 @@
         "sina_realtime": {
           "success": true,
           "error": null,
-          "elapsed_ms": 79,
+          "elapsed_ms": 352,
           "rows": 1,
           "fields": [
             "close",
@@ -418,7 +542,7 @@
         "eastmoney_realtime": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 65,
+          "elapsed_ms": 1188,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -437,23 +561,41 @@
       "name": "创业板ETF",
       "apis": {
         "eastmoney_hist": {
-          "success": false,
-          "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 64,
-          "rows": 0,
-          "fields": [],
+          "success": true,
+          "error": null,
+          "elapsed_ms": 676,
+          "rows": 280,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
           "missing_fields": [],
           "empty_fields": [],
-          "amount_valid_rows": null,
-          "turnover_valid_rows": null,
-          "date_start": null,
-          "date_end": null,
-          "sample": null
+          "amount_valid_rows": 280,
+          "turnover_valid_rows": 280,
+          "date_start": "2025-06-03",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 3.536,
+            "high": 3.584,
+            "low": 3.507,
+            "close": 3.508,
+            "volume": 18185051.0,
+            "amount": 6442931154.74,
+            "turnover": 10.94,
+            "day": "2026-07-24"
+          }
         },
         "akshare_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 43,
+          "elapsed_ms": 655,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -467,7 +609,7 @@
         "tencent_hist": {
           "success": true,
           "error": null,
-          "elapsed_ms": 166,
+          "elapsed_ms": 1146,
           "rows": 261,
           "fields": [
             "day",
@@ -499,7 +641,7 @@
         "sina_realtime": {
           "success": true,
           "error": null,
-          "elapsed_ms": 67,
+          "elapsed_ms": 353,
           "rows": 1,
           "fields": [
             "close",
@@ -521,7 +663,7 @@
         "eastmoney_realtime": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 51,
+          "elapsed_ms": 1158,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -540,23 +682,41 @@
       "name": "科创50ETF",
       "apis": {
         "eastmoney_hist": {
-          "success": false,
-          "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 60,
-          "rows": 0,
-          "fields": [],
+          "success": true,
+          "error": null,
+          "elapsed_ms": 668,
+          "rows": 280,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
           "missing_fields": [],
           "empty_fields": [],
-          "amount_valid_rows": null,
-          "turnover_valid_rows": null,
-          "date_start": null,
-          "date_end": null,
-          "sample": null
+          "amount_valid_rows": 280,
+          "turnover_valid_rows": 280,
+          "date_start": "2025-06-03",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.851,
+            "high": 1.931,
+            "low": 1.85,
+            "close": 1.885,
+            "volume": 47465142.0,
+            "amount": 8981897884.0,
+            "turnover": 10.29,
+            "day": "2026-07-24"
+          }
         },
         "akshare_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 72,
+          "elapsed_ms": 675,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -570,7 +730,7 @@
         "tencent_hist": {
           "success": true,
           "error": null,
-          "elapsed_ms": 158,
+          "elapsed_ms": 1140,
           "rows": 261,
           "fields": [
             "day",
@@ -602,7 +762,7 @@
         "sina_realtime": {
           "success": true,
           "error": null,
-          "elapsed_ms": 76,
+          "elapsed_ms": 353,
           "rows": 1,
           "fields": [
             "close",
@@ -624,7 +784,3509 @@
         "eastmoney_realtime": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 63,
+          "elapsed_ms": 1094,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "银行ETF": {
+      "code": "512800",
+      "sina": "sh512800",
+      "name": "银行ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 666,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 687,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1601,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.805,
+            "high": 0.81,
+            "low": 0.803,
+            "close": 0.804,
+            "volume": 145024.59,
+            "amount": 1169400000.0,
+            "turnover": 9.69,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 355,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.804,
+            "volume": 14502458.53,
+            "amount": 1169400138.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1128,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "券商ETF": {
+      "code": "512000",
+      "sina": "sh512000",
+      "name": "券商ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 664,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 671,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1335,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.535,
+            "high": 0.537,
+            "low": 0.525,
+            "close": 0.526,
+            "volume": 219384.94,
+            "amount": 1163000000.0,
+            "turnover": 2.9,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 352,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.526,
+            "volume": 21938494.3,
+            "amount": 1163002453.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1153,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "房地产ETF": {
+      "code": "512200",
+      "sina": "sh512200",
+      "name": "房地产ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 680,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 658,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1348,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.146,
+            "high": 1.151,
+            "low": 1.123,
+            "close": 1.123,
+            "volume": 6834.06,
+            "amount": 77600000.0,
+            "turnover": 2.45,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 352,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.123,
+            "volume": 683406.47,
+            "amount": 77600119.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1132,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "食品饮料ETF": {
+      "code": "515170",
+      "sina": "sh515170",
+      "name": "食品饮料ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 669,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 943,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1147,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.466,
+            "high": 0.468,
+            "low": 0.458,
+            "close": 0.458,
+            "volume": 17820.54,
+            "amount": 82430000.0,
+            "turnover": 1.97,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 353,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.458,
+            "volume": 1782054.0,
+            "amount": 82427058.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1273,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "酒ETF": {
+      "code": "512690",
+      "sina": "sh512690",
+      "name": "酒ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 665,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1293,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1137,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.425,
+            "high": 0.427,
+            "low": 0.415,
+            "close": 0.416,
+            "volume": 155490.06,
+            "amount": 653080000.0,
+            "turnover": 4.59,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 356,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.416,
+            "volume": 15549006.36,
+            "amount": 653081587.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1264,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "家电ETF": {
+      "code": "159996",
+      "sina": "sz159996",
+      "name": "家电ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 674,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 531,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1090,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.38,
+            "high": 1.381,
+            "low": 1.36,
+            "close": 1.36,
+            "volume": 5914.17,
+            "amount": 81150000.0,
+            "turnover": 12.21,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 352,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.36,
+            "volume": 591417.0,
+            "amount": 81153643.1
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1151,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "养殖ETF": {
+      "code": "159865",
+      "sina": "sz159865",
+      "name": "养殖ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 684,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 532,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1140,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.528,
+            "high": 0.531,
+            "low": 0.514,
+            "close": 0.514,
+            "volume": 41891.66,
+            "amount": 217950000.0,
+            "turnover": 3.46,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 363,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.514,
+            "volume": 4189166.48,
+            "amount": 217954162.716
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1273,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "医药ETF": {
+      "code": "512010",
+      "sina": "sh512010",
+      "name": "医药ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 685,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 532,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1092,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.376,
+            "high": 0.378,
+            "low": 0.364,
+            "close": 0.365,
+            "volume": 148786.68,
+            "amount": 550270000.0,
+            "turnover": 3.22,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 350,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.365,
+            "volume": 14878668.0,
+            "amount": 550274549.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1152,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "创新药ETF": {
+      "code": "515120",
+      "sina": "sh515120",
+      "name": "创新药ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 669,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 527,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1132,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.647,
+            "high": 0.654,
+            "low": 0.627,
+            "close": 0.627,
+            "volume": 129442.51,
+            "amount": 827350000.0,
+            "turnover": 6.64,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 357,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.627,
+            "volume": 12944251.06,
+            "amount": 827353639.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1198,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "医疗ETF": {
+      "code": "512170",
+      "sina": "sh512170",
+      "name": "医疗ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 667,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 539,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1151,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.323,
+            "high": 0.325,
+            "low": 0.315,
+            "close": 0.315,
+            "volume": 203570.98,
+            "amount": 650940000.0,
+            "turnover": 2.55,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 353,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.315,
+            "volume": 20357098.0,
+            "amount": 650941901.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1256,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "半导体ETF": {
+      "code": "512480",
+      "sina": "sh512480",
+      "name": "半导体ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 679,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 528,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1284,
+          "rows": 261,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-06-30",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.08,
+            "high": 1.14,
+            "low": 1.08,
+            "close": 1.11,
+            "volume": 162187.02,
+            "amount": 1806690000.0,
+            "turnover": 8.63,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 352,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.113,
+            "volume": 16218701.65,
+            "amount": 1806687069.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1108,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "芯片ETF": {
+      "code": "159995",
+      "sina": "sz159995",
+      "name": "芯片ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 679,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 547,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1102,
+          "rows": 261,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-06-30",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.24,
+            "high": 1.3,
+            "low": 1.23,
+            "close": 1.27,
+            "volume": 72241.88,
+            "amount": 915730000.0,
+            "turnover": 3.17,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 351,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.27,
+            "volume": 7224187.99,
+            "amount": 915726751.681
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1118,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "人工智能ETF": {
+      "code": "159819",
+      "sina": "sz159819",
+      "name": "人工智能ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 658,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 528,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1101,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.89,
+            "high": 1.937,
+            "low": 1.882,
+            "close": 1.894,
+            "volume": 28238.69,
+            "amount": 540120000.0,
+            "turnover": 2.49,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 352,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.894,
+            "volume": 2823869.01,
+            "amount": 540120349.925
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1288,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "计算机ETF": {
+      "code": "512720",
+      "sina": "sh512720",
+      "name": "计算机ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 665,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 530,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1109,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.188,
+            "high": 1.198,
+            "low": 1.17,
+            "close": 1.171,
+            "volume": 1990.05,
+            "amount": 23620000.0,
+            "turnover": 5.01,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 351,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.171,
+            "volume": 199005.0,
+            "amount": 23616085.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1206,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "新能源车ETF": {
+      "code": "515030",
+      "sina": "sh515030",
+      "name": "新能源车ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 672,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 524,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1091,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.582,
+            "high": 1.6,
+            "low": 1.561,
+            "close": 1.562,
+            "volume": 7269.76,
+            "amount": 114600000.0,
+            "turnover": 4.52,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 351,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.562,
+            "volume": 726976.0,
+            "amount": 114603749.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1082,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "光伏ETF": {
+      "code": "515790",
+      "sina": "sh515790",
+      "name": "光伏ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 692,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 534,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1120,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.83,
+            "high": 0.836,
+            "low": 0.81,
+            "close": 0.811,
+            "volume": 27258.37,
+            "amount": 223640000.0,
+            "turnover": 4.43,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 352,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.811,
+            "volume": 2725836.5,
+            "amount": 223638046.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1188,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "电力ETF": {
+      "code": "159611",
+      "sina": "sz159611",
+      "name": "电力ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 689,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 601,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1135,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.09,
+            "high": 1.096,
+            "low": 1.051,
+            "close": 1.054,
+            "volume": 95501.43,
+            "amount": 1020850000.0,
+            "turnover": 9.04,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 352,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.054,
+            "volume": 9550142.64,
+            "amount": 1020846838.618
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1115,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "军工ETF": {
+      "code": "512660",
+      "sina": "sh512660",
+      "name": "军工ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 683,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 531,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1093,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.094,
+            "high": 1.106,
+            "low": 1.076,
+            "close": 1.077,
+            "volume": 29473.31,
+            "amount": 321390000.0,
+            "turnover": 5.13,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 357,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.077,
+            "volume": 2947331.0,
+            "amount": 321393528.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1146,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "国防ETF": {
+      "code": "512670",
+      "sina": "sh512670",
+      "name": "国防ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 662,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 530,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1096,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.73,
+            "high": 0.74,
+            "low": 0.719,
+            "close": 0.721,
+            "volume": 9652.94,
+            "amount": 70470000.0,
+            "turnover": 4.26,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 351,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.721,
+            "volume": 965294.36,
+            "amount": 70466942.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1124,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "有色金属ETF": {
+      "code": "512400",
+      "sina": "sh512400",
+      "name": "有色金属ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 666,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 528,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1091,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.759,
+            "high": 1.787,
+            "low": 1.727,
+            "close": 1.735,
+            "volume": 66582.34,
+            "amount": 1166840000.0,
+            "turnover": 5.32,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 350,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.735,
+            "volume": 6658234.0,
+            "amount": 1166844957.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1131,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "稀土ETF": {
+      "code": "516780",
+      "sina": "sh516780",
+      "name": "稀土ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 667,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1091,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1108,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.792,
+            "high": 0.799,
+            "low": 0.779,
+            "close": 0.78,
+            "volume": 9102.88,
+            "amount": 71580000.0,
+            "turnover": 4.02,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 353,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.78,
+            "volume": 910288.26,
+            "amount": 71576488.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1195,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "黄金ETF": {
+      "code": "518880",
+      "sina": "sh518880",
+      "name": "黄金ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 695,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 544,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1098,
+          "rows": 261,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-06-30",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 8.4,
+            "high": 8.42,
+            "low": 8.36,
+            "close": 8.39,
+            "volume": 36963.69,
+            "amount": 3099450000.0,
+            "turnover": 3.43,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 354,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 8.385,
+            "volume": 3696369.0,
+            "amount": 3099445119.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1142,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "煤炭ETF": {
+      "code": "515220",
+      "sina": "sh515220",
+      "name": "煤炭ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 674,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 528,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1094,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.239,
+            "high": 1.247,
+            "low": 1.179,
+            "close": 1.184,
+            "volume": 140763.93,
+            "amount": 1692650000.0,
+            "turnover": 10.69,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 350,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.184,
+            "volume": 14076392.77,
+            "amount": 1692653538.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1095,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "油气ETF": {
+      "code": "159697",
+      "sina": "sz159697",
+      "name": "油气ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 712,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 535,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1117,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.321,
+            "high": 1.321,
+            "low": 1.261,
+            "close": 1.261,
+            "volume": 15995.37,
+            "amount": 205310000.0,
+            "turnover": 14.06,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 354,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.261,
+            "volume": 1599537.0,
+            "amount": 205313246.2
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1148,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "化工ETF": {
+      "code": "159870",
+      "sina": "sz159870",
+      "name": "化工ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 669,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 532,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1116,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.783,
+            "high": 0.793,
+            "low": 0.765,
+            "close": 0.766,
+            "volume": 62416.82,
+            "amount": 485100000.0,
+            "turnover": 3.42,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 351,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.766,
+            "volume": 6241682.49,
+            "amount": 485096380.375
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1224,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "钢铁ETF": {
+      "code": "515210",
+      "sina": "sh515210",
+      "name": "钢铁ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 679,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 527,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1129,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.15,
+            "high": 1.155,
+            "low": 1.126,
+            "close": 1.127,
+            "volume": 10455.35,
+            "amount": 118860000.0,
+            "turnover": 10.27,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 353,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.127,
+            "volume": 1045535.48,
+            "amount": 118857656.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1129,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "通信ETF": {
+      "code": "515880",
+      "sina": "sh515880",
+      "name": "通信ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 667,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 537,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1095,
+          "rows": 261,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-06-30",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.65,
+            "high": 0.67,
+            "low": 0.65,
+            "close": 0.65,
+            "volume": 450648.02,
+            "amount": 2954380000.0,
+            "turnover": 6.75,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 352,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.646,
+            "volume": 45064802.13,
+            "amount": 2954379079.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1158,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "传媒ETF": {
+      "code": "512980",
+      "sina": "sh512980",
+      "name": "传媒ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 671,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 532,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1093,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 0.76,
+            "high": 0.764,
+            "low": 0.742,
+            "close": 0.743,
+            "volume": 21749.12,
+            "amount": 163510000.0,
+            "turnover": 4.88,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 352,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.743,
+            "volume": 2174911.67,
+            "amount": 163507801.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1128,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "游戏ETF": {
+      "code": "159869",
+      "sina": "sz159869",
+      "name": "游戏ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 676,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1095,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1117,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.01,
+            "high": 1.021,
+            "low": 0.992,
+            "close": 0.994,
+            "volume": 55017.74,
+            "amount": 551420000.0,
+            "turnover": 6.39,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 351,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 0.994,
+            "volume": 5501773.54,
+            "amount": 551423339.561
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1126,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "汽车ETF": {
+      "code": "516110",
+      "sina": "sh516110",
+      "name": "汽车ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 666,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 535,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1106,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.114,
+            "high": 1.114,
+            "low": 1.092,
+            "close": 1.092,
+            "volume": 2608.38,
+            "amount": 28730000.0,
+            "turnover": 10.89,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 361,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.092,
+            "volume": 260838.0,
+            "amount": 28728839.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1210,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "机器人ETF": {
+      "code": "159530",
+      "sina": "sz159530",
+      "name": "机器人ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 685,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 606,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1112,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.261,
+            "high": 1.285,
+            "low": 1.25,
+            "close": 1.251,
+            "volume": 58233.07,
+            "amount": 736290000.0,
+            "turnover": 4.46,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 354,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.251,
+            "volume": 5823307.28,
+            "amount": 736290893.856
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1145,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "基建ETF": {
+      "code": "516970",
+      "sina": "sh516970",
+      "name": "基建ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 687,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 532,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1118,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.092,
+            "high": 1.092,
+            "low": 1.068,
+            "close": 1.07,
+            "volume": 3708.2,
+            "amount": 40130000.0,
+            "turnover": 3.29,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 353,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.07,
+            "volume": 370820.28,
+            "amount": 40130315.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1103,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "红利ETF": {
+      "code": "510880",
+      "sina": "sh510880",
+      "name": "红利ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 679,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 601,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1094,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 3.279,
+            "high": 3.296,
+            "low": 3.223,
+            "close": 3.223,
+            "volume": 20177.56,
+            "amount": 656990000.0,
+            "turnover": 2.65,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 357,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 3.223,
+            "volume": 2017756.21,
+            "amount": 656989958.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1136,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        }
+      }
+    },
+    "中证红利ETF": {
+      "code": "515080",
+      "sina": "sh515080",
+      "name": "中证红利ETF",
+      "apis": {
+        "eastmoney_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 674,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "akshare_hist": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1567,
+          "rows": 0,
+          "fields": [],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": null
+        },
+        "tencent_hist": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 1098,
+          "rows": 260,
+          "fields": [
+            "day",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume",
+            "amount",
+            "turnover"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": 1,
+          "turnover_valid_rows": 1,
+          "date_start": "2025-07-01",
+          "date_end": "2026-07-24",
+          "sample": {
+            "open": 1.555,
+            "high": 1.559,
+            "low": 1.528,
+            "close": 1.531,
+            "volume": 23615.78,
+            "amount": 364150000.0,
+            "turnover": 2.96,
+            "day": "2026-07-24"
+          }
+        },
+        "sina_realtime": {
+          "success": true,
+          "error": null,
+          "elapsed_ms": 352,
+          "rows": 1,
+          "fields": [
+            "close",
+            "volume",
+            "amount"
+          ],
+          "missing_fields": [],
+          "empty_fields": [],
+          "amount_valid_rows": null,
+          "turnover_valid_rows": null,
+          "date_start": null,
+          "date_end": null,
+          "sample": {
+            "close": 1.531,
+            "volume": 2361578.0,
+            "amount": 364153241.0
+          }
+        },
+        "eastmoney_realtime": {
+          "success": false,
+          "error": "返回 None (无数据或请求失败)",
+          "elapsed_ms": 1127,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
