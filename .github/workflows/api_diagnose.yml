@@ -59,13 +59,13 @@ jobs:
         if: always()
         run: |
           echo "=== API 诊断报告 ==="
-          python -c "
+          python3 << 'PYEOF'
 import json
 with open('data/api_diagnose.json', 'r') as f:
     r = json.load(f)
 for api_key, s in r['summaries'].items():
-    print(f\"  {api_key:25s} | {s['success']:2d}/{s['total']:2d} ({s['success_rate']}%) | avg={s['avg_elapsed_ms']}ms | amount_full={s.get('amount_full_pct','-')}% turnover_full={s.get('turnover_full_pct','-')}%\")
-          "
+    print(f"  {api_key:25s} | {s['success']:2d}/{s['total']:2d} ({s['success_rate']}%) | avg={s['avg_elapsed_ms']}ms | amount_full={s.get('amount_full_pct','-')}% turnover_full={s.get('turnover_full_pct','-')}%")
+PYEOF
 
       - name: 提交诊断报告
         if: always()
