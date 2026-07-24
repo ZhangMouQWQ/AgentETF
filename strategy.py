@@ -530,7 +530,7 @@ def fetch_daily_data(pool, datalen=DATA_LEN, max_workers=5):
         if 'amount' not in df.columns or df['amount'].isna().all():
             if 'volume' in df.columns and 'high' in df.columns and 'low' in df.columns:
                 close_s = all_close.get(name, pd.Series(dtype=float))
-                df['amount'] = df['volume'] * (df['high'] + df['low'] + close_s) / 3
+                df['amount'] = df['volume'] * 100 * (df['high'] + df['low'] + close_s) / 3
                 estimated += 1
     if estimated:
         print(f"  [估算] {estimated}只ETF的成交额通过 成交量×均价 估算(精确度较低)")

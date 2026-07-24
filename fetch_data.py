@@ -302,7 +302,7 @@ def build_extra_matrix(history_results, etf_info):
         price_series = etf_info.get(name)  # just check existence
         if 'amount' not in df.columns or df['amount'].isna().all():
             if 'volume' in df.columns and 'high' in df.columns and 'low' in df.columns:
-                df['amount'] = df['volume'] * (df['high'] + df['low'] + df.index.map(
+                df['amount'] = df['volume'] * 100 * (df['high'] + df['low'] + df.index.map(
                     lambda _: float(df.loc[_, '__placeholder__']) if '__placeholder__' in df.columns else 0
                 )) / 3
                 # Simpler: use (H+L)/2 approximation without close
@@ -456,7 +456,7 @@ def main():
                                         c = close_s.loc[d]
                                         h = df.loc[d, 'high'] if not pd.isna(df.loc[d, 'high']) else c
                                         l = df.loc[d, 'low'] if not pd.isna(df.loc[d, 'low']) else c
-                                        df.loc[d, 'amount'] = df.loc[d, 'volume'] * (h + l + c) / 3
+                                        df.loc[d, 'amount'] = df.loc[d, 'volume'] * 100 * (h + l + c) / 3
 
             save_history_json(results, price, etf_info, extra_history)
         else:
