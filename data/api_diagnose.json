@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-24 21:57:26",
+  "generated_at": "2026-07-24 22:24:11",
   "etf_count": 5,
   "apis_tested": [
     "eastmoney_hist",
@@ -16,8 +16,8 @@
       "success": 0,
       "fail": 5,
       "success_rate": 0.0,
-      "avg_elapsed_ms": 123,
-      "max_elapsed_ms": 381,
+      "avg_elapsed_ms": 77,
+      "max_elapsed_ms": 87,
       "field_coverage": {},
       "amount_full_pct": 0.0,
       "turnover_full_pct": 0.0
@@ -29,8 +29,8 @@
       "success": 0,
       "fail": 5,
       "success_rate": 0.0,
-      "avg_elapsed_ms": 67,
-      "max_elapsed_ms": 80,
+      "avg_elapsed_ms": 80,
+      "max_elapsed_ms": 93,
       "field_coverage": {},
       "amount_full_pct": 0.0,
       "turnover_full_pct": 0.0
@@ -42,8 +42,8 @@
       "success": 5,
       "fail": 0,
       "success_rate": 100.0,
-      "avg_elapsed_ms": 171,
-      "max_elapsed_ms": 218,
+      "avg_elapsed_ms": 160,
+      "max_elapsed_ms": 172,
       "field_coverage": {
         "amount": {
           "count": 5,
@@ -89,7 +89,7 @@
       "fail": 0,
       "success_rate": 100.0,
       "avg_elapsed_ms": 75,
-      "max_elapsed_ms": 80,
+      "max_elapsed_ms": 83,
       "field_coverage": {
         "amount": {
           "count": 5,
@@ -114,7 +114,7 @@
       "success": 0,
       "fail": 5,
       "success_rate": 0.0,
-      "avg_elapsed_ms": 62,
+      "avg_elapsed_ms": 58,
       "max_elapsed_ms": 68,
       "field_coverage": {},
       "amount_full_pct": 0.0,
@@ -130,7 +130,7 @@
         "eastmoney_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 52,
+          "elapsed_ms": 85,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -144,7 +144,7 @@
         "akshare_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 80,
+          "elapsed_ms": 79,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -158,7 +158,7 @@
         "tencent_hist": {
           "success": true,
           "error": null,
-          "elapsed_ms": 145,
+          "elapsed_ms": 159,
           "rows": 261,
           "fields": [
             "day",
@@ -183,14 +183,14 @@
             "close": 4.7,
             "volume": 102476.32,
             "amount": 4844480000.0,
-            "turnover": 4.27,
+            "turnover": 4.2,
             "day": "2026-07-24"
           }
         },
         "sina_realtime": {
           "success": true,
           "error": null,
-          "elapsed_ms": 80,
+          "elapsed_ms": 83,
           "rows": 1,
           "fields": [
             "close",
@@ -212,7 +212,7 @@
         "eastmoney_realtime": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 68,
+          "elapsed_ms": 51,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -233,7 +233,7 @@
         "eastmoney_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 56,
+          "elapsed_ms": 63,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -247,7 +247,7 @@
         "akshare_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 80,
+          "elapsed_ms": 93,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -261,7 +261,7 @@
         "tencent_hist": {
           "success": true,
           "error": null,
-          "elapsed_ms": 218,
+          "elapsed_ms": 172,
           "rows": 260,
           "fields": [
             "day",
@@ -286,14 +286,14 @@
             "close": 7.545,
             "volume": 34068.3,
             "amount": 2593800000.0,
-            "turnover": 5.94,
+            "turnover": 6.0,
             "day": "2026-07-24"
           }
         },
         "sina_realtime": {
           "success": true,
           "error": null,
-          "elapsed_ms": 73,
+          "elapsed_ms": 78,
           "rows": 1,
           "fields": [
             "close",
@@ -315,7 +315,7 @@
         "eastmoney_realtime": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 62,
+          "elapsed_ms": 57,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -336,7 +336,7 @@
         "eastmoney_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 381,
+          "elapsed_ms": 80,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -350,7 +350,7 @@
         "akshare_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 58,
+          "elapsed_ms": 75,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -364,7 +364,7 @@
         "tencent_hist": {
           "success": true,
           "error": null,
-          "elapsed_ms": 166,
+          "elapsed_ms": 133,
           "rows": 260,
           "fields": [
             "day",
@@ -418,7 +418,7 @@
         "eastmoney_realtime": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 65,
+          "elapsed_ms": 56,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -439,7 +439,7 @@
         "eastmoney_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 64,
+          "elapsed_ms": 72,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -453,7 +453,7 @@
         "akshare_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 43,
+          "elapsed_ms": 76,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -467,7 +467,7 @@
         "tencent_hist": {
           "success": true,
           "error": null,
-          "elapsed_ms": 166,
+          "elapsed_ms": 169,
           "rows": 261,
           "fields": [
             "day",
@@ -499,7 +499,7 @@
         "sina_realtime": {
           "success": true,
           "error": null,
-          "elapsed_ms": 67,
+          "elapsed_ms": 68,
           "rows": 1,
           "fields": [
             "close",
@@ -521,7 +521,7 @@
         "eastmoney_realtime": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 51,
+          "elapsed_ms": 68,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -542,7 +542,7 @@
         "eastmoney_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 60,
+          "elapsed_ms": 87,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -556,7 +556,7 @@
         "akshare_hist": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 72,
+          "elapsed_ms": 79,
           "rows": 0,
           "fields": [],
           "missing_fields": [],
@@ -570,7 +570,7 @@
         "tencent_hist": {
           "success": true,
           "error": null,
-          "elapsed_ms": 158,
+          "elapsed_ms": 167,
           "rows": 261,
           "fields": [
             "day",
@@ -602,7 +602,7 @@
         "sina_realtime": {
           "success": true,
           "error": null,
-          "elapsed_ms": 76,
+          "elapsed_ms": 69,
           "rows": 1,
           "fields": [
             "close",
@@ -624,7 +624,7 @@
         "eastmoney_realtime": {
           "success": false,
           "error": "返回 None (无数据或请求失败)",
-          "elapsed_ms": 63,
+          "elapsed_ms": 56,
           "rows": 0,
           "fields": [],
           "missing_fields": [],

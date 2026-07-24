@@ -20,18 +20,37 @@ API 独立诊断脚本 — 逐个测试每个数据源
 
 import os, sys, json, time, argparse
 from datetime import datetime, timezone, timedelta
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import pandas as pd
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from strategy import (
-    ETF_POOL, SECTOR_ETF_POOL,
-    get_etf_history_eastmoney, get_etf_history_akshare,
-    get_etf_sina, get_etf_extra_sina, get_etf_realtime_eastmoney,
-    DATA_LEN, MOM_LONG,
+from config import Config
+from data_fetcher import (
+    DataFetcher, _fetch_tencent, _fetch_akshare_daily,
+    _fetch_akshare_60min, _fetch_sina_realtime,
 )
+
+# 映射到旧 API 名以保持兼容
+cfg = Config()
+
+
+def get_etf_history_eastmoney(code, datalen=None):
+    """暂不可用: Eastmoney API 被限频""" 
+    return None
+
+get_etf_history_akshare = _fetch_akshare_daily
+get_etf_sina = _fetch_tencent
+
+def get_etf_extra_sina(sina_code):
+    return _fetch_sina_realtime(sina_code)
+
+def get_etf_realtime_eastmoney(code):
+    return None  # 暂不可用
+
+ETF_POOL = {c: (s, n, sec) for c, (s, n, sec) in cfg.get_etf_pool().items()}
+DATA_LEN = cfg.DATA_LEN
+MOM_LONG = cfg.MOM_LONG
 
 BJ = timezone(timedelta(hours=8))
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -392,7 +411,7 @@ def main():
     args = parser.parse_args()
 
     # ETF 列表
-    etf_list = [(code, sina, name) for code, (sina, name) in ETF_POOL.items()]
+    etf_list = [(code, sina, name) for code, (sina, name, sec) in ETF_POOL.items()]
     if args.quick:
         etf_list = etf_list[:5]
 
