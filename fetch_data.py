@@ -80,6 +80,79 @@ def fetch_history_single(code, sina, name, datalen=DATA_LEN):
     return result
 
 
+def _supplement_amount_turnover(result, datalen=DATA_LEN):
+    """对 Tencent 源 ETF 补充 amount/turnover
+
+    尝试从 Eastmoney → AKShare 获取完整数据，按日期合并。
+    """
+    if not result['success'] or result.get('source') != 'tencent':
+        return result
+
+    code = result['code']
+    tencent_df = result['data']
+
+    # 尝试 Eastmoney
+    df_em = get_etf_history_eastmoney(code, datalen=datalen)
+    if df_em is not None and len(df_em) >= MOM_LONG // 2:
+        merged = _merge_supplement(tencent_df, df_em)
+        if merged is not None:
+            result['data'] = merged
+            result['source'] = 'tencent+eastmoney'
+            result['rows'] = len(merged)
+            return result
+
+    # 尝试 AKShare
+    df_ak = get_etf_history_akshare(code, datalen=datalen)
+    if df_ak is not None and len(df_ak) >= MOM_LONG // 2:
+        merged = _merge_supplement(tencent_df, df_ak)
+        if merged is not None:
+            result['data'] = merged
+            result['source'] = 'tencent+akshare'
+            result['rows'] = len(merged)
+            return result
+
+    return result
+
+
+def _merge_supplement(main_df, supp_df):
+    """将 supp_df 中的 amount/turnover 按 day 列合并到 main_df"""
+    if supp_df is None or len(supp_df) == 0:
+        return None
+
+    supp = supp_df.set_index('day') if 'day' in supp_df.columns else supp_df
+    main = main_df.set_index('day') if 'day' in main_df.columns else main_df.copy()
+
+    need_cols = []
+    for col in ['amount', 'turnover']:
+        if col not in main.columns or main[col].isna().all():
+            if col in supp.columns:
+                need_cols.append(col)
+
+    if not need_cols:
+        return None
+
+    for col in need_cols:
+        if col not in main.columns:
+            main[col] = float('nan')
+
+    common = main.index.intersection(supp.index)
+    if len(common) == 0:
+        return None
+
+    filled = 0
+    for col in need_cols:
+        mask = main[col].isna()
+        fill_dates = common.intersection(main.index[mask])
+        if len(fill_dates) > 0:
+            main.loc[fill_dates, col] = supp.loc[fill_dates, col]
+            filled += len(fill_dates)
+
+    if filled > 0:
+        main = main.reset_index().rename(columns={'index': 'day'})
+        return main
+    return None
+
+
 def fetch_all_history(pool, max_workers=5, datalen=DATA_LEN):
     """并行拉取全部 ETF 历史日线"""
     total = len(pool)
@@ -105,6 +178,21 @@ def fetch_all_history(pool, max_workers=5, datalen=DATA_LEN):
                 success += 1
 
     print(f"\n  完成: {success}/{total} 成功")
+
+    # ── 二次补充: 对 Tencent 源 ETF 补充 amount/turnover ──
+    tencent_results = [r for r in results if r['success'] and r.get('source') == 'tencent']
+    if tencent_results:
+        print(f"\n  二次补充: {len(tencent_results)}只ETF缺成交额/换手率...")
+        supplemented = 0
+        for r in tencent_results:
+            updated = _supplement_amount_turnover(r, datalen)
+            if updated.get('source') != 'tencent':
+                supplemented += 1
+                print(f"    [补充] {r['name']}({r['code']}): → {updated['source']} {updated['rows']}行")
+            else:
+                print(f"    [警告] {r['name']}({r['code']}): 补充失败, 将估算")
+        print(f"  二次补充完成: {supplemented}/{len(tencent_results)} 成功")
+
     return results, success
 
 

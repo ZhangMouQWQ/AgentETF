@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-24 18:01:13",
+  "generated_at": "2026-07-24 21:12:34",
   "data_date": "2026-07-24",
   "market": {
     "strategy": "V5",
@@ -33,7 +33,7 @@
       "sector": "军工",
       "etf_count": 2,
       "positive_ratio": 0.0,
-      "avg_momentum": -20.02,
+      "avg_momentum": -19.97,
       "picks_in_sector": [],
       "status": "弱势"
     },
@@ -89,7 +89,7 @@
       "sector": "能源化工",
       "etf_count": 4,
       "positive_ratio": 0.0,
-      "avg_momentum": -7.93,
+      "avg_momentum": -7.99,
       "picks_in_sector": [],
       "status": "弱势"
     },

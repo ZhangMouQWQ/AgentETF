@@ -356,34 +356,98 @@ def get_etf_history_akshare(code, datalen=DATA_LEN):
         return None
 
 
+def _merge_amount_turnover(existing, supplement_df):
+    """将 supplement_df 中的 amount/turnover 按日期合并到 existing DataFrame
+
+    existing: 来自 Tencent 的 DataFrame (index=day, columns可能缺amount/turnover)
+    supplement_df: 来自 Eastmoney/AKShare 的 DataFrame (index=day, 含amount/turnover)
+
+    返回: 合并后的 DataFrame, 或 None(无可合并数据)
+    """
+    if supplement_df is None or len(supplement_df) == 0:
+        return None
+
+    need_cols = []
+    if 'amount' not in existing.columns or existing['amount'].isna().all():
+        if 'amount' in supplement_df.columns:
+            need_cols.append('amount')
+    if 'turnover' not in existing.columns or existing['turnover'].isna().all():
+        if 'turnover' in supplement_df.columns:
+            need_cols.append('turnover')
+
+    if not need_cols:
+        return existing  # 不需要补充
+
+    # 只取需要的列
+    supp = supplement_df[need_cols].copy()
+
+    # 对齐日期: 取existing中缺失amount/turnover的行
+    existing_aligned = existing.copy()
+    for col in need_cols:
+        if col not in existing_aligned.columns:
+            existing_aligned[col] = float('nan')
+
+    # 按公共日期合并
+    common_dates = existing_aligned.index.intersection(supp.index)
+    if len(common_dates) == 0:
+        return None
+
+    for col in need_cols:
+        # 只填充 existing 中为 NaN 的值
+        mask = existing_aligned[col].isna()
+        fill_dates = common_dates.intersection(existing_aligned.index[mask])
+        if len(fill_dates) > 0:
+            existing_aligned.loc[fill_dates, col] = supp.loc[fill_dates, col]
+
+    filled_count = sum(
+        (existing_aligned[col].notna() & existing[col].isna()).sum()
+        if col in existing.columns
+        else existing_aligned[col].notna().sum()
+        for col in need_cols
+    ) if len(need_cols) > 0 else 0
+
+    if filled_count > 0:
+        return existing_aligned
+    return None
+
+
 def fetch_daily_data(pool, datalen=DATA_LEN, max_workers=5):
     all_close = {}
     etf_info = {}
     extra_history = {}
     data_sources = set()
+    tencent_etfs = {}  # 记录腾讯源的ETF: {name: (code, sina)}
     fail_count = 0
     success_count = 0
     total = len(pool)
 
     def _fetch_one(item):
-        """单只ETF拉取: AKShare优先(完整OHLCV+额+换手) → Eastmoney → Tencent"""
+        """单只ETF拉取: AKShare(8字段) → Eastmoney(8字段最全) → Tencent(6字段)
+
+        AKShare 优先提供自然错峰: 大部分ETF在AKShare快速失败后,
+        Eastmoney 请求被分散到不同时间点, 避免并发限频。
+        Tencent 仅 OHLCV, amount/turnover 由后续二次补充获取。
+        """
         code, (sina, name) = item
+        # 1. AKShare: 完整8字段, 同时为Eastmoney提供错峰
         df = get_etf_history_akshare(code, datalen=datalen)
         source = 'akshare'
         if df is None:
+            # 2. Eastmoney: 字段最全 (OHLCV + amount + turnover)
             df = get_etf_history_eastmoney(code, datalen=datalen)
             source = 'eastmoney'
         if df is None:
+            # 3. Tencent: 仅 OHLCV, 缺 amount/turnover
             df = get_etf_sina(sina, scale=240, datalen=datalen)
             source = 'tencent'
-        return name, code, source, df
+        return name, code, source, df, sina
 
     print(f"拉取历史日K线 (共{total}只, {max_workers}线程并行)...")
     items = list(pool.items())
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(_fetch_one, item): item for item in items}
         for i, future in enumerate(as_completed(futures), 1):
-            name, code, source, df = future.result()
+            name, code, source, df, sina = future.result()
             data_sources.add(source)
             if df is not None and len(df) >= MOM_LONG + 5:
                 all_close[name] = df.set_index('day')['close']
@@ -395,25 +459,82 @@ def fetch_daily_data(pool, datalen=DATA_LEN, max_workers=5):
                     extra_df = extra_df.set_index('day')
                     extra_history[name] = extra_df
                 extra_info = ''
-                if source == 'tencent' and not available_extra:
-                    extra_info += ' (无成交额/换手率)'
+                # 标记腾讯源: 缺 amount 或 turnover
+                has_amount = 'amount' in (df.columns if df is not None else []) and df['amount'].notna().any()
+                has_turnover = 'turnover' in (df.columns if df is not None else []) and df['turnover'].notna().any()
+                if source == 'tencent' or (not has_amount and not has_turnover):
+                    tencent_etfs[name] = (code, sina)
+                    extra_info += ' (缺成交额/换手率,待补充)'
                 print(f"  [{i}/{total}] ok {name}({code}): {len(df)} 条, 最新 {df['day'].iloc[-1]} 来源={source}{extra_info}")
                 success_count += 1
             else:
                 print(f"  [{i}/{total}] FAIL {name}({code}): 数据不足")
                 fail_count += 1
     print(f"\n数据拉取完成: 成功={success_count}/{total}, 失败={fail_count}/{total}")
-    
-    # ── 腾讯源成交额估算: volume × 均价近似 ──
-    tencent_filled = 0
+    print(f"  数据来源: Eastmoney={sum(1 for s in data_sources if s=='eastmoney')} "
+          f"AKShare={sum(1 for s in data_sources if s=='akshare')} "
+          f"Tencent={sum(1 for s in data_sources if s=='tencent')}")
+
+    # ── 二次补充: 对腾讯源ETF, 尝试从 Eastmoney/AKShare 获取完整 amount/turnover ──
+    if tencent_etfs:
+        print(f"\n二次补充: {len(tencent_etfs)}只ETF缺成交额/换手率, 尝试从其他API获取...")
+        supplemented = 0
+
+        def _supplement_one(name_code_sina):
+            """对单只ETF尝试补充 amount/turnover (带延迟避免限频)"""
+            name, (code, sina) = name_code_sina
+            existing = extra_history.get(name)
+            if existing is None:
+                return name, code, False, "无已有数据"
+
+            # 尝试 Eastmoney (最全), 先加短暂延迟避免并发冲击
+            time.sleep(0.5)
+            df_em = get_etf_history_eastmoney(code, datalen=datalen)
+            if df_em is not None and len(df_em) >= MOM_LONG // 2:
+                df_em = df_em.set_index('day')
+                merged = _merge_amount_turnover(existing, df_em)
+                if merged is not None:
+                    extra_history[name] = merged
+                    return name, code, True, "eastmoney"
+
+            # 尝试 AKShare
+            time.sleep(0.3)
+            df_ak = get_etf_history_akshare(code, datalen=datalen)
+            if df_ak is not None and len(df_ak) >= MOM_LONG // 2:
+                df_ak = df_ak.set_index('day')
+                merged = _merge_amount_turnover(existing, df_ak)
+                if merged is not None:
+                    extra_history[name] = merged
+                    return name, code, True, "akshare"
+
+            return name, code, False, "无可补充源"
+
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            supp_futures = {
+                executor.submit(_supplement_one, item): item[0]
+                for item in tencent_etfs.items()
+            }
+            for future in as_completed(supp_futures):
+                name, code, ok, supp_src = future.result()
+                if ok:
+                    supplemented += 1
+                    print(f"  [补充] {name}({code}): amount/turnover 已通过 {supp_src} 补全")
+                else:
+                    print(f"  [警告] {name}({code}): 补充失败({supp_src}), 将用成交量估算")
+
+        print(f"  二次补充完成: {supplemented}/{len(tencent_etfs)} 成功")
+
+    # ── 最终回退: 对仍缺 amount 的ETF, 用 成交量 × 均价 估算 ──
+    estimated = 0
     for name, df in extra_history.items():
         if 'amount' not in df.columns or df['amount'].isna().all():
             if 'volume' in df.columns and 'high' in df.columns and 'low' in df.columns:
-                df['amount'] = df['volume'] * (df['high'] + df['low'] + all_close.get(name, pd.Series(dtype=float))) / 3
-                tencent_filled += 1
-    if tencent_filled:
-        print(f"  [补充] {tencent_filled}只ETF的成交额已用 成交量×均价 估算")
-    
+                close_s = all_close.get(name, pd.Series(dtype=float))
+                df['amount'] = df['volume'] * (df['high'] + df['low'] + close_s) / 3
+                estimated += 1
+    if estimated:
+        print(f"  [估算] {estimated}只ETF的成交额通过 成交量×均价 估算(精确度较低)")
+
     if not all_close:
         return None, {}, {}, data_sources
     price = pd.DataFrame(all_close).sort_index()
@@ -549,7 +670,7 @@ def fetch_daily_data_cached(pool, datalen=DATA_LEN, max_workers=5, force_refresh
     if not force_refresh and not should_refresh():
         price, etf_info, extra_history = load_from_cache()
         if price is not None:
-            print(f"  ✓ 从缓存加载: {price.shape[0]}行×{price.shape[1]}列")
+            print(f"  [OK] 从缓存加载: {price.shape[0]}行x{price.shape[1]}列")
             return price, etf_info, extra_history, {'cached'}
         print("  [缓存] 读取失败, 回退API拉取")
 
