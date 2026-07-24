@@ -1,22 +1,13 @@
 name: API 数据源诊断
 
 on:
-  workflow_dispatch:  # 手动触发
+  workflow_dispatch:
     inputs:
       quick:
         description: '快速模式 (仅5只ETF)'
         required: false
         default: false
         type: boolean
-      delay:
-        description: 'API 调用间隔(秒)'
-        required: false
-        default: '0.5'
-        type: string
-
-  # 也可以定时跑，每周一次监测 API 可用性
-  schedule:
-    - cron: '0 4 * * 0'  # 北京时间周日中午12:00
 
 concurrency:
   group: api-diagnose
@@ -31,11 +22,9 @@ jobs:
       contents: write
 
     steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: 设置 Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -46,33 +35,12 @@ jobs:
           pip install -r requirements.txt
 
       - name: 运行 API 诊断
-        id: diagnose
+        continue-on-error: true
         run: |
           if [ "${{ github.event.inputs.quick }}" = "true" ]; then
-            python _api_diagnose.py --quick --delay ${{ github.event.inputs.delay || '0.5' }}
+            python _api_diagnose.py --quick
           else
-            python _api_diagnose.py --delay ${{ github.event.inputs.delay || '0.5' }}
-          fi
-        continue-on-error: true  # 单个API失败不阻塞
-
-      - name: 查看诊断摘要
-        if: always()
-        run: |
-          echo "=== API 诊断报告 ==="
-          python -c "import json; r=json.load(open('data/api_diagnose.json')); [print('  %-25s | %2d/%2d (%s%%) | avg=%sms | amount_full=%s%% turnover_full=%s%%' % (k, s['success'], s['total'], s['success_rate'], s['avg_elapsed_ms'], s.get('amount_full_pct','-'), s.get('turnover_full_pct','-'))) for k,s in r['summaries'].items()]"
-
-      - name: 提交诊断报告
-        if: always()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/api_diagnose.json
-          if git diff --cached --quiet; then
-            echo "报告无变化"
-          else
-            git commit -m "🔍 API 诊断报告 [$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M')]"
-            git push
-            echo "✅ 报告已推送"
+            python _api_diagnose.py
           fi
 
       - name: 上传诊断产物
