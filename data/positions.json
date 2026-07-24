@@ -31,9 +31,16 @@
       "holdings_value": 0.0,
       "total": 8000.0,
       "position_ratio": 0.0
+    },
+    {
+      "date": "2026-07-24",
+      "cash": 8000.0,
+      "holdings_value": 0.0,
+      "total": 8000.0,
+      "position_ratio": 0.0
     }
   ],
-  "last_update": "2026-07-24 21:12:34",
+  "last_update": "2026-07-24 21:40:11",
   "consecutive_losses": 0,
   "prev_day_return": null
 }
