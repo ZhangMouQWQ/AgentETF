@@ -1,0 +1,90 @@
+name: API 数据源诊断
+
+on:
+  workflow_dispatch:  # 手动触发
+    inputs:
+      quick:
+        description: '快速模式 (仅5只ETF)'
+        required: false
+        default: false
+        type: boolean
+      delay:
+        description: 'API 调用间隔(秒)'
+        required: false
+        default: '0.5'
+        type: string
+
+  # 也可以定时跑，每周一次监测 API 可用性
+  schedule:
+    - cron: '0 4 * * 0'  # 北京时间周日中午12:00
+
+concurrency:
+  group: api-diagnose
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 安装依赖
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 运行 API 诊断
+        id: diagnose
+        run: |
+          if [ "${{ github.event.inputs.quick }}" = "true" ]; then
+            python _api_diagnose.py --quick --delay ${{ github.event.inputs.delay || '0.5' }}
+          else
+            python _api_diagnose.py --delay ${{ github.event.inputs.delay || '0.5' }}
+          fi
+        continue-on-error: true  # 单个API失败不阻塞
+
+      - name: 查看诊断摘要
+        if: always()
+        run: |
+          echo "=== API 诊断报告 ==="
+          python -c "
+import json
+with open('data/api_diagnose.json', 'r') as f:
+    r = json.load(f)
+for api_key, s in r['summaries'].items():
+    print(f\"  {api_key:25s} | {s['success']:2d}/{s['total']:2d} ({s['success_rate']}%) | avg={s['avg_elapsed_ms']}ms | amount_full={s.get('amount_full_pct','-')}% turnover_full={s.get('turnover_full_pct','-')}%\")
+          "
+
+      - name: 提交诊断报告
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/api_diagnose.json
+          if git diff --cached --quiet; then
+            echo "报告无变化"
+          else
+            git commit -m "🔍 API 诊断报告 [$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M')]"
+            git push
+            echo "✅ 报告已推送"
+          fi
+
+      - name: 上传诊断产物
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-diagnose-${{ github.run_id }}
+          path: data/api_diagnose.json
+          retention-days: 30
