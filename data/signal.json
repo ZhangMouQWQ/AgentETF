@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-07-23 23:24:57",
-  "data_date": "2026-07-23",
+  "generated_at": "2026-07-24 10:09:41",
+  "data_date": "2026-07-24",
   "market": {
     "strategy": "V5",
     "position_ratio": 0.0,
     "position_text": "空仓",
-    "position_reason": "V5单ETF | HS300动量=-2.9%",
+    "position_reason": "V5单ETF | HS300动量=-3.7%",
     "market_class": "danger"
   },
   "portfolio": {
@@ -22,8 +22,8 @@
         "code": "515120",
         "weight": 0.0,
         "sector": "医药",
-        "mom_long": 14.11,
-        "quality_score": 1.94
+        "mom_long": 15.69,
+        "quality_score": 1.77
       }
     ]
   },
@@ -33,7 +33,7 @@
       "sector": "军工",
       "etf_count": 2,
       "positive_ratio": 0.0,
-      "avg_momentum": -16.96,
+      "avg_momentum": -18.24,
       "picks_in_sector": [],
       "status": "弱势"
     },
@@ -41,7 +41,7 @@
       "sector": "制造基建",
       "etf_count": 3,
       "positive_ratio": 0.0,
-      "avg_momentum": -13.05,
+      "avg_momentum": -13.1,
       "picks_in_sector": [],
       "status": "弱势"
     },
@@ -49,7 +49,7 @@
       "sector": "医药",
       "etf_count": 3,
       "positive_ratio": 1.0,
-      "avg_momentum": 8.95,
+      "avg_momentum": 9.35,
       "picks_in_sector": [
         "创新药ETF"
       ],
@@ -59,7 +59,7 @@
       "sector": "消费",
       "etf_count": 4,
       "positive_ratio": 0.0,
-      "avg_momentum": -5.07,
+      "avg_momentum": -4.53,
       "picks_in_sector": [],
       "status": "弱势"
     },
@@ -67,7 +67,7 @@
       "sector": "电力新能源",
       "etf_count": 3,
       "positive_ratio": 0.0,
-      "avg_momentum": -17.32,
+      "avg_momentum": -19.07,
       "picks_in_sector": [],
       "status": "弱势"
     },
@@ -75,7 +75,7 @@
       "sector": "电子",
       "etf_count": 2,
       "positive_ratio": 0.0,
-      "avg_momentum": -3.24,
+      "avg_momentum": -3.03,
       "picks_in_sector": [],
       "status": "弱势"
     },
@@ -83,15 +83,15 @@
       "sector": "红利",
       "etf_count": 2,
       "positive_ratio": 1.0,
-      "avg_momentum": 2.49,
+      "avg_momentum": 1.66,
       "picks_in_sector": [],
-      "status": "强势"
+      "status": "中性"
     },
     {
       "sector": "能源化工",
       "etf_count": 4,
-      "positive_ratio": 0.25,
-      "avg_momentum": -4.52,
+      "positive_ratio": 0.0,
+      "avg_momentum": -6.07,
       "picks_in_sector": [],
       "status": "弱势"
     },
@@ -99,7 +99,7 @@
       "sector": "计算机",
       "etf_count": 2,
       "positive_ratio": 0.0,
-      "avg_momentum": -4.05,
+      "avg_momentum": -5.53,
       "picks_in_sector": [],
       "status": "弱势"
     },
@@ -107,7 +107,7 @@
       "sector": "通信传媒",
       "etf_count": 3,
       "positive_ratio": 0.0,
-      "avg_momentum": -13.44,
+      "avg_momentum": -29.18,
       "picks_in_sector": [],
       "status": "弱势"
     },
@@ -115,7 +115,7 @@
       "sector": "金属矿产",
       "etf_count": 3,
       "positive_ratio": 0.0,
-      "avg_momentum": -10.99,
+      "avg_momentum": -12.26,
       "picks_in_sector": [],
       "status": "弱势"
     },
@@ -123,9 +123,9 @@
       "sector": "金融",
       "etf_count": 3,
       "positive_ratio": 0.67,
-      "avg_momentum": -0.08,
+      "avg_momentum": 0.02,
       "picks_in_sector": [],
-      "status": "弱势"
+      "status": "中性"
     }
   ],
   "alerts": [],
