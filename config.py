@@ -48,19 +48,30 @@ class Config:
     # ═══════════════════════════════════════
     # 数据
     # ═══════════════════════════════════════
-    DATA_LEN = 260              # 日线拉取数量
-    MAX_WORKERS = 5             # API 并发数
+    DATA_LEN = 360              # 日线拉取条数
+    DATA_LEN_60MIN = 0           # 60分钟线条数, 0=自动(取Sina上限2000)
+    MAX_WORKERS = 5              # API 并发数
     CACHE_ENABLED = True        # 启用本地缓存
+
+    # ═══════════════════════════════════════
+    # 回测区间 (None=自动使用数据全部区间)
+    # ═══════════════════════════════════════
+    BACKTEST_START: Optional[str] = None   # 起始 'YYYY-MM-DD', 如 '2025-09-01'
+    BACKTEST_END: Optional[str] = None     # 结束 'YYYY-MM-DD', 如 '2026-07-24'
 
     # ═══════════════════════════════════════
     # 策略参数
     # ═══════════════════════════════════════
-    MOM_LONG = 40               # 长周期动量(日)
-    MOM_SHORT = 5               # 短周期动量(日)
+    MOM_LONG = 60               # 长周期动量(日) — 捕捉更持续的趋势
+    MOM_SHORT = 10              # 短周期动量(日)
     VOL_WINDOW = 60             # 波动率窗口
     MIN_VOL = 5.0               # 最小波动率(%)
     MAX_DAILY_RISE = 5.0        # 买入过滤: 当日涨幅上限(%)
-    STOP_LOSS_PCT = -4.0        # 止损线(%)
+    STOP_LOSS_PCT = -4.0        # 止损线(%) — 放宽避免震荡洗出
+    TAKE_PROFIT_PCT = 8.0       # 止盈线(%) — 让利润奔跑
+    BREAKEVEN_STOP_PCT = 3.0    # 移动止盈: 盈利超此%后将止损移至成本价
+    MAX_POSITIONS = 2           # 最大同时持仓数
+    MIN_POSITION_PCT = 0.15     # 单笔最低仓位比例(总资金%)
 
     # ═══════════════════════════════════════
     # 均线参数 (strategy_engine)

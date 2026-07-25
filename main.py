@@ -37,29 +37,12 @@ log = TradeLogger()
 _fetcher = DataFetcher()
 
 # ╔══════════════════════════════════════════════════════════════╗
-# ║              1. 关键参数配置                                  ║
+# ║              1. 参数配置 (统一使用 config.py)                  ║
 # ╚══════════════════════════════════════════════════════════════╝
 
-# ── 数据参数 ──
-DATA_LEN = 260          # 拉取日线数量
-MOM_LONG = 40           # 长周期动量(日)
-MOM_SHORT = 5           # 短周期动量(日)
-VOL_WINDOW = 60         # 波动率计算窗口
-
-# ── 风控参数 ──
-STOP_LOSS_PCT = -4.0    # 单日止损线(%)
-MAX_DAILY_RISE = 5.0    # 买入过滤: 当日涨幅上限(%)
-MIN_VOL = 5.0           # 最小波动率(防止除零)
-
-# ── 资金参数 ──
-INIT_CASH = 8000.0      # 初始本金
-FEE_PER_TRADE = 10.0    # 每笔手续费
-LOT_SIZE = 100          # 最小交易单位(股)
-MIN_TRADE_AMT = 500.0   # 最低交易金额
-
-# ── 执行参数 ──
-EXEC_PRICE = 'close'    # 执行价: 'close'(收盘价) | 'vwap'(均价)
-T1_LOCK = True          # T+1 锁仓
+# 所有可调参数集中在 config.py, 此处仅做本地别名引用
+# cfg.MOM_LONG, cfg.MOM_SHORT, cfg.VOL_WINDOW, cfg.MIN_VOL,
+# cfg.MAX_DAILY_RISE, cfg.STOP_LOSS_PCT, cfg.DATA_LEN, cfg.LOT_SIZE 等
 
 # ── 路径 ──
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -69,51 +52,10 @@ BJ = timezone(timedelta(hours=8))
 
 
 # ╔══════════════════════════════════════════════════════════════╗
-# ║              2. ETF池管理                                    ║
+# ║              2. ETF池管理 (统一使用 config.py)                ║
 # ╚══════════════════════════════════════════════════════════════╝
 
-# 39只ETF, 按13个板块分组
-ETF_POOL = {
-    '510300': ('sh510300', '沪深300ETF', '宽基指数'),
-    '510500': ('sh510500', '中证500ETF', '宽基指数'),
-    '512100': ('sh512100', '中证1000ETF', '宽基指数'),
-    '159915': ('sz159915', '创业板ETF', '宽基指数'),
-    '588000': ('sh588000', '科创50ETF', '宽基指数'),
-    '512800': ('sh512800', '银行ETF', '金融'),
-    '512000': ('sh512000', '券商ETF', '金融'),
-    '512200': ('sh512200', '房地产ETF', '金融'),
-    '515170': ('sh515170', '食品饮料ETF', '消费'),
-    '512690': ('sh512690', '酒ETF', '消费'),
-    '159996': ('sz159996', '家电ETF', '消费'),
-    '159865': ('sz159865', '养殖ETF', '消费'),
-    '512010': ('sh512010', '医药ETF', '医药'),
-    '515120': ('sh515120', '创新药ETF', '医药'),
-    '512170': ('sh512170', '医疗ETF', '医药'),
-    '512480': ('sh512480', '半导体ETF', '电子'),
-    '159995': ('sz159995', '芯片ETF', '电子'),
-    '159819': ('sz159819', '人工智能ETF', '计算机'),
-    '512720': ('sh512720', '计算机ETF', '计算机'),
-    '515030': ('sh515030', '新能源车ETF', '电力新能源'),
-    '515790': ('sh515790', '光伏ETF', '电力新能源'),
-    '159611': ('sz159611', '电力ETF', '电力新能源'),
-    '512660': ('sh512660', '军工ETF', '军工'),
-    '512670': ('sh512670', '国防ETF', '军工'),
-    '512400': ('sh512400', '有色金属ETF', '金属矿产'),
-    '516780': ('sh516780', '稀土ETF', '金属矿产'),
-    '518880': ('sh518880', '黄金ETF', '金属矿产'),
-    '515220': ('sh515220', '煤炭ETF', '能源化工'),
-    '159697': ('sz159697', '油气ETF', '能源化工'),
-    '159870': ('sz159870', '化工ETF', '能源化工'),
-    '515210': ('sh515210', '钢铁ETF', '能源化工'),
-    '515880': ('sh515880', '通信ETF', '通信传媒'),
-    '512980': ('sh512980', '传媒ETF', '通信传媒'),
-    '159869': ('sz159869', '游戏ETF', '通信传媒'),
-    '516110': ('sh516110', '汽车ETF', '制造基建'),
-    '159530': ('sz159530', '机器人ETF', '制造基建'),
-    '516970': ('sh516970', '基建ETF', '制造基建'),
-    '510880': ('sh510880', '红利ETF', '红利'),
-    '515080': ('sh515080', '中证红利ETF', '红利'),
-}
+ETF_POOL = cfg.get_etf_pool()
 
 # 构建索引
 ETF_BY_CODE = {c: (s, n, sec) for c, (s, n, sec) in ETF_POOL.items()}
@@ -140,7 +82,7 @@ def fetch_all_data(max_workers=5):
     codes = list(ETF_POOL.keys())
     print(f"[数据] 拉取 {len(codes)} 只 ETF 日线...")
 
-    results = _fetcher.fetch_batch(codes, period='daily', datalen=cfg.DATA_LEN, max_workers=max_workers)
+    results = _fetcher.fetch_batch(codes, datalen=cfg.DATA_LEN, max_workers=max_workers)
 
     all_close = {}
     extra = {}
@@ -167,7 +109,7 @@ def fetch_all_data(max_workers=5):
         return None, None
 
     price = pd.DataFrame(all_close).sort_index().ffill()
-    valid = [c for c in price.columns if price[c].notna().sum() >= MOM_LONG + 2]
+    valid = [c for c in price.columns if price[c].notna().sum() >= cfg.MOM_LONG + 2]
     price = price[valid]
     print(f"[数据] 完成: {price.shape[0]}行 x {price.shape[1]}列, 区间 {price.index[0]}~{price.index[-1]}")
     return price, extra
@@ -186,39 +128,43 @@ def get_latest_prices(price):
 # ╚══════════════════════════════════════════════════════════════╝
 
 def calc_metrics(price, extra, data_date=None):
-    """计算所有ETF的技术指标
+    """计算所有ETF的截面指标 (用于排名/筛选/quality_score)
+
+    注意: 此处负责截面对比(momentum ranking, Z-score),
+    StrategyEngine.calc_daily_indicators() 负责单只时序信号(MA/MACD/RSI).
+    两者分工不同, 不做合并.
 
     返回: {name: {mom_long, mom_short, vol, quality_score, ...}}
     """
     metrics = {}
-    if price is None or len(price) < MOM_LONG + 2:
+    if price is None or len(price) < cfg.MOM_LONG + 2:
         return metrics
 
     for name in price.columns:
         s = price[name].dropna()
-        if len(s) < MOM_LONG + 2:
+        if len(s) < cfg.MOM_LONG + 2:
             continue
 
         # 动量: 严格使用历史数据, 无未来泄露
         latest = s.iloc[-1]
         prev = s.iloc[-2]
-        mom_long = (latest / s.iloc[-MOM_LONG - 1] - 1) * 100
-        mom_short = (latest / s.iloc[-MOM_SHORT - 1] - 1) * 100
+        mom_long = (latest / s.iloc[-cfg.MOM_LONG - 1] - 1) * 100
+        mom_short = (latest / s.iloc[-cfg.MOM_SHORT - 1] - 1) * 100
         daily_change = (latest / prev - 1) * 100
 
         # 波动率 (Parkinson: 用High/Low)
         ex = extra.get(name)
         if ex is not None and 'high' in ex.columns and 'low' in ex.columns and len(ex) >= 20:
-            hl = ex[['high', 'low']].dropna().tail(VOL_WINDOW)
+            hl = ex[['high', 'low']].dropna().tail(cfg.VOL_WINDOW)
             if len(hl) >= 20:
                 hl_r = np.log(hl['high'] / hl['low'])
                 vol = np.sqrt(1 / (4 * np.log(2)) * (hl_r ** 2).mean()) * np.sqrt(252) * 100
             else:
                 vol = 999
         else:
-            rets = s.pct_change().dropna().iloc[-VOL_WINDOW:]
+            rets = s.pct_change().dropna().iloc[-cfg.VOL_WINDOW:]
             vol = rets.std() * np.sqrt(252) * 100 if len(rets) >= 20 else 999
-        vol = max(vol, MIN_VOL)
+        vol = max(vol, cfg.MIN_VOL)
 
         # 原始动量得分
         raw_score = (mom_long / vol) if mom_long > 0 else 0
@@ -370,7 +316,7 @@ def select_etfs(metrics, position_ratio):
             continue
         if quality <= 0:
             continue
-        if change >= MAX_DAILY_RISE:  # 当日涨幅过大不追
+        if change >= cfg.MAX_DAILY_RISE:  # 当日涨幅过大不追
             continue
         if price < 0.5 or price > 5.0:
             continue
@@ -428,7 +374,7 @@ def print_signal_report(metrics, ratio, pos_text, reason, picks):
     for sname, moms in sorted(sectors.items(), key=lambda x: np.mean(x[1]), reverse=True):
         avg = np.mean(moms)
         pos = sum(1 for m in moms if m > 0)
-        bar = '🟢' if avg > 2 else '🟡' if avg > 0 else '🔴'
+        bar = 'UP' if avg > 2 else '--' if avg > 0 else 'DN'
         print(f"    {bar} {sname:10s} 均动量{avg:+.1f}%  {pos}/{len(moms)}正")
 
     # TOP动量ETF
@@ -494,11 +440,45 @@ def main():
         dates = price.index.tolist()
         start_idx = cfg.MOM_LONG + 5
 
+        # ── 回测区间过滤 ──
+        if cfg.BACKTEST_START:
+            bt_start = pd.Timestamp(cfg.BACKTEST_START)
+            start_idx = max(start_idx, next((i for i, d in enumerate(dates) if d >= bt_start), start_idx))
+        if cfg.BACKTEST_END:
+            bt_end = pd.Timestamp(cfg.BACKTEST_END)
+            dates = [d for d in dates if d <= bt_end]
+
+        # ── 拉取60分钟K线 (小时线定时用) ──
+        log.info("拉取60分钟K线...")
+        codes = list(ETF_POOL.keys())
+        # ── 60分钟K线数据长度: 自动对齐日线范围 ──
+        hourly_datalen = cfg.DATA_LEN_60MIN if cfg.DATA_LEN_60MIN > 0 else 2000  # Sina上限
+        hourly_data = _fetcher.fetch_batch_60min(codes, datalen=hourly_datalen, max_workers=3)
+        # 构建 name → hour_df 映射
+        hourly_by_name = {}
+        for code, hdf in hourly_data.items():
+            name = code_to_name(code)
+            if name and hdf is not None and len(hdf) >= 20:
+                hourly_by_name[name] = hdf
+
         for i in range(start_idx, len(dates)):
             td = str(dates[i])[:10]
             # ── 当日价格 ──
             prices_today = {n: float(price.iloc[i][n]) for n in price.columns
                            if not pd.isna(price.iloc[i][n])}
+            # ── prices_by_code: trade_executor 持仓用 code 作 key ──
+            prices_by_code = {}
+            for n, p in prices_today.items():
+                c = name_to_code(n)
+                if c:
+                    prices_by_code[c] = p
+            # ── 当日开盘价 (涨跌停判断用) ──
+            opens_today = {}
+            for n in price.columns:
+                if n in extra:
+                    ex_row = extra[n][extra[n].index <= dates[i]]
+                    if len(ex_row) > 0 and 'open' in ex_row.columns:
+                        opens_today[n] = float(ex_row['open'].iloc[-1])
             try:
                 # ── 切片: 仅用截至T日的数据 ──
                 p_slice = price.iloc[:i + 1]
@@ -517,7 +497,14 @@ def main():
                             'low': ex_slice[name]['low'].values if name in ex_slice else p_slice[name].values,
                             'volume': ex_slice[name]['volume'].values if name in ex_slice else [1]*len(p_slice),
                         })
-                        sig = strat.generate_signal(name, df_d)
+                        # ── 小时线: 截取截至T日的数据 ──
+                        df_h = None
+                        if name in hourly_by_name:
+                            hdf = hourly_by_name[name]
+                            h_slice = hdf[hdf['day'].str[:10] <= td]
+                            if len(h_slice) >= 20:
+                                df_h = h_slice.copy()
+                        sig = strat.generate_signal(name, df_d, df_hourly=df_h)
                         if sig['final_action'] != 'HOLD':
                             signals_today[name] = sig['final_action']
                             log.signal(name, sig['day_signal'], sig['hour_signal'],
@@ -528,44 +515,121 @@ def main():
                 # ── T+1 解锁 ──
                 executor.unlock_t1()
 
-                # ── 卖出: 不在信号中或信号为SELL ──
+                # ── 风控检查: 止损 / 止盈 / 保本止损 ──
                 for code in list(executor.account.positions.keys()):
                     name = code_to_name(code)
-                    action = signals_today.get(name, 'SELL')
-                    if action == 'BUY':
+                    p = prices_today.get(name, 0)
+                    if p <= 0:
+                        continue
+                    pos = executor.account.positions.get(code)
+                    if not pos or pos.avg_cost <= 0:
+                        continue
+                    pnl_pct = (p / pos.avg_cost - 1) * 100
+                    reason = None
+                    if pnl_pct <= cfg.STOP_LOSS_PCT:
+                        reason = f'止损({pnl_pct:+.1f}%)'
+                    elif pnl_pct >= cfg.TAKE_PROFIT_PCT:
+                        reason = f'止盈({pnl_pct:+.1f}%)'
+                    elif pnl_pct >= cfg.BREAKEVEN_STOP_PCT and p <= pos.avg_cost:
+                        reason = f'保本止损({pnl_pct:+.1f}%)'
+                    if reason:
+                        avail = executor.account.available_shares(code)
+                        if avail >= cfg.LOT_SIZE:
+                            order = executor.submit(code, 'SELL', p, avail, tag=reason)
+                            if order.status == 'FILLED':
+                                signals_today[name] = 'SELL'
+                                log.trade(code, 'SELL', order.filled_price,
+                                          order.filled_shares, reason=reason)
+
+                # ── 卖出: 信号为SELL (不再对HOLD自动卖出) ──
+                for code in list(executor.account.positions.keys()):
+                    name = code_to_name(code)
+                    action = signals_today.get(name, 'HOLD')
+                    if action != 'SELL':
                         continue
                     p = prices_today.get(name, 0)
                     if p <= 0: continue
                     avail = executor.account.available_shares(code)
                     if avail >= cfg.LOT_SIZE:
-                        order = executor.submit(code, 'SELL', p, avail, tag=f'信号{action}')
+                        order = executor.submit(code, 'SELL', p, avail, tag=f'信号SELL')
                         if order.status == 'FILLED':
                             log.trade(code, 'SELL', order.filled_price, order.filled_shares,
-                                      reason=f'信号{action}')
+                                      reason='信号SELL')
 
-                # ── 买入: 信号为BUY ──
-                buy_list = [(name, p) for name, p in prices_today.items()
-                           if signals_today.get(name) == 'BUY' and p > 0]
-                if buy_list:
-                    budget = executor.account.cash * 0.95 / len(buy_list)
-                    for name, p in buy_list:
-                        code = name_to_code(name)
-                        if not code: continue
-                        shares = int(budget / p / cfg.LOT_SIZE) * cfg.LOT_SIZE
-                        if shares >= cfg.LOT_SIZE:
-                            order = executor.submit(code, 'BUY', p, shares, tag='策略信号')
-                            if order.status == 'FILLED':
-                                log.trade(code, 'BUY', order.filled_price, order.filled_shares,
-                                          reason='策略信号')
+                # ── 买入: 按 quality_score 排序, 限制最大持仓数 ──
+                current_pos_count = len(executor.account.positions)
+                slots = cfg.MAX_POSITIONS - current_pos_count
+                # ── 市场温度: HS300实时动量检查 (防弱市买入) ──
+                hs300_name = '沪深300ETF'
+                hs300_ok = False
+                if hs300_name in p_slice.columns and len(p_slice[hs300_name].dropna()) >= 22:
+                    hs300_s = p_slice[hs300_name].dropna()
+                    hs300_ma20 = float(hs300_s.iloc[-20:].mean())
+                    hs300_now = float(hs300_s.iloc[-1])
+                    hs300_mom5 = (hs300_now / float(hs300_s.iloc[-6]) - 1) * 100 if len(hs300_s) >= 6 else -99
+                    hs300_ok = hs300_now > hs300_ma20  # 仅MA20过滤，避免过度收紧
+                if slots > 0 and hs300_ok:
+                    # 收集BUY信号候选人
+                    buy_candidates = []
+                    for name, p in prices_today.items():
+                        if signals_today.get(name) != 'BUY':
+                            continue
+                        if p <= 0:
+                            continue
+                        # 涨停不追
+                        if opens_today.get(name, 0) > 0 and p / opens_today[name] - 1 >= 0.098:
+                            continue
+                        # 日内实时截面指标 (防未来函数)
+                        s_slice = p_slice[name].dropna()
+                        if len(s_slice) < cfg.MOM_LONG + 2:
+                            continue
+                        mom40 = (float(s_slice.iloc[-1]) / float(s_slice.iloc[-cfg.MOM_LONG-1]) - 1) * 100
+                        mom5 = (float(s_slice.iloc[-1]) / float(s_slice.iloc[-cfg.MOM_SHORT-1]) - 1) * 100
+                        if mom40 <= 3 or mom5 <= 0:  # 长动量>3% + 短动量>0
+                            continue
+                        # ── 简单质量分: 动量/波动率 ──
+                        rets = s_slice.pct_change().dropna().iloc[-60:]
+                        vol60 = rets.std() * np.sqrt(252) * 100 if len(rets) >= 20 else 99
+                        quality = mom40 / max(vol60, 1.0)
+                        if quality < 0.25:  # 动量须显著大于波动率
+                            continue
+                        daily_chg = (float(s_slice.iloc[-1]) / float(s_slice.iloc[-2]) - 1) * 100
+                        if daily_chg >= cfg.MAX_DAILY_RISE:
+                            continue
+                        buy_candidates.append((name, p, mom40))
+
+                    # 按动量降序, 只取前 slots 只
+                    buy_candidates.sort(key=lambda x: x[2], reverse=True)
+                    buy_candidates = buy_candidates[:slots]
+
+                    if buy_candidates:
+                        budget_per = executor.account.cash * 0.90 / len(buy_candidates)
+                        min_budget = cfg.INITIAL_CASH * cfg.MIN_POSITION_PCT
+                        for name, p, mom in buy_candidates:
+                            if budget_per < min_budget:
+                                continue
+                            code = name_to_code(name)
+                            if not code: continue
+                            shares = int(budget_per / p / cfg.LOT_SIZE) * cfg.LOT_SIZE
+                            if shares >= cfg.LOT_SIZE:
+                                order = executor.submit(code, 'BUY', p, shares, tag=f'mom={mom:+.1f}%')
+                                if order.status == 'FILLED':
+                                    log.trade(code, 'BUY', order.filled_price, order.filled_shares,
+                                              reason=f'mom={mom:+.1f}%')
 
                 # ── 净值快照 ──
-                nw = executor.account.net_worth(prices_today)
+                nw = executor.account.net_worth(prices_by_code)
                 hv = nw - executor.account.cash
                 if i == start_idx:
                     prev_nw = cfg.INITIAL_CASH
                 else:
                     prev_prices = {n: float(price.iloc[i-1][n]) for n in price.columns if not pd.isna(price.iloc[i-1][n])}
-                    prev_nw = executor.account.net_worth(prev_prices)
+                    prev_prices_by_code = {}
+                    for n, p in prev_prices.items():
+                        c = name_to_code(n)
+                        if c:
+                            prev_prices_by_code[c] = p
+                    prev_nw = executor.account.net_worth(prev_prices_by_code)
                 daily_ret = (nw / prev_nw - 1) * 100 if prev_nw > 0 else 0
                 log.nav_snapshot(td, executor.account.cash, hv,
                                  positions={c: p.shares for c, p in executor.account.positions.items()},
@@ -577,13 +641,27 @@ def main():
 
         # ── 报告 ──
         final_prices = {n: float(price.iloc[-1][n]) for n in price.columns if not pd.isna(price.iloc[-1][n])}
-        executor.print_summary(prices=final_prices)
+        final_prices_by_code = {}
+        for n, p in final_prices.items():
+            c = name_to_code(n)
+            if c:
+                final_prices_by_code[c] = p
+        executor.print_summary(prices=final_prices_by_code)
+        closed = executor.account.win_count + executor.account.loss_count
+        wr = (executor.account.win_count / closed * 100) if closed > 0 else 0
         result = {
             'initial_cash': cfg.INITIAL_CASH,
-            'final_nw': round(executor.account.net_worth(final_prices), 2),
+            'final_nw': round(executor.account.net_worth(final_prices_by_code), 2),
             'trades': executor.account.trade_count,
             'fees': round(executor.account.total_fees, 2),
+            'total_pnl': round(executor.account.total_pnl, 2),
+            'win_rate': round(wr, 1),
+            'wins': executor.account.win_count,
+            'losses': executor.account.loss_count,
         }
+        log.info(f"回测完成 | 终值{result['final_nw']:,.0f} | "
+                 f"交易{result['trades']}笔 | 胜率{result['win_rate']:.1f}% | "
+                 f"盈亏{result['total_pnl']:+,.0f}")
 
     # ── 6. 实盘信号 (保存到 signal.json) ──
     if args.signal or args.live:

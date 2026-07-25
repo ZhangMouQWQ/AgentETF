@@ -27,8 +27,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config import Config
 from data_fetcher import (
-    DataFetcher, _fetch_tencent, _fetch_akshare_daily,
-    _fetch_akshare_60min, _fetch_sina_realtime,
+    DataFetcher, _fetch_tencent, _fetch_sina_realtime,
 )
 
 # 映射到旧 API 名以保持兼容
@@ -39,7 +38,6 @@ def get_etf_history_eastmoney(code, datalen=None):
     """暂不可用: Eastmoney API 被限频""" 
     return None
 
-get_etf_history_akshare = _fetch_akshare_daily
 get_etf_sina = _fetch_tencent
 
 def get_etf_extra_sina(sina_code):
@@ -70,17 +68,9 @@ API_DEFS = {
         'expected_fields': ['day', 'open', 'high', 'low', 'close', 'volume', 'amount', 'turnover'],
         'min_rows': MOM_LONG + 5,
     },
-    'akshare_hist': {
-        'name': 'AKShare (历史日线)',
-        'call': lambda code, sina: get_etf_history_akshare(code),
-        'key': 'akshare_hist',
-        'type': 'history',
-        'expected_fields': ['day', 'open', 'high', 'low', 'close', 'volume', 'amount', 'turnover'],
-        'min_rows': MOM_LONG + 5,
-    },
     'tencent_hist': {
         'name': 'Tencent K-line (历史日线)',
-        'call': lambda code, sina: get_etf_sina(sina, scale=240, datalen=DATA_LEN),
+        'call': lambda code, sina: get_etf_sina(sina, datalen=DATA_LEN),
         'key': 'tencent_hist',
         'type': 'history',
         'expected_fields': ['day', 'open', 'high', 'low', 'close', 'volume'],

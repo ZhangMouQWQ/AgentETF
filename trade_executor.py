@@ -61,6 +61,8 @@ class Trade:
     total_fee: float        # 总费用
     net_amount: float       # 净支出/收入
     time: str
+    pnl: float = 0.0       # 已实现盈亏 (仅SELL)
+    pnl_pct: float = 0.0   # 盈亏百分比 (仅SELL)
 
 
 @dataclass
@@ -81,8 +83,12 @@ class Account:
         self.positions: dict[str, Position] = {}
         self.trade_count = 0
         self.total_fees = 0.0
+        # ── 盈亏统计 ──
+        self.total_pnl = 0.0       # 累计已实现盈亏
+        self.win_count = 0         # 盈利笔数
+        self.loss_count = 0        # 亏损笔数
+        self.closed_pnls: list[float] = []  # 每笔已平仓盈亏
 
-    @property
     def holdings_value(self, prices: dict) -> float:
         """持仓市值"""
         v = 0.0
@@ -253,6 +259,9 @@ class TradeExecutor:
 
         cost = calc_cost(order.code, order.action, order.price, order.shares)
 
+        sell_pnl = 0.0
+        sell_pnl_pct = 0.0
+
         if order.action == 'BUY':
             self.account.cash -= cost['net_amount']
             pos = self.account.positions.get(order.code)
@@ -271,6 +280,15 @@ class TradeExecutor:
         else:  # SELL
             self.account.cash += cost['net_amount']
             pos = self.account.positions[order.code]
+            # ── 计算已实现盈亏 ──
+            sell_pnl = (order.price - pos.avg_cost) * order.shares - cost['total_fee']
+            sell_pnl_pct = (order.price / pos.avg_cost - 1) * 100 if pos.avg_cost > 0 else 0
+            self.account.total_pnl += sell_pnl
+            self.account.closed_pnls.append(sell_pnl)
+            if sell_pnl > 0:
+                self.account.win_count += 1
+            elif sell_pnl < 0:
+                self.account.loss_count += 1
             pos.shares -= order.shares
             pos.locked_shares = max(0, pos.locked_shares - order.shares)
             if pos.shares < self.lot_size:
@@ -300,6 +318,8 @@ class TradeExecutor:
             total_fee=cost['total_fee'],
             net_amount=cost['net_amount'],
             time=order.fill_time,
+            pnl=sell_pnl if order.action == 'SELL' else 0.0,
+            pnl_pct=sell_pnl_pct if order.action == 'SELL' else 0.0,
         )
         self.trades.append(trade)
 
@@ -348,6 +368,9 @@ class TradeExecutor:
 
     def summary(self) -> dict:
         """账户摘要"""
+        closed = self.account.win_count + self.account.loss_count
+        win_rate = (self.account.win_count / closed * 100) if closed > 0 else 0
+        avg_pnl = (sum(self.account.closed_pnls) / closed) if closed > 0 else 0
         return {
             'mode': self.mode,
             'initial_cash': self.account.initial_cash,
@@ -362,6 +385,12 @@ class TradeExecutor:
             },
             'trade_count': self.account.trade_count,
             'total_fees': round(self.account.total_fees, 2),
+            'total_pnl': round(self.account.total_pnl, 2),
+            'win_count': self.account.win_count,
+            'loss_count': self.account.loss_count,
+            'closed_trades': closed,
+            'win_rate': round(win_rate, 1),
+            'avg_pnl': round(avg_pnl, 2),
             'pending_orders': sum(1 for o in self.orders if o.status == 'PENDING'),
             'filled_orders': sum(1 for o in self.orders if o.status == 'FILLED'),
             'rejected_orders': sum(1 for o in self.orders if o.status == 'REJECTED'),
@@ -387,6 +416,15 @@ class TradeExecutor:
         print(f"  交易次数:   {s['trade_count']}")
         print(f"  累计费用:   {s['total_fees']:.2f}")
         print(f"  成交/拒绝:  {s['filled_orders']}/{s['rejected_orders']}")
+
+        # ── 盈亏统计 ──
+        if s['closed_trades'] > 0:
+            print(f"\n  [盈亏统计]")
+            print(f"  已平仓:     {s['closed_trades']}笔")
+            print(f"  盈利/亏损:  {s['win_count']}赢 / {s['loss_count']}亏")
+            print(f"  胜率:       {s['win_rate']:.1f}%")
+            print(f"  累计盈亏:   {s['total_pnl']:+,.2f}")
+            print(f"  平均盈亏:   {s['avg_pnl']:+,.2f}")
 
         if s['positions']:
             print(f"\n  [当前持仓]")

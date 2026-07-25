@@ -375,9 +375,9 @@ class StrategyEngine:
             score += 1 if score > 0 else 0  # 仅在偏多时加分
 
         # ── 判定 ──
-        if score >= 4:
+        if score >= 5:  # 适度放宽 (HS300已过滤弱市)
             return 'BUY'
-        elif score <= -4:
+        elif score <= -3:
             return 'SELL'
         else:
             return 'HOLD'
@@ -454,9 +454,9 @@ class StrategyEngine:
         if curr_ma5_up and not prev_ma5_up:
             score = max(score - 2, -5)  # 未确认, 减分
 
-        if score >= 4:
+        if score >= 3:  # 放松以配合日线双确认
             return 'BUY'
-        elif score <= -4:
+        elif score <= -2:
             return 'SELL'
         else:
             return 'HOLD'
@@ -523,14 +523,25 @@ class StrategyEngine:
             final = 'HOLD'
             reason = '日线无明确方向'
         elif hour_signal is None:
-            final = day_signal
-            reason = f'仅日线信号: {day_signal} (无小时线数据)'
+            # 无小时线数据: 禁止买入(不闭眼开车), 允许卖出(保命要紧)
+            if day_signal == 'SELL':
+                final = 'SELL'
+                reason = '日线看空 (无小时线数据, 仅允许卖出)'
+            else:
+                final = 'HOLD'
+                reason = f'日线{day_signal}但无小时线数据, 禁止买入'
         elif day_signal == 'BUY' and hour_signal == 'BUY':
             final = 'BUY'
             reason = '日线看多 + 小时线确认'
         elif day_signal == 'SELL' and hour_signal == 'SELL':
             final = 'SELL'
             reason = '日线看空 + 小时线确认'
+        elif day_signal == 'BUY' and hour_signal == 'HOLD':
+            final = 'BUY'  # 日线为主, 小时线不反对
+            reason = '日线看多 (小时线中性)'
+        elif day_signal == 'SELL' and hour_signal == 'HOLD':
+            final = 'SELL'  # 日线为主, 小时线不反对
+            reason = '日线看空 (小时线中性)'
         elif day_signal == 'BUY' and hour_signal == 'SELL':
             final = 'HOLD'
             reason = '日线看多但小时线看空, 等待回调'
